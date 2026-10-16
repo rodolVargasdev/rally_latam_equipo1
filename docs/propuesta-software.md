@@ -79,25 +79,42 @@ flowchart TD
   M --> N
 ```
 
-## App Productor: pantallas
+## App Productor: experiencia de uso
 
-1. **Mi parcela:** mapa con los nodos y su estado de la noche (tranquila,
-   alerta, urgente).
-2. **Alerta:** qué se detectó, dónde, a qué hora, con qué confianza; audio de 5
-   segundos para escuchar y la acción recomendada.
-3. **Nodo:** batería, carga solar, señal, temperatura y último contacto.
-4. **Resumen de la noche:** línea de tiempo con los eventos.
+Público: personas mayores y productores con poca experiencia en tecnología. La
+app se diseña para que se entienda sin leer instrucciones.
 
-Para personas mayores o poco acostumbradas a apps: la misma información llega
-por WhatsApp y por SMS con un texto corto y una sola acción.
+### Principios
+
+| principio | en la práctica |
+|---|---|
+| Una pregunta por pantalla | el inicio responde solo "¿está bien mi cultivo?" |
+| Semáforo con palabra y dibujo | verde "Todo tranquilo", amarillo "Ojo", rojo "Vaya a ver"; nunca solo color |
+| Palabras del campo | "ratas", "gusanos", "animal grande"; nada de "roedor" ni porcentajes: "Seguro" o "Puede ser" |
+| Letra y botones grandes | texto de 20 px como mínimo; botones a lo ancho de 64 px de alto |
+| Todo se puede escuchar | botón "Escuchar" que lee el aviso en voz alta (voz del propio Android, sin internet) |
+| Dos botones como máximo | cada aviso se responde con "Ya fui a ver" o "No era nada" |
+| Sin contraseñas | la cooperativa o el técnico instala con un código QR; se entra con el número de teléfono |
+| Ayuda a un toque | botón fijo "Llamar al técnico" |
+| Avisos distintos | el urgente suena y vibra diferente, incluso con el celular bloqueado |
+| Lo mismo fuera de la app | WhatsApp y SMS repiten el aviso y aceptan la respuesta 1 o 2, o una nota de voz |
+
+### Pantallas
+
+1. **Inicio:** semáforo grande de la parcela y una frase.
+2. **Aviso:** dibujo grande de la plaga, dónde está, qué hacer, botón
+   "Escuchar" y las dos respuestas.
+3. **Mis aparatos:** cada nodo con una sola palabra de estado (Bien, Poca
+   batería, Movido).
+4. **WhatsApp y SMS:** el mismo aviso para quien no abre la app.
 
 ## Ejemplo de mensaje
 
 ```text
-pocketNode URGENTE
-Parcela Los Naranjos, nodo 2 (orilla norte)
-Posible roedor desde las 2:14 a. m. (confianza 87 %)
-Revise la orilla norte. Responda 1 si lo vio, 2 si fue falsa alarma.
+pocketNode: VAYA A VER
+Ratas en la orilla norte de Los Naranjos (aparato 2).
+Desde las 2:14 de la madrugada. Seguro.
+Responda 1 si ya fue a ver, 2 si no era nada.
 ```
 
 ## Tecnología propuesta

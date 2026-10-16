@@ -93,6 +93,22 @@ td code { font-family: var(--mono); font-size: .82rem; color: var(--moon); }
 .bubble time { font-size: 9px; color: #7a8090; justify-self: end; }
 .sms { background: #fff; border: 1px dashed #b9bfcc; border-radius: 10px; padding: 9px 10px; font-family: var(--mono); font-size: 10.5px; }
 
+.ux { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px 24px; }
+.ux li { color: var(--muted); } .ux b { color: var(--text); }
+.screen { font-size: 14px; }
+.big-status { display: grid; justify-items: center; text-align: center; gap: 8px; padding: 18px 14px 16px; }
+.big-status b { font-family: var(--display); font-size: 26px; line-height: 1.1; }
+.big-status span { font-size: 14px; }
+.s-calm .big-status { background: #e3f4ea; color: #14543a; }
+.s-alert { background: #b3243a; color: #fff; } .s-alert .bar { color: #f6d3d9; }
+.s-alert .big-status { color: #fff; }
+.btn { min-height: 46px; display: grid; place-items: center; font-size: 15px; }
+.btn.speak { background: #f2c46d; color: #1b2230; }
+.btn.call { background: #fff; color: #1f6f5c; border: 2px solid #1f6f5c; }
+.s-alert .btn.main { background: #fff; color: #b3243a; } .s-alert .btn.sec { background: #8f1c2e; color: #fff; }
+.dev { display: flex; gap: 12px; align-items: center; background: #fff; border-radius: 12px; padding: 12px; }
+.dev i { width: 18px; height: 18px; border-radius: 50%; flex: none; } .d-ok { background: #2f9e6a; } .d-warn { background: #d99a1e; }
+.dev div { display: grid; } .dev b { font-size: 15px; } .dev span { font-size: 13px; color: #5b6475; }
 footer { color: var(--muted); font-size: .9rem; border-top: 1px solid var(--line); padding-top: 20px; }
 a { color: var(--moon); }
 :focus-visible { outline: 2px solid var(--moon); outline-offset: 2px; }
@@ -180,72 +196,73 @@ flowchart LR
 
   <section>
     <div class="eyebrow">App Productor | datos de ejemplo</div>
-    <h2>Lo que ve el productor</h2>
+    <h2>Se entiende sin leer instrucciones</h2>
+    <ul class="ux">
+      <li><b>Una pregunta por pantalla.</b> ¿Está bien mi cultivo?</li>
+      <li><b>Semáforo con palabra y dibujo.</b> Nunca solo color.</li>
+      <li><b>Palabras del campo.</b> "Ratas", no "roedor 87 %".</li>
+      <li><b>Todo se puede escuchar.</b> La voz del celular lee el aviso.</li>
+      <li><b>Dos botones como máximo.</b> "Ya fui a ver" o "No era nada".</li>
+      <li><b>Sin contraseñas.</b> La cooperativa instala con un QR.</li>
+    </ul>
     <div class="phones">
       <figure class="phone-col">
-        <div class="phone"><div class="screen">
-          <div class="bar"><span>2:16</span><span>4G 78%</span></div>
-          <div class="apphead"><b>Mi parcela</b><small>Los Naranjos | 3 nodos</small></div>
+        <div class="phone"><div class="screen s-calm">
+          <div class="bar"><span>6:05</span><span>78%</span></div>
+          <div class="big-status">
+            <svg viewBox="0 0 64 64" width="84" height="84" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#2f9e6a"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <b>Todo tranquilo</b>
+            <span>Los Naranjos pasó la noche sin plagas.</span>
+          </div>
           <div class="body">
-            <div class="map">
-              <span class="dot ok" style="left:22%;top:70%"></span>
-              <span class="dot crit" style="left:62%;top:24%"></span>
-              <span class="dot ok" style="left:80%;top:72%"></span>
-            </div>
-            <div class="row"><span>Nodo 2 | orilla norte</span><span class="pill p-crit">Urgente</span></div>
-            <div class="row"><span>Nodo 1 | entrada</span><span class="pill p-ok">Tranquila</span></div>
-            <div class="row"><span>Nodo 3 | quebrada</span><span class="pill p-ok">Tranquila</span></div>
+            <div class="btn speak">Escuchar</div>
+            <div class="btn sec">Ver la noche</div>
+            <div class="btn call">Llamar al técnico</div>
           </div>
         </div></div>
-        <figcaption>1. Mi parcela</figcaption>
+        <figcaption>1. Inicio: noche tranquila</figcaption>
+      </figure>
+
+      <figure class="phone-col">
+        <div class="phone"><div class="screen s-alert">
+          <div class="bar"><span>2:16</span><span>78%</span></div>
+          <div class="big-status">
+            <svg viewBox="0 0 96 64" width="110" height="74" aria-hidden="true"><ellipse cx="48" cy="38" rx="26" ry="16" fill="#fff"/><circle cx="74" cy="30" r="11" fill="#fff"/><circle cx="70" cy="20" r="5" fill="#fff"/><circle cx="78" cy="29" r="2.4" fill="#b3243a"/><path d="M22 40 C8 44 6 56 18 58" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg>
+            <b>Vaya a ver</b>
+            <span>Ratas en la orilla norte.<br>Desde las 2:14. Seguro.</span>
+          </div>
+          <div class="body">
+            <div class="btn speak">Escuchar</div>
+            <div class="btn main">Ya fui a ver</div>
+            <div class="btn sec">No era nada</div>
+          </div>
+        </div></div>
+        <figcaption>2. Aviso urgente</figcaption>
       </figure>
 
       <figure class="phone-col">
         <div class="phone"><div class="screen">
-          <div class="bar"><span>2:16</span><span>4G 78%</span></div>
-          <div class="apphead"><b>Alerta</b><small>Nodo 2 | orilla norte</small></div>
+          <div class="bar"><span>9:30</span><span>78%</span></div>
+          <div class="apphead"><b>Mis aparatos</b></div>
           <div class="body">
-            <div class="alert-card"><small>URGENTE | 2:14 a. m.</small><b>Posible roedor</b><small>Confianza 87 % | audio y vibración del poste</small></div>
-            <div class="wave" aria-label="Audio de 5 segundos">
-              <i style="height:20%"></i><i style="height:45%"></i><i style="height:80%"></i><i style="height:35%"></i><i style="height:60%"></i><i style="height:90%"></i><i style="height:40%"></i><i style="height:70%"></i><i style="height:25%"></i><i style="height:55%"></i><i style="height:85%"></i><i style="height:30%"></i><i style="height:50%"></i><i style="height:20%"></i>
-            </div>
-            <div class="row"><span>Qué hacer</span><span class="muted" style="color:#5b6475">Revise la orilla norte</span></div>
-            <div class="btn main">Lo vi, es plaga</div>
-            <div class="btn sec">Falsa alarma</div>
+            <div class="dev"><i class="d-ok"></i><div><b>Entrada</b><span>Bien</span></div></div>
+            <div class="dev"><i class="d-ok"></i><div><b>Orilla norte</b><span>Bien</span></div></div>
+            <div class="dev"><i class="d-warn"></i><div><b>Quebrada</b><span>Poca batería: limpie el panel</span></div></div>
+            <div class="btn call">Llamar al técnico</div>
           </div>
         </div></div>
-        <figcaption>2. Alerta con audio</figcaption>
-      </figure>
-
-      <figure class="phone-col">
-        <div class="phone"><div class="screen">
-          <div class="bar"><span>2:16</span><span>4G 78%</span></div>
-          <div class="apphead"><b>Nodo 2</b><small>Galaxy J5 reciclado | Android 6</small></div>
-          <div class="body">
-            <div class="kv">
-              <span>Batería</span><span>64 %</span>
-              <span>Carga solar hoy</span><span>27 Wh</span>
-              <span>Señal</span><span>2 de 4</span>
-              <span>Temperatura</span><span>31 °C</span>
-              <span>Último contacto</span><span>hace 1 min</span>
-              <span>Posición</span><span>sin cambios</span>
-            </div>
-            <div class="meter" aria-label="Batería 64 %"><i style="width:64%"></i></div>
-            <div class="row"><span>Modo</span><span class="pill p-warn">Noche activo</span></div>
-          </div>
-        </div></div>
-        <figcaption>3. Estado del nodo</figcaption>
+        <figcaption>3. Mis aparatos</figcaption>
       </figure>
 
       <figure class="phone-col">
         <div class="phone"><div class="screen wa">
-          <div class="bar" style="background:#1f6f5c;color:#cfe7df"><span>2:16</span><span>4G 78%</span></div>
+          <div class="bar" style="background:#1f6f5c;color:#cfe7df"><span>2:16</span><span>78%</span></div>
           <div class="apphead"><b>pocketNode</b><small>cuenta de empresa</small></div>
           <div class="body">
-            <div class="bubble"><b>pocketNode URGENTE</b>Parcela Los Naranjos, nodo 2 (orilla norte). Posible roedor desde las 2:14 a. m. (confianza 87 %). Responda 1 si lo vio, 2 si fue falsa alarma.<time>2:14</time></div>
+            <div class="bubble"><b>pocketNode: VAYA A VER</b>Ratas en la orilla norte de Los Naranjos. Desde las 2:14. Seguro. Responda 1 si ya fue a ver, 2 si no era nada.<time>2:14</time></div>
             <div class="bubble me">1<time>2:21</time></div>
-            <div class="bubble">Gracias. El nodo 2 queda en vigilancia reforzada esta noche.<time>2:21</time></div>
-            <div class="sms">SMS 2:14 | pocketNode URGENTE nodo 2: posible roedor. Resp 1 o 2.</div>
+            <div class="bubble">Gracias. Esa orilla queda vigilada toda la noche.<time>2:21</time></div>
+            <div class="sms">SMS 2:14 | pocketNode: VAYA A VER. Ratas, orilla norte. Responda 1 o 2.</div>
           </div>
         </div></div>
         <figcaption>4. WhatsApp y SMS</figcaption>
