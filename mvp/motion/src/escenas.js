@@ -401,21 +401,21 @@ scene({id:'4', label:'Escucha', act:3, name:'Cómo escucha', bg:K.black, ink:K.i
 
 scene({id:'5', label:'Animales', act:3, name:'Qué detecta', bg:K.black, ink:K.ink, trans:'fade',
   cap:'qué detecta',
-  narr:['Perros, vacas y cerdos: el modelo ya los conoce.', 'Aves, tacuazín, mapache, zorro y cotusa se entrenan en el piloto.',
-    'Los insectos siguen en investigación.'],
+  narr:['Perros, vacas y cerdos: el modelo ya los conoce.',
+    'Aves, sarigüeya, mapache, zorro, cotusa e insectos parten de modelos ya entrenados, como BirdNET, y se ajustan en el piloto.'],
   build(r, tl) {
-    const G3 = [['Alta confianza', K.lime, [['perro', 'Perro'], ['vaca', 'Vaca'], ['porcino', 'Cerdo']]],
-      ['A entrenar en el piloto', K.leaf, [['ave', 'Aves'], ['tacuazin', 'Tacuazín'], ['mapache', 'Mapache'], ['zorro', 'Zorro'], ['cotusa', 'Cotusa']]],
-      ['En investigación', '#e9c445', [['polilla', 'Polilla'], ['plaga_voladora', 'Plaga voladora'], ['gusano', 'Gusano'], ['escarabajo', 'Escarabajo'], ['broca', 'Broca']]]];
-    const rows = G3.map(([h, c, items], i) => add(r, `<div class="abs arow" style="left:150px;top:${120 + i * 310}px;width:1620px;color:${c}">
-      <div class="ah">${h}</div><div class="ag">${items.map(([k, n]) => `<div class="ai">${ani(k)}<span>${n}</span></div>`).join('')}</div></div>`));
+    const G3 = [['Alta confianza', K.lime, 'YAMNet, clases existentes', [['perro', 'Perro'], ['vaca', 'Vaca'], ['porcino', 'Cerdo']]],
+      ['A ajustar en el piloto, sobre modelos ya entrenados', K.leaf, 'BirdNET y YAMNet', [['ave', 'Aves'], ['tacuazin', 'Sarigüeya'], ['mapache', 'Mapache'], ['zorro', 'Zorro'], ['cotusa', 'Cotusa']]],
+      ['', '#e9c445', 'InsectSound1000 e InsectSet459', [['polilla', 'Polilla'], ['plaga_voladora', 'Plaga voladora'], ['gusano', 'Gusano'], ['escarabajo', 'Escarabajo'], ['broca', 'Broca']]]];
+    const rows = G3.map(([h, c, m, items], i) => add(r, `<div class="abs arow" style="left:150px;top:${120 + i * 310}px;width:1620px;color:${c}">
+      <div class="ah">${h}<span class="am">${m}</span></div><div class="ag">${items.map(([k, n]) => `<div class="ai">${ani(k)}<span>${n}</span></div>`).join('')}</div></div>`));
     rows.forEach(rw => gsap.set(qa(rw, '.ah, .ai'), {opacity: 0}));
-    [0.2, 2.6, 5.6].forEach((t, i) => {
+    [0.2, 2.4, 3.6].forEach((t, i) => {
       tl.fromTo(q(rows[i], '.ah'), {opacity: 0, x: -30}, {opacity: 1, x: 0, duration: 0.4}, t);
-      tl.fromTo(qa(rows[i], '.ai'), {opacity: 0, y: 30, scale: 0.85}, {opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(1.6)', stagger: 0.12}, t + 0.2);
+      tl.fromTo(qa(rows[i], '.ai'), {opacity: 0, y: 30, scale: 0.85}, {opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(1.6)', stagger: 0.1}, t + 0.2);
       sfx(tl, 'tick', t + 0.2);
     });
-    tl.set({}, {}, 7.8);
+    tl.set({}, {}, 7.2);
   }});
 
 scene({id:'6', label:'Celular', act:4, name:'El aviso en el celular', bg:K.black, ink:K.ink, trans:'fade',

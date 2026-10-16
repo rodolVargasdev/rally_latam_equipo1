@@ -38,7 +38,7 @@ Clases de YAMNet que pocketNode aprovecha tal cual (verificado en
   Frog, y también voces y motores (Speech, Vehicle, Engine): pocketNode **no**
   vigila personas ni vehículos (decisión del equipo, 2026-10-16).
 
-Sin clase propia en YAMNet: tacuazín, mapache, zorro gris, cotusa y zanate. Esas
+Sin clase propia en YAMNet: sarigüeya, mapache, zorro gris, cotusa y zanate. Esas
 requieren grabaciones propias (pregunta 7).
 
 ## Pregunta 2: ¿cómo evita las falsas alarmas?
@@ -77,13 +77,17 @@ Tres hechos verificados obligan a cambiar el enfoque:
 Conclusión: oír una polilla volando a metros de distancia con un celular es una
 **hipótesis débil** y no se promete.
 
-**Decisión del equipo (2026-10-16): no se usa trampa de feromona.**
+**Decisión del equipo (2026-10-16): no se usa trampa de feromona, y los
+insectos pasan a la fase "a ajustar en el piloto".**
 
-Sin trampa no hay forma verificada de acercar el insecto al micrófono. Por eso
-los insectos (polilla, plaga voladora, escarabajo, broca y la larva o gusano)
-quedan como **línea de investigación**: el piloto puede grabar de noche cerca de
-las plantas para medir si algún armónico del aleteo o el masticado se distingue
-del ruido, pero pocketNode no promete detectarlos.
+El punto de partida son bases y modelos ya entrenados (ver pregunta 7):
+InsectSound1000 para preentrenar y InsectSet459 como banco de sonidos de
+insectos. El piloto graba de noche cerca de las plantas y ajusta el modelo con
+esas grabaciones locales.
+
+Límite que se mantiene y se mide en el piloto: el aleteo de las polillas es
+grave y débil, así que el alcance de detección será corto. La meta del piloto es
+medir a qué distancia se distinguen.
 
 ## Pregunta 4: ¿qué detecta, con qué confianza?
 
@@ -91,12 +95,12 @@ del ruido, pero pocketNode no promete detectarlos.
 |---|---|---|---|
 | Perros ferales o callejeros | audio (Dog, Bark) | noche | **alta**: clase existente |
 | Ganado vacuno o porcino extraviado | audio (Moo, Oink) | día y noche | **alta**: clase existente |
-| Polilla y plaga voladora (cogollero, elotero) | audio cerca de las plantas | noche | **investigación**: el aleteo no se oye a distancia (pregunta 3) |
-| Gusano (la larva) | no se oye a distancia | | **investigación** |
-| Broca del café | ninguno verificado | | **investigación**: mide unos 2 mm |
-| Aves: palomas y zanates (clarineros) | audio (Bird, Pigeon dove, Crow) | **de día**: exige modo diurno y más batería | **media** |
-| Tacuazín, mapache, zorro gris, cotusa | acelerómetro (trepa o roza el poste) más audio de roce; confirmación con foto con flash | noche | **media**: son casi silenciosos y no tienen clase en YAMNet |
-| Escarabajo | audio (Chewing) | noche | **investigación**: solo se oiría muy cerca |
+| Polilla y plaga voladora (cogollero, elotero) | audio cerca de las plantas; preentrenado con InsectSound1000 | noche | **a ajustar en el piloto**: alcance corto (pregunta 3) |
+| Gusano (la larva) | masticado, muy de cerca | noche | **a ajustar en el piloto** |
+| Broca del café | audio muy de cerca | | **a ajustar en el piloto**: mide unos 2 mm, el alcance será mínimo |
+| Aves: palomas y zanates (clarineros) | audio con BirdNET (6.522 clases) | **de día**: exige modo diurno y más batería | **a ajustar en el piloto** |
+| Sarigüeya, mapache, zorro gris, cotusa | acelerómetro (trepa o roza el poste) más audio de roce; confirmación con foto con flash | noche | **media**: son casi silenciosos y no tienen clase en YAMNet |
+| Escarabajo | audio (Chewing) | noche | **a ajustar en el piloto**: solo se oye muy cerca |
 | Zompopo | ninguno | | **fuera de alcance**: es una hormiga cortadora, no un ave, y su sonido es demasiado débil |
 
 ## Pregunta 5: ¿funciona sin internet?
@@ -128,9 +132,21 @@ medición lo pide, un panel de 15 W.
 
 ## Pregunta 7: ¿de dónde salen los datos para entrenar?
 
-- La base (YAMNet) ya está entrenada con AudioSet.
+- Modelos y bases ya entrenados de partida:
+  - **YAMNet** (AudioSet, 521 clases): perros, ganado y base para mamíferos.
+  - **BirdNET** v2.4 (Cornell y TU Chemnitz): 6.522 clases, con versión TFLite
+    ([repositorio](https://github.com/UCSD-E4E/BirdNET-Lite)). Licencia
+    **CC BY-NC-SA 4.0, no comercial**: sirve para el piloto y la investigación;
+    un servicio pagado exigiría otra licencia.
+  - **InsectSound1000**: más de 169.000 muestras de 12 especies, pensado para
+    preentrenar
+    ([Scientific Data, 2024](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11082239/)).
+  - **InsectSet459**: 459 especies de grillos, saltamontes y chicharras
+    ([arXiv](https://arxiv.org/pdf/2503.15074)).
+  - Ninguno trae las especies exactas de El Salvador (cogollero, sarigüeya,
+    zanate): por eso todos se ajustan con grabaciones locales.
 - La capa propia necesita grabaciones locales etiquetadas. Hoy **no existe** un
-  banco de sonidos de tacuazín, cotusa o zanate de El Salvador: se construye en
+  banco de sonidos de sarigüeya, cotusa o zanate de El Salvador: se construye en
   el piloto, con las respuestas 1 o 2 de los productores y con apoyo técnico
   agrícola.
 

@@ -66,3 +66,5 @@
 .dk b { font: 800 50px 'Urbanist', sans-serif; }
 .dbars { display: flex; align-items: flex-end; gap: 22px; height: 140px; }
 .dbars i { display: block; flex: 1; background: #CBDB7C; border-radius: 8px 8px 2px 2px; }
+.arow .ah { min-height: 42px; }
+.arow .ah .am { margin-left: 22px; font: 600 20px 'Urbanist', sans-serif; letter-spacing: .12em; text-transform: uppercase; padding: 5px 12px; border: 1.5px solid currentColor; border-radius: 999px; opacity: .8; vertical-align: middle; }
