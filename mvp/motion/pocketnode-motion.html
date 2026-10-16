@@ -673,7 +673,91 @@ const T3 = (() => {
     r.render(sc, cam);
   }
   function at(k) { G.updateMatrixWorld(); P[k].getWorldPosition(v); v.project(cam); return {x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * H}; }
-  return {render, at};
+  /* Esquema de despliegue: terreno en metros, nodos simplificados con el mismo modelo y cúpulas de cobertura. */
+  const F = {};
+  function nodeMini() {
+    const g = new THREE.Group(), top = new THREE.Group();
+    ['case', 'lid', 'phone', 'panel', 'cable', 'mem'].forEach(k => { const c = P[k].clone(true); c.position.copy(P[k].userData.home); top.add(c); });
+    top.scale.setScalar(0.3); top.position.y = 2.25; g.add(top);
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 2.6, 16), phys(0x84441a, {roughness: 0.85, clearcoat: 0}));
+    post.position.set(0, 1.25, -0.2); g.add(post);
+    return g;
+  }
+  function buildField(mode) {
+    if (F[mode]) return F[mode];
+    const s2 = new THREE.Scene();
+    s2.fog = new THREE.Fog(0x070b09, 110, 190);
+    s2.add(new THREE.HemisphereLight(0xf2f6ea, 0x3a2a1a, 0.95));
+    const sun = new THREE.DirectionalLight(0xfff1dc, 1.5); sun.position.set(-40, 60, 30); s2.add(sun);
+    const W2 = mode === 'flat' ? 150 : 160, D2 = 70;
+    const h = mode === 'flat' ? () => 0 : (x, z) => 0.24 * x + 2.2 * Math.sin(z * 0.07) + 1.1 * Math.sin(x * 0.12 + z * 0.05);
+    const geo = new THREE.PlaneGeometry(W2, D2, 160, 70); geo.rotateX(-Math.PI / 2);
+    const pos = geo.attributes.position, col = [];
+    const cA = new THREE.Color(mode === 'flat' ? 0x5b4a30 : 0x6b5434), cB = new THREE.Color(mode === 'flat' ? 0x6d5a3a : 0x84653c);
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i), z = pos.getZ(i), y = h(x, z); pos.setY(i, y);
+      const c = cA.clone().lerp(cB, 0.5 + 0.5 * Math.sin(x * 0.3) * Math.sin(z * 0.2)).convertSRGBToLinear(); col.push(c.r, c.g, c.b);
+    }
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); geo.computeVertexNormals();
+    s2.add(new THREE.Mesh(geo, new THREE.MeshStandardMaterial({vertexColors: true, roughness: 1})));
+    const dummy = new THREE.Object3D();
+    if (mode === 'flat') {
+      const n = 2600, im = new THREE.InstancedMesh(new THREE.ConeGeometry(0.22, 2.3, 5), new THREE.MeshStandardMaterial({color: new THREE.Color(0x8fae4a).convertSRGBToLinear(), roughness: 0.9}), n);
+      for (let i = 0; i < n; i++) {
+        const row = i % 26, x = -70 + Math.floor(i / 26) * 1.4, z = -26 + row * 2 + Math.sin(i) * 0.2;
+        dummy.position.set(x, 1.15, z); dummy.rotation.set(0, i, Math.sin(i * 3) * 0.08); dummy.scale.setScalar(0.85 + 0.3 * Math.abs(Math.sin(i * 7))); dummy.updateMatrix(); im.setMatrixAt(i, dummy.matrix);
+      }
+      s2.add(im);
+    } else {
+      const solve = (L, z) => { let a = -80, b = 80; for (let k = 0; k < 30; k++) { const m = (a + b) / 2; (h(m, z) < L) ? (a = m) : (b = m); } return a; };
+      const spots = [];
+      for (let L = -15; L <= 19; L += 2.5) for (let z = -33; z <= 33; z += 2.4) { const x = solve(L + 1.2, z); if (x > -78 && x < 78) spots.push([x, z]); }
+      const im = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(0.85, 1), new THREE.MeshStandardMaterial({color: new THREE.Color(0x2f5d2c).convertSRGBToLinear(), roughness: 0.95}), spots.length);
+      spots.forEach(([x, z], i) => { dummy.position.set(x, h(x, z) + 0.75, z); dummy.scale.set(1, 1.25, 1); dummy.rotation.set(0, i, 0); dummy.updateMatrix(); im.setMatrixAt(i, dummy.matrix); });
+      s2.add(im);
+      const lm = new THREE.LineBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.6});
+      for (let L = -16; L <= 18; L += 2.5) {
+        const pts = [];
+        for (let z = -34; z <= 34; z += 1) {
+          let a = -80, b = 80;
+          for (let k = 0; k < 30; k++) { const m = (a + b) / 2; (h(m, z) < L) ? (a = m) : (b = m); }
+          pts.push(new THREE.Vector3(a, h(a, z) + 0.08, z));
+        }
+        s2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lm));
+      }
+    }
+    const xs = mode === 'flat' ? [-46, -23, 0, 23, 46] : [-48, -24, 0, 24, 48];
+    const zs = mode === 'flat' ? [0, 0, 0, 0, 0] : [8, 2, -4, 2, -6];
+    const nodes = xs.map((x, i) => { const z = zs[i], g = nodeMini(); g.position.set(x, h(x, z), z); g.scale.setScalar(3.4); s2.add(g); return g; });
+    const domeM = new THREE.MeshBasicMaterial({color: 0xcbdb7c, transparent: true, opacity: 0.1, depthWrite: false, side: THREE.DoubleSide});
+    const ringMat = new THREE.MeshBasicMaterial({color: 0xcbdb7c, transparent: true, opacity: 0.55});
+    const domes = nodes.map(nd => {
+      const d = new THREE.Group();
+      d.add(new THREE.Mesh(new THREE.SphereGeometry(15, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2), domeM));
+      const rg = new THREE.Mesh(new THREE.TorusGeometry(15, 0.12, 8, 96), ringMat); rg.rotation.x = Math.PI / 2; d.add(rg);
+      d.position.copy(nd.position); s2.add(d); return d;
+    });
+    const pulse = new THREE.Mesh(new THREE.SphereGeometry(0.9, 24, 16), new THREE.MeshBasicMaterial({color: 0xcbdb7c, toneMapped: false}));
+    s2.add(pulse);
+    const cam2 = new THREE.PerspectiveCamera(34, W / H, 0.5, 400);
+    return (F[mode] = {s2, cam2, nodes, domes, pulse, h});
+  }
+  function field(root, s) {
+    if (r.domElement.parentNode !== root) root.insertBefore(r.domElement, root.firstChild);
+    const f = buildField(s.mode);
+    f.cam2.position.set(s.cx, s.cy, s.cz); f.cam2.lookAt(s.lx, s.ly, s.lz);
+    f.domes.forEach((d, i) => { const k = Math.min(1, Math.max(0, (s.domes || 0) * f.domes.length - i)); d.visible = k > 0.01; d.scale.setScalar(Math.max(0.01, k)); });
+    const p = s.pulse || 0, seg = Math.min(f.nodes.length - 2, Math.floor(p * (f.nodes.length - 1)));
+    f.pulse.visible = p > 0.001 && p < 0.999;
+    if (f.pulse.visible) {
+      const a = f.nodes[seg].position, b = f.nodes[seg + 1].position, u = p * (f.nodes.length - 1) - seg;
+      f.pulse.position.lerpVectors(a, b, u); f.pulse.position.y += 6.5 + Math.sin(u * Math.PI) * 3;
+    }
+    r.render(f.s2, f.cam2);
+  }
+  function fieldAt(mode, v3) { const f = buildField(mode); v.copy(v3); v.project(f.cam2); return {x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * H}; }
+  function fieldNodes(mode) { return buildField(mode).nodes.map(n => n.position.clone()); }
+  return {render, at, field, fieldAt, fieldNodes};
 })();
 
 const localT = (s, nowS) => (window.__RENDER__ ? master.time() - s.start : nowS);
@@ -912,6 +996,58 @@ scene({id:'8', label:'Falsas alarmas', act:4, name:'¿Cómo evita falsas alarmas
     tl.set({}, {}, 24);
   }});
 
+function fieldLabels(r, mode, spacing) {
+  const ns = T3.fieldNodes(mode);
+  const gaps = ns.slice(1).map(() => { const e = add(r, `<div class="tagx" style="color:#fff;background:rgba(5,8,7,.55)">${spacing}</div>`); gsap.set(e, {opacity: 0, xPercent: -50, yPercent: -50}); return e; });
+  const cov = add(r, `<div class="abs" style="text-align:center;color:#CBDB7C"><div style="font:800 46px Urbanist">30 m</div><div class="est" style="opacity:.8">cobertura supuesta, a medir</div></div>`);
+  gsap.set(cov, {opacity: 0, xPercent: -50, yPercent: -100});
+  return {ns, gaps, cov};
+}
+function placeField(mode, L) {
+  L.gaps.forEach((e, i) => { const a = L.ns[i], b = L.ns[i + 1], m = a.clone().add(b).multiplyScalar(0.5); m.y += 3; const p = T3.fieldAt(mode, m); e.style.left = p.x + 'px'; e.style.top = p.y + 'px'; });
+  const c = L.ns[2].clone(); c.y += 15.5; const p = T3.fieldAt(mode, c); L.cov.style.left = p.x + 'px'; L.cov.style.top = p.y + 'px';
+}
+
+scene({id:'8a', label:'Maizal', act:4, name:'¿Cuántos nodos? Maizal', bg:K.black, ink:K.ink, trans:'fade',
+  cap:'cuántos nodos',
+  narr:['¿Cuántos nodos necesita una finca?', 'En un maizal plano, uno cada veinte a veinticinco metros.',
+    'Sus zonas de escucha se traslapan: si un nodo falla, el vecino cubre su terreno.'],
+  build(r, tl, S) {
+    S.st = {mode: 'flat', cx: -10, cy: 48, cz: 78, lx: 0, ly: 0, lz: 0, domes: 0, pulse: 0};
+    add(r, q3('Pregunta 4', '¿Cuántos nodos?'));
+    const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
+    S.L = fieldLabels(r, 'flat', '20 a 25 m');
+    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
+    tl.to(S.st, {cx: 8, cy: 30, cz: 62, duration: 13, ease: 'power1.inOut'}, 0);
+    tl.to(S.L.gaps, {opacity: 1, duration: 0.4, stagger: 0.25}, 3.2);
+    tl.to(S.st, {domes: 1, duration: 2.5, ease: 'power2.out'}, 6.5);
+    tl.to(S.L.cov, {opacity: 1, duration: 0.5}, 8.5); sfx(tl, 'chime', 8.5);
+    tl.set({}, {}, 12.5);
+  },
+  frame() { T3.field(this.root, this.st); placeField('flat', this.L); }});
+
+scene({id:'8b', label:'Ladera', act:4, name:'Finca de café en ladera', bg:K.black, ink:K.ink, trans:'fade',
+  cap:'finca en ladera',
+  narr:['En una finca de café en ladera, los nodos siguen las curvas de nivel, porque el propio cerro tapa el sonido.',
+    'Cuando uno detecta algo, el aviso puede saltar de nodo en nodo hasta el que tiene señal.',
+    'Los treinta metros de cobertura son un supuesto que se mide en el piloto: valen para perros, ganado y voces. Para las polillas, manda la trampa.'],
+  build(r, tl, S) {
+    S.st = {mode: 'slope', cx: -70, cy: 20, cz: 70, lx: -5, ly: 2, lz: 0, domes: 0, pulse: 0};
+    const t1 = txt(r, 'Finca de café en ladera', 960, 110, 'kt sm');
+    const t2 = txt(r, 'curvas de nivel', 1640, 980, 'tagx', 'color:#fff');
+    S.L = fieldLabels(r, 'slope', '24 m');
+    show(tl, t1, 0.3); show(tl, t2, 2.5);
+    tl.to(S.st, {cx: 25, cy: 34, cz: 82, lx: 6, ly: 6, duration: 26, ease: 'power1.inOut'}, 0);
+    tl.to(S.st, {domes: 1, duration: 3, ease: 'power2.out'}, 3.5);
+    tl.to(S.L.gaps, {opacity: 1, duration: 0.4, stagger: 0.25}, 5);
+    tl.to(S.st, {pulse: 1, duration: 4.5, ease: 'none'}, 9.5);
+    [0, 1, 2, 3].forEach(i => sfx(tl, 'tick', 9.5 + i * 1.125));
+    sfx(tl, 'chime', 14);
+    tl.to(S.L.cov, {opacity: 1, duration: 0.5}, 16);
+    tl.set({}, {}, 26);
+  },
+  frame() { T3.field(this.root, this.st); placeField('slope', this.L); }});
+
 scene({id:'9', label:'Sin internet', act:4, name:'¿Y sin internet?', bg:K.black, ink:K.ink, trans:'fade',
   cap:'sin internet',
   narr:['¿Y sin internet?', 'Todo el cálculo ocurre dentro del celular, con TensorFlow Lite, que todavía funciona en Android cinco.',
@@ -919,7 +1055,7 @@ scene({id:'9', label:'Sin internet', act:4, name:'¿Y sin internet?', bg:K.black
     'Google Play solo permite enviar SMS a la app de mensajes del teléfono. Por eso la app del nodo la instala directamente la cooperativa.'],
   build(r, tl, S) {
     const st = S.st = {e: 0, ry: -0.5, rx: 0.1, cz: 9, cy: 0.5, ly: 0.1, gx: -1.6, noTrap: true, ring: 0, screen: 'listen'};
-    add(r, `<div class="kq" style="left:1040px;top:250px">Pregunta 4</div><div class="kt md" style="left:1040px;top:290px">¿Y sin internet?</div>`);
+    add(r, `<div class="kq" style="left:1040px;top:250px">Pregunta 5</div><div class="kt md" style="left:1040px;top:290px">¿Y sin internet?</div>`);
     const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
     const rows = [['Modelo en el celular', 'LiteRT, desde Android 5'], ['Aviso por SMS', 'solo señal celular'], ['App del nodo fuera de Play', 'la instala la cooperativa']];
     const items = rows.map(([a, b], i) => add(r, `<div class="abs" style="left:1040px;top:${470 + i * 130}px"><div style="font:800 42px Urbanist">${a}</div><div style="font:500 28px Urbanist;opacity:.6">${b}</div></div>`));
@@ -940,7 +1076,7 @@ scene({id:'10', label:'Energía', act:5, name:'¿Le alcanza la energía?', bg:K.
     'Con casi seis horas de sol pico, un panel de diez vatios entrega unos treinta y cinco, si se aprovecha el sesenta por ciento.',
     'En el peor caso queda justo. Por eso escucha por ciclos, lleva batería de respaldo y, si la medición lo pide, sube a quince vatios.'],
   build(r, tl) {
-    add(r, q3('Pregunta 5', '¿Le alcanza la energía?'));
+    add(r, q3('Pregunta 6', '¿Le alcanza la energía?'));
     const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
     const sx = 18;
     const rows = [['Batería del celular', 11.5, 11.5, '11,5 Wh', '#9a9a96'], ['Consumo por día', 19, 36, '19 a 36 Wh', K.brown], ['Panel de 10 W por día', 35, 35, 'unos 35 Wh', K.green]];
@@ -972,7 +1108,7 @@ scene({id:'11', label:'Alcance', act:5, name:'¿Qué detecta?', bg:K.black, ink:
     'A validar en el piloto: aves de día y animales casi silenciosos, como el tacuazín.',
     'Y fuera de alcance, lo decimos claro: polillas volando a distancia y zompopos.'],
   build(r, tl) {
-    add(r, q3('Pregunta 6', '¿Qué detecta?'));
+    add(r, q3('Pregunta 7', '¿Qué detecta?'));
     const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
     const C3 = [['Alta confianza', K.lime, ['Perros ferales', 'Ganado extraviado', 'Personas y vehículos', 'Polillas contadas en trampa']],
       ['A validar', K.leaf, ['Palomas y zanates, de día', 'Tacuazín, mapache, zorro, cotusa', 'Broca del café en trampa']],

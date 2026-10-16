@@ -157,6 +157,18 @@ medición lo pide, un panel de 15 W.
   Kenia reporta buena precisión con más de 100 imágenes de entrenamiento por
   especie (Rothamsted, arriba).
 
+## Pregunta 8: ¿cuántos nodos necesita una finca?
+
+| terreno | criterio | clase |
+|---|---|---|
+| Maizal plano | un nodo cada 20 a 25 m, con zonas de escucha traslapadas para que el vecino cubra a uno que falle | **supuesto de diseño** |
+| Finca de café en ladera | los nodos siguen las curvas de nivel, porque el relieve bloquea el sonido entre un lado y otro del cerro | criterio de diseño |
+| Radio de escucha | 30 m de cobertura acústica | **supuesto a medir en el piloto**; depende del volumen del sonido: puede valer para perros, ganado y voces, no para insectos (ver pregunta 3) |
+
+El aviso de un nodo sin señal puede saltar al vecino (Wi-Fi o Bluetooth) hasta el
+que tenga señal celular. El alcance real de ese salto entre celulares en campo
+también se mide en el piloto.
+
 ## Lo que pocketNode no hace
 
 - No identifica la especie de un insecto por su vuelo a distancia.
