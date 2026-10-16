@@ -1,0 +1,237 @@
+<title>pocketNode MVP</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: field scene with the node on the left, the farmer's phone on the right, captions underneath. Single night look on purpose. */
+:root {
+  --ink: #0b1018; --panel: #141b28; --line: #2a3448; --text: #e6e9f0; --muted: #9aa4b8;
+  --moon: #f2c46d; --post: #ff7a93; --ok: #2f9e6a; --crit: #b3243a;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { background: var(--ink); color: var(--text); font-family: var(--body); }
+.stage { max-width: 1240px; margin: 0 auto; padding-block: 20px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; }
+@media (max-width: 820px) { .stage { grid-template-columns: minmax(0, 1fr); justify-items: center; } .field { width: 100%; } }
+.top { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; width: 100%; }
+.brand { font-family: var(--display); font-weight: 800; font-size: 1.6rem; } .brand span { color: var(--moon); }
+.ctrl { display: flex; gap: 8px; }
+button { font: 600 .9rem var(--body); background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--moon); outline-offset: 2px; }
+
+.field { position: relative; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 16 / 10.5; max-width: 100%; }
+.sky { position: absolute; inset: 0; transition: background 1.2s; }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 38%; background: repeating-linear-gradient(100deg, #1d3a24 0 22px, #19331f 22px 44px); transition: filter 1.2s; }
+.crop { position: absolute; bottom: 30%; width: 22px; height: 46px; border-radius: 50% 50% 4px 4px; background: #2f6b3a; }
+.clock { position: absolute; top: 14px; left: 16px; font-family: var(--mono); font-size: 1.5rem; background: rgba(0,0,0,.35); padding: 4px 12px; border-radius: 8px; }
+.post { position: absolute; left: 30%; bottom: 18%; width: 12px; height: 46%; background: #6b4a2b; border-radius: 3px; }
+.box { position: absolute; left: calc(30% - 34px); bottom: 50%; width: 80px; height: 96px; border-radius: 10px; background: rgba(200,210,220,.25); border: 2px solid #c9d2dc; display: grid; place-items: center; }
+.box .ph { width: 40px; height: 72px; border-radius: 7px; background: #111; border: 2px solid #444; position: relative; }
+.box .led { position: absolute; top: 6px; left: 50%; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: #555; }
+.box.on .led { background: #6fd3a0; box-shadow: 0 0 10px #6fd3a0; }
+.box.alarm .led { background: #ff6b6b; box-shadow: 0 0 14px #ff6b6b; animation: blink .5s infinite; }
+.panel-sol { position: absolute; left: calc(30% - 26px); bottom: 70%; width: 64px; height: 22px; background: #1d3557; border: 2px solid #8aa; transform: skewX(-18deg); }
+.rat { position: absolute; bottom: 20%; left: 70%; width: 70px; opacity: 0; transition: left 3s linear, opacity .6s; }
+.rat.in { opacity: 1; left: 36%; }
+.wave { position: absolute; left: calc(30% + 40px); bottom: 58%; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--moon); opacity: 0; }
+.wave.go { animation: ping 1.2s ease-out infinite; }
+.sms-fly { position: absolute; left: 34%; bottom: 66%; font: 600 .8rem var(--mono); background: var(--moon); color: #1b2230; padding: 4px 8px; border-radius: 6px; opacity: 0; }
+.sms-fly.go { animation: fly 1.6s ease-in forwards; }
+@keyframes blink { 50% { opacity: .3; } }
+@keyframes ping { from { transform: scale(1); opacity: .9; } to { transform: scale(9); opacity: 0; } }
+@keyframes fly { 0% { opacity: 1; transform: translate(0,0); } 100% { opacity: 0; transform: translate(520px,-80px); } }
+
+.hud { position: absolute; right: 12px; top: 12px; width: min(46%, 300px); background: rgba(11,16,24,.82); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; font-family: var(--mono); font-size: .76rem; }
+.hud h4 { margin: 0; font: 600 .72rem var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.meter { display: grid; grid-template-columns: 92px 1fr auto; gap: 8px; align-items: center; }
+.meter canvas { width: 100%; height: 26px; }
+.verdict { padding: 6px 8px; border-radius: 6px; background: #23304a; color: var(--muted); text-align: center; font-weight: 500; }
+.verdict.warn { background: #3d3220; color: var(--moon); } .verdict.crit { background: #4a1f28; color: #ff8a8a; }
+
+.caption { grid-column: 1 / -1; width: 100%; min-height: 64px; display: flex; gap: 14px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; }
+.caption .n { font: 800 1.6rem var(--display); color: var(--post); min-width: 2ch; }
+.caption p { margin: 0; font-size: 1.15rem; }
+
+.phone { width: 280px; max-width: 100%; aspect-ratio: 9 / 18.5; background: #05070c; border: 2px solid #323c52; border-radius: 36px; padding: 10px; align-self: center; }
+.screen { position: relative; height: 100%; border-radius: 28px; overflow: hidden; background: #f6f4ef; color: #1b2230; font-size: 14px; }
+.scr { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; transition: opacity .5s; }
+.scr.show { opacity: 1; }
+.bar { display: flex; justify-content: space-between; padding: 8px 16px 4px; font: 10px var(--mono); color: #5b6475; }
+.big { display: grid; justify-items: center; text-align: center; gap: 8px; padding: 22px 14px 18px; }
+.big b { font: 800 26px/1.1 var(--display); } .big span { font-size: 14px; }
+.calm .big { background: #e3f4ea; color: #14543a; }
+.watch .big { background: #e2e8f5; color: #23365e; }
+.alert { background: var(--crit); color: #fff; } .alert .bar { color: #f6d3d9; } .alert .big { color: #fff; }
+.btns { padding: 10px 12px; display: grid; gap: 8px; }
+.btn { min-height: 46px; display: grid; place-items: center; border-radius: 12px; font: 600 15px var(--body); }
+.speak { background: var(--moon); color: #1b2230; } .main { background: #1b2230; color: #fff; } .sec { background: #e7e3d9; color: #1b2230; }
+.alert .main { background: #fff; color: var(--crit); } .alert .sec { background: #8f1c2e; color: #fff; }
+.btn.tap { animation: tap .6s; } @keyframes tap { 50% { transform: scale(.94); filter: brightness(.85); } }
+.notif { position: absolute; left: 8px; right: 8px; top: 8px; background: #fff; color: #1b2230; border-radius: 14px; padding: 10px 12px; box-shadow: 0 6px 20px rgba(0,0,0,.35); font-size: 12px; transform: translateY(-140%); transition: transform .5s; z-index: 3; }
+.notif.show { transform: none; } .notif b { display: block; color: var(--crit); }
+.wa { background: #e9ddd0; } .wa .head { background: #1f6f5c; color: #fff; padding: 12px 16px; font: 700 17px var(--display); }
+.msgs { padding: 10px; display: grid; gap: 8px; align-content: start; }
+.bubble { background: #fff; border-radius: 10px 10px 10px 2px; padding: 8px 10px; font-size: 12px; max-width: 92%; opacity: 0; transform: translateY(8px); transition: .4s; }
+.bubble.me { background: #d4f3c4; justify-self: end; border-radius: 10px 10px 2px 10px; }
+.bubble.show { opacity: 1; transform: none; }
+.sum { padding: 0 12px; display: grid; gap: 8px; }
+.row { background: #fff; border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.row b { font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="stage">
+  <div class="top">
+    <div class="brand">pocket<span>Node</span> | una noche en Los Naranjos</div>
+    <div class="ctrl"><button id="play" type="button">Reproducir</button><button id="restart" type="button">Desde el inicio</button></div>
+  </div>
+
+  <div class="field" aria-label="Parcela con el nodo instalado">
+    <div class="sky" id="sky"></div>
+    <div class="ground" id="ground"></div>
+    <div class="crop" style="left:52%"></div><div class="crop" style="left:60%"></div><div class="crop" style="left:68%"></div><div class="crop" style="left:76%"></div><div class="crop" style="left:84%"></div>
+    <div class="clock" id="clock">17:50</div>
+    <div class="post"></div>
+    <div class="panel-sol"></div>
+    <div class="box" id="box"><div class="ph"><span class="led"></span></div></div>
+    <div class="wave" id="wave"></div>
+    <div class="sms-fly" id="smsfly">SMS</div>
+    <svg class="rat" id="rat" viewBox="0 0 96 64" aria-hidden="true"><ellipse cx="48" cy="38" rx="26" ry="15" fill="#8d8a86"/><circle cx="22" cy="31" r="11" fill="#8d8a86"/><circle cx="26" cy="21" r="5" fill="#a6a29d"/><circle cx="17" cy="29" r="2.4" fill="#111"/><path d="M74 40 C90 44 92 56 80 58" stroke="#8d8a86" stroke-width="4" fill="none" stroke-linecap="round"/></svg>
+
+    <div class="hud" aria-label="Lecturas del nodo">
+      <h4>Nodo 2 | orilla norte</h4>
+      <div class="meter"><span>Luz</span><canvas id="cLux" width="160" height="26"></canvas><span id="vLux">800 lx</span></div>
+      <div class="meter"><span>Micrófono</span><canvas id="cMic" width="160" height="26"></canvas><span id="vMic">bajo</span></div>
+      <div class="meter"><span>Acelerómetro</span><canvas id="cAcc" width="160" height="26"></canvas><span id="vAcc">quieto</span></div>
+      <div class="meter"><span>Batería</span><canvas id="cBat" width="160" height="26"></canvas><span id="vBat">92 %</span></div>
+      <div class="verdict" id="verdict">Modo día: cargando</div>
+    </div>
+  </div>
+
+  <div class="phone" aria-label="Celular del productor"><div class="screen">
+    <div class="notif" id="notif"><b>pocketNode: VAYA A VER</b>Ratas en la orilla norte</div>
+
+    <div class="scr calm show" id="s-calm"><div class="bar"><span>17:50</span><span>78%</span></div>
+      <div class="big"><svg viewBox="0 0 64 64" width="80" height="80" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#2f9e6a"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Todo tranquilo</b><span>Su parcela está bien.</span></div>
+      <div class="btns"><div class="btn speak">Escuchar</div><div class="btn sec">Mis aparatos</div></div></div>
+
+    <div class="scr watch" id="s-watch"><div class="bar"><span>18:02</span><span>77%</span></div>
+      <div class="big"><svg viewBox="0 0 64 64" width="80" height="80" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#23365e"/><path d="M40 14 a18 18 0 1 0 10 30 a14 14 0 1 1 -10 -30z" fill="#f2c46d"/></svg><b>Vigilando de noche</b><span>Le avisamos si algo pasa.<br>Puede dormir tranquilo.</span></div>
+      <div class="btns"><div class="btn speak">Escuchar</div><div class="btn sec">Mis aparatos</div></div></div>
+
+    <div class="scr alert" id="s-alert"><div class="bar"><span>2:16</span><span>74%</span></div>
+      <div class="big"><svg viewBox="0 0 96 64" width="110" height="74" aria-hidden="true"><ellipse cx="48" cy="38" rx="26" ry="16" fill="#fff"/><circle cx="74" cy="30" r="11" fill="#fff"/><circle cx="70" cy="20" r="5" fill="#fff"/><circle cx="78" cy="29" r="2.4" fill="#b3243a"/><path d="M22 40 C8 44 6 56 18 58" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg><b>Vaya a ver</b><span>Ratas en la orilla norte.<br>Desde las 2:14. Seguro.</span></div>
+      <div class="btns"><div class="btn speak">Escuchar</div><div class="btn main" id="bSeen">Ya fui a ver</div><div class="btn sec">No era nada</div></div></div>
+
+    <div class="scr wa" id="s-wa"><div class="bar" style="background:#1f6f5c;color:#cfe7df"><span>2:17</span><span>74%</span></div><div class="head">pocketNode</div>
+      <div class="msgs">
+        <div class="bubble" id="m1"><b>pocketNode: VAYA A VER</b><br>Ratas en la orilla norte de Los Naranjos. Desde las 2:14. Seguro. Responda 1 si ya fue a ver, 2 si no era nada.</div>
+        <div class="bubble me" id="m2">1</div>
+        <div class="bubble" id="m3">Gracias. Esa orilla queda vigilada toda la noche.</div>
+      </div></div>
+
+    <div class="scr calm" id="s-sum"><div class="bar"><span>6:05</span><span>81%</span></div>
+      <div class="big"><svg viewBox="0 0 64 64" width="80" height="80" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#2f9e6a"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Buenos días</b><span>Anoche hubo 1 aviso y usted ya lo atendió.</span></div>
+      <div class="sum"><div class="row"><b>2:14</b><span>Ratas, orilla norte</span><span>Atendido</span></div><div class="row"><b>Aparatos</b><span>3 de 3 bien</span></div></div>
+      <div class="btns"><div class="btn speak">Escuchar</div></div></div>
+  </div></div>
+
+  <div class="caption" aria-live="polite"><span class="n" id="capN">1</span><p id="capT">Atardece en Los Naranjos. El nodo pasó el día cargando con el sol.</p></div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  // Each step: start time (s), clock label, caption, and what changes.
+  const STEPS = [
+    { t: 0,  clock: "17:50", cap: "Atardece en Los Naranjos. El nodo pasó el día cargando con el sol.", sky: "day", phone: "s-calm", lux: 800, verdict: ["Modo día: cargando", ""] },
+    { t: 4,  clock: "18:02", cap: "El sensor de luz baja de 10 lux: el nodo entra en modo noche y empieza a escuchar.", sky: "night", phone: "s-watch", lux: 4, on: true, verdict: ["Modo noche: escuchando", ""] },
+    { t: 9,  clock: "1:40",  cap: "Grillos y viento. Es el ruido base de la parcela: no hay aviso.", mic: "base", verdict: ["Ruido base: sin plagas", ""] },
+    { t: 14, clock: "2:14",  cap: "El micrófono oye chillidos y roídos fuera del ruido base. El celular los reconoce: ratas.", rat: true, mic: "rat", verdict: ["Ratas: posible", "warn"] },
+    { t: 19, clock: "2:15",  cap: "El acelerómetro siente que algo roza el poste. Dos señales juntas: aviso urgente.", acc: true, verdict: ["Ratas: seguro | URGENTE", "crit"], alarm: true },
+    { t: 23, clock: "2:16",  cap: "Sale un SMS desde la SIM del propio nodo. No necesita internet.", sms: true, notif: true, phone: "s-alert" },
+    { t: 29, clock: "2:17",  cap: "Con datos móviles, el aviso también llega por WhatsApp, con letra grande y palabras sencillas.", phone: "s-wa", wa: 1 },
+    { t: 34, clock: "2:21",  cap: "El productor responde 1: ya fue a ver. El nodo aprende que la alerta era real.", wa: 3, ratOut: true, mic: "base", accOff: true, verdict: ["Atendido: vigilancia reforzada", ""] },
+    { t: 40, clock: "6:05",  cap: "Amanece. El productor recibe el resumen de la noche y el nodo vuelve a cargar.", sky: "dawn", phone: "s-sum", lux: 650, mic: "quiet", verdict: ["Modo día: cargando", ""] },
+    { t: 47, end: true }
+  ];
+  const SKY = { day: "linear-gradient(#f6b26b, #f7d9a0 55%, #c9e4b5)", night: "radial-gradient(circle at 80% 14%, #f4e7c0 0 18px, transparent 20px), linear-gradient(#070b16, #142038 70%)", dawn: "linear-gradient(#8fb3e6, #f3c98b 60%, #cfe3b8)" };
+  const st = { lux: 800, mic: "quiet", acc: false, t: 0, playing: false, idx: -1 };
+  window.__mvpDone = false;
+
+  function apply(s, i) {
+    $("capN").textContent = i + 1; $("capT").textContent = s.cap; $("clock").textContent = s.clock;
+    if (s.sky) { $("sky").style.background = SKY[s.sky]; $("ground").style.filter = s.sky === "night" ? "brightness(.45)" : "none"; }
+    if (s.lux != null) st.lux = s.lux;
+    if (s.mic) st.mic = s.mic;
+    if (s.acc) st.acc = true; if (s.accOff) st.acc = false;
+    if (s.on) $("box").classList.add("on");
+    if (s.alarm) $("box").classList.add("alarm");
+    if (s.rat) $("rat").classList.add("in");
+    if (s.ratOut) { $("rat").classList.remove("in"); $("box").classList.remove("alarm"); }
+    if (s.verdict) { $("verdict").textContent = s.verdict[0]; $("verdict").className = "verdict " + s.verdict[1]; }
+    if (s.sms) { $("wave").classList.add("go"); $("smsfly").classList.add("go"); setTimeout(() => $("wave").classList.remove("go"), 3500); }
+    if (s.notif) { $("notif").classList.add("show"); setTimeout(() => $("notif").classList.remove("show"), 2200); }
+    if (s.phone) { document.querySelectorAll(".scr").forEach(e => e.classList.toggle("show", e.id === s.phone)); }
+    if (s.wa) { ["m1", "m2", "m3"].forEach((m, k) => setTimeout(() => $(m).classList.toggle("show", k < s.wa), k * 900)); }
+    if (s.wa === 3) { $("bSeen").classList.add("tap"); }
+  }
+
+  // Sensor traces drawn every frame.
+  const hist = { cLux: [], cMic: [], cAcc: [], cBat: [] };
+  function draw(id, val, color) {
+    const c = $(id), g = c.getContext("2d"), h = hist[id];
+    h.push(val); if (h.length > 80) h.shift();
+    g.clearRect(0, 0, c.width, c.height);
+    g.strokeStyle = "#2a3448"; g.beginPath(); g.moveTo(0, c.height - .5); g.lineTo(c.width, c.height - .5); g.stroke();
+    g.strokeStyle = color; g.lineWidth = 2; g.beginPath();
+    h.forEach((v, k) => { const x = k * (c.width / 79), y = c.height - 2 - v * (c.height - 4); k ? g.lineTo(x, y) : g.moveTo(x, y); });
+    g.stroke();
+  }
+  let shown = 800, bat = 92;
+  function frame() {
+    shown += (st.lux - shown) * .06;
+    const micLvl = st.mic === "rat" ? .55 + Math.random() * .4 : st.mic === "base" ? .15 + Math.random() * .12 : .05 + Math.random() * .04;
+    const accLvl = st.acc ? .3 + Math.random() * .65 : .04 + Math.random() * .03;
+    if (st.playing) bat = Math.max(64, bat - .01);
+    draw("cLux", Math.min(1, shown / 800), "#f2c46d");
+    draw("cMic", micLvl, st.mic === "rat" ? "#ff7a93" : "#9aa4b8");
+    draw("cAcc", accLvl, st.acc ? "#ff6b6b" : "#9aa4b8");
+    draw("cBat", bat / 100, "#6fd3a0");
+    $("vLux").textContent = Math.round(shown) + " lx";
+    $("vMic").textContent = st.mic === "rat" ? "chillidos" : st.mic === "base" ? "grillos" : "bajo";
+    $("vAcc").textContent = st.acc ? "roce" : "quieto";
+    $("vBat").textContent = Math.round(bat) + " %";
+    requestAnimationFrame(frame);
+  }
+
+  let start = 0;
+  function tick(now) {
+    if (!st.playing) return;
+    const t = (now - start) / 1000;
+    while (st.idx + 1 < STEPS.length && STEPS[st.idx + 1].t <= t) {
+      st.idx++;
+      const s = STEPS[st.idx];
+      if (s.end) { st.playing = false; window.__mvpDone = true; $("play").textContent = "Reproducir"; return; }
+      apply(s, st.idx);
+    }
+    requestAnimationFrame(tick);
+  }
+  function reset() {
+    st.idx = -1; st.mic = "quiet"; st.acc = false; st.lux = 800; bat = 92; window.__mvpDone = false;
+    ["box"].forEach(id => $(id).className = "box"); $("rat").classList.remove("in"); $("bSeen").classList.remove("tap");
+    ["m1", "m2", "m3"].forEach(m => $(m).classList.remove("show"));
+    apply(STEPS[0], 0); st.idx = 0;
+  }
+  function play() { reset(); st.playing = true; $("play").textContent = "Reproduciendo"; start = performance.now(); requestAnimationFrame(tick); }
+  $("play").addEventListener("click", play);
+  $("restart").addEventListener("click", play);
+  window.__mvpPlay = play;
+  reset(); requestAnimationFrame(frame);
+  if (location.hash === "#auto") play();
+})();
+</script>

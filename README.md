@@ -68,3 +68,21 @@ vibración en reservorios), lo que conviene evaluar como opción propia.
 
 La lista íntegra de los nueve desafíos está en
 [docs/desafios.md](docs/desafios.md).
+
+## MVP animado
+
+Simulación de una noche completa: el nodo entra en modo noche, detecta ratas,
+envía SMS y WhatsApp, y el productor responde.
+
+- Página: [mvp/index.html](mvp/index.html) (abrir en el navegador y pulsar Reproducir)
+- Video: [video/pocketnode-mvp.webm](video/pocketnode-mvp.webm)
+
+Grabar el video con Docker (vía principal):
+
+```bash
+docker build -t pocketnode-mvp .
+docker run --rm --ipc=host -v "$PWD/video:/work/video" pocketnode-mvp
+```
+
+Atajo local: `npm ci`, luego `npm run record`. Si Playwright no puede descargar
+su navegador, `PW_CHANNEL=msedge npm run record` usa el Edge instalado.

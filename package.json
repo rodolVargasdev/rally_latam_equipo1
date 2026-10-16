@@ -1,0 +1,11 @@
+{
+  "name": "pocketnode-mvp",
+  "private": true,
+  "description": "Records the animated pocketNode MVP to video.",
+  "scripts": {
+    "record": "node mvp/record.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}
