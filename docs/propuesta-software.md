@@ -33,7 +33,7 @@ señales para bajar las falsas alarmas.
 | sensor | papel en pocketNode | señal que produce |
 |---|---|---|
 | Sensor de luz | interruptor del modo noche; antirrobo de la caja | `noche` (bajo 10 lux); `caja_abierta` si hay luz de golpe de noche |
-| Micrófono | detector principal | perros, ganado, aves, personas y vehículos; en la trampa de feromona, armónicos del aleteo de polillas (ver [deteccion-tecnica.md](deteccion-tecnica.md)) |
+| Micrófono | detector principal | perros, ganado y aves; en la trampa de feromona, con micrófono externo en el embudo, armónicos del aleteo de polillas (ver [deteccion-tecnica.md](deteccion-tecnica.md)) |
 | Acelerómetro | vibración del poste o estaca | `contacto` cuando un animal roza o trepa; `viento` para descartar ruido |
 | Giroscopio | inclinación del nodo | `nodo_caido` si el poste se inclina o cae |
 | Magnetómetro | orientación fija desde la instalación | `nodo_movido` si alguien gira o se lleva el equipo |
@@ -53,14 +53,13 @@ El mismo nodo trabaja en uno de dos modos, elegido al instalarlo.
 | | modo cultivo | modo ganado |
 |---|---|---|
 | Dónde va | poste en la parcela (café, maíz, frijol) | poste del corral, portón o cerco |
-| Qué busca | plagas nocturnas | robo de ganado (abigeato), depredadores, animal en apuros, cerco caído |
-| Ruido humano (voces, motores) | se descarta | es señal: personas o vehículo de noche cerca del corral |
+| Qué busca | plagas nocturnas | ganado extraviado, depredadores (perros, zorro), animal en apuros, cerco caído |
 | Acelerómetro | roce en el poste | apertura del portón, golpe o inclinación del cerco |
-| Aviso típico | "Gusano cogollero: riesgo de infestación en el maíz" | "Portón abierto y voces en el corral a las 2:40" |
+| Aviso típico | "Gusano cogollero: riesgo de infestación en el maíz" | "Perros cerca del corral a las 2:40" |
 
 ## Plagas que busca el modo cultivo
 
-**Actualizado:** las polillas se detectan con trampa de feromona y conteo por cámara, no oyéndolas volar a distancia. El detalle técnico, con fuentes, está en [deteccion-tecnica.md](deteccion-tecnica.md).
+**Actualizado:** las polillas se detectan con trampa de feromona, micrófono externo dentro del embudo y conteo por cámara, no oyéndolas volar a distancia. El detalle técnico, con fuentes, está en [deteccion-tecnica.md](deteccion-tecnica.md).
 
 | plaga | cultivo | firma acústica | estado |
 |---|---|---|---|
@@ -88,13 +87,13 @@ descartar:
 
 - Naturaleza: lluvia, viento en el follaje, truenos.
 - Fauna no dañina: grillos, ranas, chicharras, aves nocturnas.
-- Ruido humano: vehículos, motores, herramientas, voces. **Solo en modo
-  cultivo**; en modo ganado es la señal de alarma.
+- Ruido humano: vehículos, motores, herramientas, voces. Siempre se descarta:
+  pocketNode no vigila personas ni vehículos.
 
 ## Red de nodos
 
-Un terreno amplio lleva varios nodos, uno cada 50 a 100 metros según el
-cultivo (distancia a validar en campo).
+Un terreno amplio lleva **6 nodos por hectárea**, unos 41 m entre nodos. El
+cálculo y lo que implica para la cobertura están en [deteccion-tecnica.md](deteccion-tecnica.md), pregunta 8.
 
 - **Confirmación cruzada:** si dos nodos vecinos oyen lo mismo, la confianza
   sube y el aviso dice por dónde avanza la plaga.

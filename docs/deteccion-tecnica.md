@@ -34,10 +34,9 @@ Clases de YAMNet que pocketNode aprovecha tal cual (verificado en
 
 - Fauna y ganado: Dog, Bark, Whimper (dog), Cattle bovinae, Moo, Pig, Oink,
   Bird, Pigeon dove, Crow, Rodents rats mice, Insect.
-- Personas y vehículos (alarma en modo ganado): Speech, Walk footsteps,
-  Vehicle, Engine, Engine starting.
 - Ruido a descartar: Rain, Raindrop, Wind, Thunder, Rustling leaves, Cricket,
-  Frog.
+  Frog, y también voces y motores (Speech, Vehicle, Engine): pocketNode **no**
+  vigila personas ni vehículos (decisión del equipo, 2026-10-16).
 
 Sin clase propia en YAMNet: tacuazín, mapache, zorro gris, cotusa y zanate. Esas
 requieren grabaciones propias (pregunta 7).
@@ -49,8 +48,7 @@ Un aviso exige pasar cuatro filtros, en orden:
 1. **Persistencia:** la clase aparece en al menos 3 de 5 ventanas seguidas. Un
    ruido aislado no avisa. (estimado: el 3 de 5 se calibra en el piloto)
 2. **Contexto:** sensor de luz y hora (de noche o de día), barómetro (noche
-   húmeda), modo del nodo (cultivo o ganado). En modo cultivo, voces y motores
-   se descartan; en modo ganado, son la alarma.
+   húmeda), modo del nodo (cultivo o ganado). Voces y motores siempre se descartan.
 3. **Movimiento:** el acelerómetro confirma si algo trepó o rozó el poste o
    abrió el portón. Es la principal señal para animales casi silenciosos.
 4. **Vecino:** si otro nodo cercano detecta lo mismo, sube la confianza.
@@ -83,8 +81,17 @@ Conclusión: oír una polilla volando a metros de distancia con un celular es un
 
 - La feromona sexual atrae sobre todo a los machos de la especie buscada (por
   ejemplo, el cogollero). Es el método habitual de monitoreo de esta plaga.
-- La polilla entra por el embudo, a centímetros del micrófono: ahí sí se captan
-  sus armónicos (hipótesis a validar, mucho más fuerte que a distancia).
+- La polilla entra por el embudo. Dentro del embudo va un **micrófono externo
+  electret** conectado al celular por el conector de audífonos (TRRS): queda a
+  centímetros del aleteo, donde sí pueden captarse sus armónicos (hipótesis a
+  validar, mucho más fuerte que a distancia).
+- No hace falta un amplificador aparte: el celular alimenta al micrófono por el
+  mismo conector y lo amplifica con su propio preamplificador
+  ([polarización del micrófono por TRRS](https://patents.google.com/patent/US9490765)).
+  Un amplificador solo no resolvería el problema: sube igual el aleteo y el
+  ruido, y no evita el filtrado de graves del celular. Lo que funciona es la
+  cercanía. Hay que verificar que cada celular donado tenga conector de
+  audífonos.
 - Al amanecer, la cámara del celular fotografía el vaso colector y un modelo de
   visión **cuenta las capturas**. Ese principio ya funciona en campo: 20 trampas
   digitales de feromona en zonas rurales de Kenia
@@ -111,12 +118,12 @@ descartada: no encontramos ningún trabajo que la respalde.
 |---|---|---|---|
 | Perros ferales o callejeros | audio (Dog, Bark) | noche | **alta**: clase existente |
 | Ganado vacuno o porcino extraviado | audio (Moo, Oink) | día y noche | **alta**: clase existente |
-| Personas o vehículos en el corral | audio (Speech, Footsteps, Engine) más acelerómetro en el portón | noche | **alta** |
-| Gusano cogollero y elotero | trampa de feromona más conteo con cámara | conteo al amanecer | **alta** para el conteo (método probado); el audio en el embudo es hipótesis |
+| Polilla y plaga voladora (cogollero, elotero) | trampa de feromona con micrófono externo en el embudo, más conteo con cámara | noche y conteo al amanecer | **alta** para el conteo (método probado); el audio en el embudo es hipótesis |
+| Gusano (la larva) | no se oye: se infiere del conteo de polillas adultas en la trampa | | **indirecta** |
 | Broca del café | trampa con atrayente más conteo con cámara | conteo diario | **media**: a validar con el técnico de café |
-| Palomas y zanates (clarineros) | audio (Bird, Pigeon dove, Crow) | **de día**: exige modo diurno y más batería | **media** |
+| Aves: palomas y zanates (clarineros) | audio (Bird, Pigeon dove, Crow) | **de día**: exige modo diurno y más batería | **media** |
 | Tacuazín, mapache, zorro gris, cotusa | acelerómetro (trepa o roza el poste) más audio de roce; confirmación con foto con flash | noche | **media**: son casi silenciosos y no tienen clase en YAMNet |
-| Escarabajos masticando | audio (Chewing) | noche | **hipótesis**: solo se oiría muy cerca |
+| Escarabajo | audio (Chewing) | noche | **hipótesis**: solo se oiría muy cerca |
 | Zompopo | ninguno | | **fuera de alcance**: es una hormiga cortadora, no un ave, y su sonido es demasiado débil |
 
 ## Pregunta 5: ¿funciona sin internet?
@@ -157,17 +164,37 @@ medición lo pide, un panel de 15 W.
   Kenia reporta buena precisión con más de 100 imágenes de entrenamiento por
   especie (Rothamsted, arriba).
 
-## Pregunta 8: ¿cuántos nodos necesita una finca?
+## Pregunta 8: ¿cuántos nodos por hectárea?
 
-| terreno | criterio | clase |
-|---|---|---|
-| Maizal plano | un nodo cada 20 a 25 m, con zonas de escucha traslapadas para que el vecino cubra a uno que falle | **supuesto de diseño** |
-| Finca de café en ladera | los nodos siguen las curvas de nivel, porque el relieve bloquea el sonido entre un lado y otro del cerro | criterio de diseño |
-| Radio de escucha | 30 m de cobertura acústica | **supuesto a medir en el piloto**; depende del volumen del sonido: puede valer para perros, ganado y voces, no para insectos (ver pregunta 3) |
+El equipo fija **6 nodos por hectárea**. Lo que eso implica, calculado:
+
+| dato | valor |
+|---|---|
+| Área de una hectárea | 10.000 m² |
+| Área por nodo | 10.000 / 6 = unos 1.667 m² |
+| Separación en cuadrícula | raíz de 1.667 = unos 41 m entre nodos |
+| Radio mínimo para cubrir todo en cuadrícula | 41 / raíz de 2 = unos 29 m |
+| Radio mínimo para cubrir todo en malla hexagonal | raíz de (1.667 / 2,598) = unos 25 m |
+
+Lectura rigurosa:
+
+- Con el radio de escucha supuesto de 30 m (sin medir), 6 nodos por hectárea
+  cubren la hectárea **justo, sin traslape**. Que un vecino cubra a un nodo que
+  falla exigiría un radio medido de unos 41 m o más.
+- Si el piloto mide un radio menor que 25 m, 6 nodos por hectárea dejan huecos.
+- Para insectos el radio no aplica: cada nodo es una trampa, así que son 6
+  trampas por hectárea.
+- En ladera, los nodos se ubican sobre curvas de nivel porque el relieve bloquea
+  el sonido; la separación de 41 m es horizontal y puede requerir ajuste.
 
 El aviso de un nodo sin señal puede saltar al vecino (Wi-Fi o Bluetooth) hasta el
-que tenga señal celular. El alcance real de ese salto entre celulares en campo
+que tenga señal celular. A 41 m entre nodos, el alcance de ese salto en campo
 también se mide en el piloto.
+
+## Pregunta 9: ¿cuánto cuesta un nodo?
+
+Detalle con fuentes en [costos.md](costos.md): entre **USD 38 y 67 por nodo**,
+sin contar la trampa de feromona, que falta cotizar.
 
 ## Lo que pocketNode no hace
 
