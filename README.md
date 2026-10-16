@@ -1,6 +1,6 @@
-# Rally Centroamericano - Equipo 1
+# pocketNode
 
-Repositorio del equipo para el Rally Centroamericano. Aquí se documentan los
+Equipo pocketNode en el Rally Centroamericano. Repositorio del equipo. Aquí se documentan los
 desafíos propuestos, la evaluación de las candidatas y la solución que se
 desarrolle.
 
@@ -10,7 +10,9 @@ desarrolle.
 |---|---|
 | Lectura de desafíos | hecho |
 | Preselección | 02, 04 y 05 |
-| Elección final | pendiente |
+| Elección final | 02 - Sensores al servicio de la comunidad |
+| Enfoque | agricultura, con celulares reciclados y software propio |
+| Beneficiario | pendiente |
 
 ## Candidatas
 
