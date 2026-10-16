@@ -12,7 +12,8 @@ desarrolle.
 | Preselección | 02, 04 y 05 |
 | Elección final | 02 - Sensores al servicio de la comunidad |
 | Enfoque | agricultura, con celulares reciclados y software propio |
-| Beneficiario | pendiente |
+| Solución | detección temprana de plagas nocturnas |
+| Propuesta de software | [docs/propuesta-software.md](docs/propuesta-software.md) |
 
 ## Candidatas
 

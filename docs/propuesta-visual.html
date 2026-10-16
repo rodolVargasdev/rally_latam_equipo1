@@ -1,0 +1,257 @@
+<title>pocketNode</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single night-field page; text column on the left, phones on a strip. Deliberate single dark look: the product works at night. */
+:root {
+  --night: #0f1420;
+  --night-2: #171e2e;
+  --line: #2a3448;
+  --text: #e6e9f0;
+  --muted: #9aa4b8;
+  --moon: #f2c46d;      /* accent: lamp light in the field */
+  --post: #ff7a93;      /* the board's sticky notes */
+  --ok: #6fd3a0;
+  --warn: #f2c46d;
+  --crit: #ff6b6b;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+html, body { background: var(--night); color: var(--text); }
+body { font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-block: 48px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 64px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.6rem, 7vw, 4.6rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+h1 span { color: var(--moon); }
+h2 { font-size: 1.7rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-family: var(--mono); font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--post); }
+.muted { color: var(--muted); }
+section { display: grid; gap: 20px; min-width: 0; }
+
+.hero { display: grid; gap: 20px; }
+.hero .qs { display: grid; gap: 10px; border-left: 3px solid var(--post); padding-left: 16px; }
+.hero .qs p { font-size: 1.1rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-family: var(--mono); font-size: .8rem; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
+
+.flow-box { overflow-x: auto; background: var(--night-2); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; counter-reset: s; }
+.steps li { counter-increment: s; background: var(--night-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 4px; }
+.steps li::before { content: counter(s, decimal-leading-zero); font-family: var(--mono); color: var(--moon); font-size: .8rem; }
+
+.table-box { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: .95rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+td code { font-family: var(--mono); font-size: .82rem; color: var(--moon); }
+.lvl { display: inline-block; font-family: var(--mono); font-size: .75rem; padding: 2px 8px; border-radius: 6px; font-weight: 500; }
+.l-info { background: #23304a; color: var(--muted); }
+.l-alert { background: #3d3220; color: var(--warn); }
+.l-crit { background: #44222a; color: var(--crit); }
+.l-dev { background: #1f3a33; color: var(--ok); }
+
+.phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+.phone-col { display: grid; gap: 10px; justify-items: center; min-width: 0; }
+.phone-col figcaption { font-family: var(--mono); font-size: .8rem; color: var(--muted); text-align: center; }
+.phone { width: 100%; max-width: 260px; aspect-ratio: 9 / 18.5; background: #05070c; border: 2px solid #323c52; border-radius: 34px; padding: 10px; }
+.screen { height: 100%; border-radius: 26px; background: #f6f4ef; color: #1b2230; overflow: hidden; display: flex; flex-direction: column; font-size: 12px; }
+.bar { display: flex; justify-content: space-between; padding: 8px 14px 4px; font-family: var(--mono); font-size: 10px; color: #5b6475; }
+.apphead { padding: 6px 14px 10px; display: grid; gap: 2px; }
+.apphead b { font-family: var(--display); font-size: 17px; }
+.apphead small { color: #6a7385; }
+.body { padding: 0 12px 12px; display: grid; gap: 8px; align-content: start; flex: 1; }
+.map { position: relative; height: 150px; border-radius: 14px; background:
+  repeating-linear-gradient(115deg, #cfe3c3 0 14px, #c3dbb5 14px 28px); }
+.dot { position: absolute; width: 16px; height: 16px; border-radius: 50%; border: 3px solid #fff; transform: translate(-50%, -50%); }
+.dot.ok { background: #2f9e6a; } .dot.crit { background: #d6334a; box-shadow: 0 0 0 6px rgba(214,51,74,.25); } .dot.warn { background: #d99a1e; }
+.row { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: #fff; border-radius: 12px; padding: 10px 12px; }
+.row span:first-child { font-weight: 600; }
+.pill { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+.p-ok { background: #dff3e8; color: #1e7a4f; } .p-crit { background: #fbe0e4; color: #b3243a; } .p-warn { background: #fbefd5; color: #8a5c0c; }
+.alert-card { background: #b3243a; color: #fff; border-radius: 14px; padding: 12px; display: grid; gap: 4px; }
+.alert-card b { font-family: var(--display); font-size: 16px; }
+.wave { height: 44px; border-radius: 10px; background: #fff; display: flex; align-items: center; gap: 2px; padding: 0 10px; }
+.wave i { flex: 1; background: #b3243a; border-radius: 2px; }
+.btn { border: 0; border-radius: 12px; padding: 11px; font: 600 13px var(--body); text-align: center; }
+.btn.main { background: #1b2230; color: #fff; } .btn.sec { background: #e7e3d9; color: #1b2230; }
+.kv { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; background: #fff; border-radius: 12px; padding: 12px; font-family: var(--mono); font-size: 11px; }
+.kv span:nth-child(even) { text-align: right; font-weight: 500; }
+.meter { height: 8px; border-radius: 4px; background: #e7e3d9; overflow: hidden; }
+.meter i { display: block; height: 100%; background: #2f9e6a; }
+.wa { background: #e9ddd0; }
+.wa .apphead { background: #1f6f5c; color: #fff; padding-top: 10px; }
+.wa .apphead small { color: #cfe7df; }
+.bubble { background: #fff; border-radius: 10px 10px 10px 2px; padding: 9px 10px; display: grid; gap: 3px; max-width: 92%; font-size: 11.5px; }
+.bubble.me { background: #d4f3c4; justify-self: end; border-radius: 10px 10px 2px 10px; }
+.bubble time { font-size: 9px; color: #7a8090; justify-self: end; }
+.sms { background: #fff; border: 1px dashed #b9bfcc; border-radius: 10px; padding: 9px 10px; font-family: var(--mono); font-size: 10.5px; }
+
+footer { color: var(--muted); font-size: .9rem; border-top: 1px solid var(--line); padding-top: 20px; }
+a { color: var(--moon); }
+:focus-visible { outline: 2px solid var(--moon); outline-offset: 2px; }
+@media (max-width: 480px) { .wrap { gap: 48px; padding-block: 32px 56px; } }
+</style>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Rally Centroamericano | Desafío 02</div>
+    <h1>pocket<span>Node</span></h1>
+    <p class="muted">Detección temprana de plagas nocturnas con celulares reciclados. Propuesta de software y MVP virtual.</p>
+    <div class="qs">
+      <p>¿Cómo proteger las cosechas de las plagas nocturnas a tiempo y con tecnología accesible?</p>
+      <p>¿Por qué el productor se entera solo cuando la plaga ya devoró el cultivo?</p>
+    </div>
+    <div class="chips">
+      <span class="chip">Android 5.0+</span><span class="chip">funciona sin internet</span><span class="chip">SMS desde el nodo</span><span class="chip">WhatsApp</span><span class="chip">panel solar 10-15 W</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="eyebrow">Cómo funciona una noche</div>
+    <h2>Del anochecer al aviso</h2>
+    <ol class="steps">
+      <li><h3>Instalación</h3><p class="muted">QR, número del productor, GPS y 10 minutos de ruido base.</p></li>
+      <li><h3>Anochece</h3><p class="muted">El sensor de luz baja de 10 lux y activa el modo noche.</p></li>
+      <li><h3>Escucha</h3><p class="muted">Ventanas de audio de 5 s comparadas con el ruido base.</p></li>
+      <li><h3>Clasifica</h3><p class="muted">Insecto, roedor, animal o lluvia, en el propio celular.</p></li>
+      <li><h3>Confirma</h3><p class="muted">Cruza con vibración del poste, clima y repetición.</p></li>
+      <li><h3>Avisa</h3><p class="muted">SMS desde la SIM del nodo; WhatsApp y app si hay datos.</p></li>
+      <li><h3>Aprende</h3><p class="muted">El productor responde 1 o 2 y el nodo ajusta sus umbrales.</p></li>
+      <li><h3>Amanece</h3><p class="muted">Resumen de la noche por WhatsApp.</p></li>
+    </ol>
+    <div class="flow-box">
+<pre class="mermaid">
+flowchart LR
+  N[App Nodo<br/>celular reciclado] -- SMS por la SIM --> P[Productor]
+  N -- datos moviles o Wi-Fi --> S[Servidor]
+  S -- WhatsApp Business --> P
+  S -- notificacion --> A[App Productor]
+  S --> T[Tablero cooperativa<br/>o tecnico agricola]
+  A -- confirmada o falsa alarma --> S
+  S -- nuevos umbrales --> N
+</pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Integración de sensores</div>
+    <h2>Cada sensor tiene un papel</h2>
+    <p class="muted">Ninguno decide solo. El motor de reglas cruza las señales para bajar las falsas alarmas.</p>
+    <div class="table-box">
+      <table>
+        <thead><tr><th>Sensor</th><th>Papel</th><th>Señal</th></tr></thead>
+        <tbody>
+          <tr><td>Sensor de luz</td><td>Activa el modo noche; antirrobo de la caja</td><td><code>noche</code> <code>caja_abierta</code></td></tr>
+          <tr><td>Micrófono</td><td>Detector principal: aleteo de insectos (100 a 600 Hz), roedores y animales</td><td><code>audio_plaga</code></td></tr>
+          <tr><td>Acelerómetro</td><td>Vibración del poste cuando un animal roza o trepa; separa el viento</td><td><code>contacto</code> <code>viento</code></td></tr>
+          <tr><td>Giroscopio</td><td>Inclinación del nodo</td><td><code>nodo_caido</code></td></tr>
+          <tr><td>Magnetómetro</td><td>Orientación fija desde la instalación</td><td><code>nodo_movido</code></td></tr>
+          <tr><td>GPS</td><td>Ubica cada evento y comprueba que el nodo sigue en su sitio</td><td><code>coordenadas</code></td></tr>
+          <tr><td>Barómetro</td><td>Tormenta: sube el umbral de audio y suma riesgo estimado de hongos</td><td><code>tormenta</code></td></tr>
+          <tr><td>Temperatura de batería</td><td>Autodiagnóstico frente al sol directo</td><td><code>sobrecalentamiento</code></td></tr>
+          <tr><td>Wi-Fi y Bluetooth</td><td>Sube datos cuando hay red; detecta nodos vecinos</td><td><code>enlace</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Motor de reglas</div>
+    <h2>Cuatro niveles, un canal para cada uno</h2>
+    <div class="table-box">
+      <table>
+        <thead><tr><th>Nivel</th><th>Cuándo</th><th>Canal</th></tr></thead>
+        <tbody>
+          <tr><td><span class="lvl l-info">Informativo</span></td><td>Una señal aislada</td><td>Resumen de la mañana</td></tr>
+          <tr><td><span class="lvl l-alert">Alerta</span></td><td>Audio de plaga sostenido por más de 2 minutos</td><td>App y WhatsApp</td></tr>
+          <tr><td><span class="lvl l-crit">Urgente</span></td><td>Audio más vibración del poste, o un evento repetido en la noche</td><td>SMS inmediato, app y WhatsApp</td></tr>
+          <tr><td><span class="lvl l-dev">Equipo</span></td><td>Caja abierta, nodo movido o caído, batería baja</td><td>SMS al responsable</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">App Productor | datos de ejemplo</div>
+    <h2>Lo que ve el productor</h2>
+    <div class="phones">
+      <figure class="phone-col">
+        <div class="phone"><div class="screen">
+          <div class="bar"><span>2:16</span><span>4G 78%</span></div>
+          <div class="apphead"><b>Mi parcela</b><small>Los Naranjos | 3 nodos</small></div>
+          <div class="body">
+            <div class="map">
+              <span class="dot ok" style="left:22%;top:70%"></span>
+              <span class="dot crit" style="left:62%;top:24%"></span>
+              <span class="dot ok" style="left:80%;top:72%"></span>
+            </div>
+            <div class="row"><span>Nodo 2 | orilla norte</span><span class="pill p-crit">Urgente</span></div>
+            <div class="row"><span>Nodo 1 | entrada</span><span class="pill p-ok">Tranquila</span></div>
+            <div class="row"><span>Nodo 3 | quebrada</span><span class="pill p-ok">Tranquila</span></div>
+          </div>
+        </div></div>
+        <figcaption>1. Mi parcela</figcaption>
+      </figure>
+
+      <figure class="phone-col">
+        <div class="phone"><div class="screen">
+          <div class="bar"><span>2:16</span><span>4G 78%</span></div>
+          <div class="apphead"><b>Alerta</b><small>Nodo 2 | orilla norte</small></div>
+          <div class="body">
+            <div class="alert-card"><small>URGENTE | 2:14 a. m.</small><b>Posible roedor</b><small>Confianza 87 % | audio y vibración del poste</small></div>
+            <div class="wave" aria-label="Audio de 5 segundos">
+              <i style="height:20%"></i><i style="height:45%"></i><i style="height:80%"></i><i style="height:35%"></i><i style="height:60%"></i><i style="height:90%"></i><i style="height:40%"></i><i style="height:70%"></i><i style="height:25%"></i><i style="height:55%"></i><i style="height:85%"></i><i style="height:30%"></i><i style="height:50%"></i><i style="height:20%"></i>
+            </div>
+            <div class="row"><span>Qué hacer</span><span class="muted" style="color:#5b6475">Revise la orilla norte</span></div>
+            <div class="btn main">Lo vi, es plaga</div>
+            <div class="btn sec">Falsa alarma</div>
+          </div>
+        </div></div>
+        <figcaption>2. Alerta con audio</figcaption>
+      </figure>
+
+      <figure class="phone-col">
+        <div class="phone"><div class="screen">
+          <div class="bar"><span>2:16</span><span>4G 78%</span></div>
+          <div class="apphead"><b>Nodo 2</b><small>Galaxy J5 reciclado | Android 6</small></div>
+          <div class="body">
+            <div class="kv">
+              <span>Batería</span><span>64 %</span>
+              <span>Carga solar hoy</span><span>27 Wh</span>
+              <span>Señal</span><span>2 de 4</span>
+              <span>Temperatura</span><span>31 °C</span>
+              <span>Último contacto</span><span>hace 1 min</span>
+              <span>Posición</span><span>sin cambios</span>
+            </div>
+            <div class="meter" aria-label="Batería 64 %"><i style="width:64%"></i></div>
+            <div class="row"><span>Modo</span><span class="pill p-warn">Noche activo</span></div>
+          </div>
+        </div></div>
+        <figcaption>3. Estado del nodo</figcaption>
+      </figure>
+
+      <figure class="phone-col">
+        <div class="phone"><div class="screen wa">
+          <div class="bar" style="background:#1f6f5c;color:#cfe7df"><span>2:16</span><span>4G 78%</span></div>
+          <div class="apphead"><b>pocketNode</b><small>cuenta de empresa</small></div>
+          <div class="body">
+            <div class="bubble"><b>pocketNode URGENTE</b>Parcela Los Naranjos, nodo 2 (orilla norte). Posible roedor desde las 2:14 a. m. (confianza 87 %). Responda 1 si lo vio, 2 si fue falsa alarma.<time>2:14</time></div>
+            <div class="bubble me">1<time>2:21</time></div>
+            <div class="bubble">Gracias. El nodo 2 queda en vigilancia reforzada esta noche.<time>2:21</time></div>
+            <div class="sms">SMS 2:14 | pocketNode URGENTE nodo 2: posible roedor. Resp 1 o 2.</div>
+          </div>
+        </div></div>
+        <figcaption>4. WhatsApp y SMS</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <footer>Siguiente paso: MVP animado de una noche completa, grabado con Playwright. Detalle técnico en docs/propuesta-software.md.</footer>
+</main>
