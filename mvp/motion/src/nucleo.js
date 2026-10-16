@@ -229,7 +229,7 @@ function voiceLabel(v) {
   return `${nombre} | ${PAIS[region(v)] || v.lang}${esNatural(v) ? ' | natural' : ''}`;
 }
 const PRON = [
-  [/pocketNode/gi, 'póket nóud'], [/SMS/g, 'ese eme ese'], [/SIM/g, 'sim'], [/GPS/g, 'ge pe ese'], [/Wi-Fi/g, 'uai fai'], [/YAMNet/g, 'iam net'], [/LiteRT/g, 'lait ar ti'], [/TensorFlow Lite/g, 'ténsor flou lait'], [/IP65/g, 'i pe sesenta y cinco']
+  [/pocketNode/gi, 'póket nóud'], [/SMS/g, 'ese eme ese'], [/SIM/g, 'sim'], [/GPS/g, 'ge pe ese'], [/Wi-Fi/g, 'uai fai'], [/\bMAG\b/g, 'eme a ge'], [/PROCAFE/g, 'procafé'], [/WhatsApp/g, 'guatsap'], [/YAMNet/g, 'iam net'], [/LiteRT/g, 'lait ar ti'], [/TensorFlow Lite/g, 'ténsor flou lait'], [/IP65/g, 'i pe sesenta y cinco']
 ];
 const pron = s => PRON.reduce((a, [re, r]) => a.replace(re, r), s);
 function loadVoices() {

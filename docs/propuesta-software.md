@@ -33,7 +33,7 @@ señales para bajar las falsas alarmas.
 | sensor | papel en pocketNode | señal que produce |
 |---|---|---|
 | Sensor de luz | interruptor del modo noche; antirrobo de la caja | `noche` (bajo 10 lux); `caja_abierta` si hay luz de golpe de noche |
-| Micrófono | detector principal | perros, ganado y aves; en la trampa de feromona, con micrófono externo en el embudo, armónicos del aleteo de polillas (ver [deteccion-tecnica.md](deteccion-tecnica.md)) |
+| Micrófono | detector principal | perros, ganado y aves; los insectos quedan en investigación (ver [deteccion-tecnica.md](deteccion-tecnica.md)) |
 | Acelerómetro | vibración del poste o estaca | `contacto` cuando un animal roza o trepa; `viento` para descartar ruido |
 | Giroscopio | inclinación del nodo | `nodo_caido` si el poste se inclina o cae |
 | Magnetómetro | orientación fija desde la instalación | `nodo_movido` si alguien gira o se lleva el equipo |
@@ -59,7 +59,7 @@ El mismo nodo trabaja en uno de dos modos, elegido al instalarlo.
 
 ## Plagas que busca el modo cultivo
 
-**Actualizado:** las polillas se detectan con trampa de feromona, micrófono externo dentro del embudo y conteo por cámara, no oyéndolas volar a distancia. El detalle técnico, con fuentes, está en [deteccion-tecnica.md](deteccion-tecnica.md).
+**Actualizado (2026-10-16):** sin trampa de feromona, las plagas de esta tabla quedan como línea de investigación: su aleteo no se oye a distancia con un celular. El detalle técnico, con fuentes, está en [deteccion-tecnica.md](deteccion-tecnica.md).
 
 | plaga | cultivo | firma acústica | estado |
 |---|---|---|---|

@@ -22,19 +22,17 @@ La tabla del equipo daba USD 30 a 38. Al revisar sus enlaces:
 | Panel solar 10 W con salida USB 5 V, IP65 | panel monocristalino genérico con USB | 12 a 20 | [anuncio en eBay, unas £9](https://www.ebay.de/itm/167268124345) (cerrado, sin certificación) | estimado |
 | Batería de respaldo 10.000 mAh **con pass-through** | Deltaco PB-C1005 o Beetel PB10 | 12 a 25 | [Deltaco, €23,18](https://www.proshop.nl/Powerbank/Deltaco-PB-C1005-Powerbank-Wit-10000-mAh/3201821); [Beetel, ₹1.025](https://www.pricebefore.com/beetel-volte-series-pb10-10000mah-power-p914275.html) | referencia |
 | Caja IP67 donde cabe el celular | ABS 200 x 120 x 75 mm | 7 a 9 | [USD 6,60](https://www.opcinamilna.hr/products/watertight-junction-box-ip67-waterproof-project-box-durable/241801387/) | referencia |
-| Micrófono externo electret con conector TRRS (para la trampa) | cápsula electret y cable de 3,5 mm | 2 a 5 | | estimado, sin fuente |
 | Cables USB para exterior | 1 m reforzado | 1,5 a 2,5 | tabla del equipo | sin verificar |
 | Aislamiento antivibración | silentblocks M4 y cuna de neopreno | 2 a 3 | tabla del equipo | sin verificar |
 | SIM prepago y abrazaderas | Tigo, Claro, Digicel o Movistar | 1,5 a 2 | tabla del equipo | sin verificar |
-| **Total por nodo** | | **38 a 67** | | |
-| Trampa de feromona y cebo | | por cotizar | | pendiente |
+| **Total por nodo** | | **36 a 62** | | |
 
-Con 6 nodos por hectárea, el equipo por hectárea cuesta entre **USD 228 y 399**,
-más las trampas y el saldo de SMS.
+Con 6 nodos por hectárea, el equipo por hectárea cuesta entre **USD 216 y 369**,
+más el saldo de SMS.
 
 ## Cómo bajar el costo, y qué se pierde
 
-- **Sin batería de respaldo** (resta 12 a 25): el nodo queda en 26 a 42 USD, pero
+- **Sin batería de respaldo** (resta 12 a 25): el nodo queda en 24 a 37 USD, pero
   según el balance de energía (deteccion-tecnica.md, pregunta 6) el panel queda
   justo y en días nublados el nodo se apagaría de noche.
 - **Compra por volumen:** los paneles con USB se ofrecen por menos de una libra

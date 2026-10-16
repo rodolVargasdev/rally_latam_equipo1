@@ -32,3 +32,25 @@
 .ai span { font: 600 26px 'Urbanist', sans-serif; color: #fff; }
 .ani { height: 150px; width: 200px; display: grid; place-items: center; }
 .ani svg { max-height: 150px; max-width: 200px; width: auto; height: 150px; fill: currentColor; }
+.pux { width: 400px; }
+.puxl { font: 700 26px 'Urbanist', sans-serif; color: #CBDB7C; margin-bottom: 18px; text-align: center; }
+.puxf { width: 400px; height: 760px; border-radius: 54px; background: #05100c; border: 3px solid #2f5a4c; padding: 14px; box-sizing: border-box; }
+.puxs { height: 100%; border-radius: 42px; overflow: hidden; display: flex; flex-direction: column; color: #42271A; font-family: 'Urbanist', sans-serif; }
+.pt { color: #fff; font: 300 110px/1 'Urbanist', sans-serif; text-align: center; margin-top: 90px; }
+.pd { color: rgba(255,255,255,.7); font: 500 26px 'Urbanist', sans-serif; text-align: center; margin-bottom: 60px; }
+.pn { margin: 0 18px; background: rgba(255,255,255,.95); border-radius: 22px; padding: 20px; font: 500 24px/1.35 'Urbanist', sans-serif; }
+.pn b { display: block; font-size: 18px; letter-spacing: .08em; text-transform: uppercase; color: #074736; margin-bottom: 6px; }
+.pbar { display: flex; justify-content: space-between; padding: 16px 28px 0; color: #f6d3d9; font: 500 18px 'Urbanist', sans-serif; }
+.pbig { display: grid; justify-items: center; text-align: center; gap: 12px; padding: 34px 20px 26px; color: #fff; }
+.pbig b { font: 800 46px/1.05 'Urbanist', sans-serif; }
+.pbig span { font: 500 26px/1.3 'Urbanist', sans-serif; }
+.pbtn { margin: 0 22px 14px; height: 74px; border-radius: 20px; display: grid; place-items: center; font: 700 28px 'Urbanist', sans-serif; }
+.pbtn.spk { background: #CBDB7C; color: #42271A; }
+.pbtn.yes { background: #fff; color: #C0392B; }
+.pbtn.no { background: #8e2a20; color: #fff; }
+.pwh { background: #1f6f5c; color: #fff; font: 800 30px 'Urbanist', sans-serif; padding: 34px 26px 18px; }
+.pbub { margin: 14px 16px 0; background: #fff; border-radius: 18px 18px 18px 4px; padding: 16px 18px; font: 500 23px/1.35 'Urbanist', sans-serif; max-width: 88%; }
+.pbub.me { align-self: flex-end; background: #d4f3c4; border-radius: 18px 18px 4px 18px; font-weight: 700; }
+.soc { box-sizing: border-box; width: 500px; padding: 30px 34px; border-radius: 22px; background: rgba(255,255,255,.06); border: 1.5px solid rgba(203,219,124,.35); display: grid; gap: 10px; }
+.soc b { font: 800 40px 'Urbanist', sans-serif; color: #fff; }
+.soc span { font: 500 26px 'Urbanist', sans-serif; opacity: .7; }

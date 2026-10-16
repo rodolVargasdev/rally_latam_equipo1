@@ -77,40 +77,13 @@ Tres hechos verificados obligan a cambiar el enfoque:
 Conclusión: oír una polilla volando a metros de distancia con un celular es una
 **hipótesis débil** y no se promete.
 
-**Solución: el nodo trabaja junto a una trampa de feromona.**
+**Decisión del equipo (2026-10-16): no se usa trampa de feromona.**
 
-- La feromona sexual atrae sobre todo a los machos de la especie buscada (por
-  ejemplo, el cogollero). Es el método habitual de monitoreo de esta plaga.
-- La polilla entra por el embudo. Dentro del embudo va un **micrófono externo
-  electret** conectado al celular por el conector de audífonos (TRRS): queda a
-  centímetros del aleteo, donde sí pueden captarse sus armónicos (hipótesis a
-  validar, mucho más fuerte que a distancia).
-- No hace falta un amplificador aparte: el celular alimenta al micrófono por el
-  mismo conector y lo amplifica con su propio preamplificador
-  ([polarización del micrófono por TRRS](https://patents.google.com/patent/US9490765)).
-  Un amplificador solo no resolvería el problema: sube igual el aleteo y el
-  ruido, y no evita el filtrado de graves del celular. Lo que funciona es la
-  cercanía. Hay que verificar que cada celular donado tenga conector de
-  audífonos.
-- Al amanecer, la cámara del celular fotografía el vaso colector y un modelo de
-  visión **cuenta las capturas**. Ese principio ya funciona en campo: 20 trampas
-  digitales de feromona en zonas rurales de Kenia
-  ([Rothamsted](https://repository.rothamsted.ac.uk/item/98149/smart-armyworm-surveillance-project-technical-report)),
-  la trampa con cámara Tarvos en Brasil
-  ([FAPESP](https://agencia.fapesp.br/smart-traps-monitor-caterpillar-infestation-of-crops/35197))
-  y una red de trampas electrónicas con conteo por aprendizaje profundo en maíz
-  en Colombia
-  ([Universidad Distrital](https://revistas.udistrital.edu.co/index.php/visele/article/download/22140/20923/150497)).
-- El aviso sale cuando el conteo diario cruza el umbral que defina el técnico
-  agrícola para ese cultivo.
-
-Lo nuevo de pocketNode frente a esas trampas: el "cerebro" es un celular
-reciclado en lugar de una placa nueva, y el mismo nodo vigila además fauna y
-ganado.
-
-Broca del café: el monitoreo habitual también usa trampas con atrayente, y la
-cámara puede contar capturas igual. La detección acústica por el aire queda
-descartada: no encontramos ningún trabajo que la respalde.
+Sin trampa no hay forma verificada de acercar el insecto al micrófono. Por eso
+los insectos (polilla, plaga voladora, escarabajo, broca y la larva o gusano)
+quedan como **línea de investigación**: el piloto puede grabar de noche cerca de
+las plantas para medir si algún armónico del aleteo o el masticado se distingue
+del ruido, pero pocketNode no promete detectarlos.
 
 ## Pregunta 4: ¿qué detecta, con qué confianza?
 
@@ -118,12 +91,12 @@ descartada: no encontramos ningún trabajo que la respalde.
 |---|---|---|---|
 | Perros ferales o callejeros | audio (Dog, Bark) | noche | **alta**: clase existente |
 | Ganado vacuno o porcino extraviado | audio (Moo, Oink) | día y noche | **alta**: clase existente |
-| Polilla y plaga voladora (cogollero, elotero) | trampa de feromona con micrófono externo en el embudo, más conteo con cámara | noche y conteo al amanecer | **alta** para el conteo (método probado); el audio en el embudo es hipótesis |
-| Gusano (la larva) | no se oye: se infiere del conteo de polillas adultas en la trampa | | **indirecta** |
-| Broca del café | trampa con atrayente más conteo con cámara | conteo diario | **media**: a validar con el técnico de café |
+| Polilla y plaga voladora (cogollero, elotero) | audio cerca de las plantas | noche | **investigación**: el aleteo no se oye a distancia (pregunta 3) |
+| Gusano (la larva) | no se oye a distancia | | **investigación** |
+| Broca del café | ninguno verificado | | **investigación**: mide unos 2 mm |
 | Aves: palomas y zanates (clarineros) | audio (Bird, Pigeon dove, Crow) | **de día**: exige modo diurno y más batería | **media** |
 | Tacuazín, mapache, zorro gris, cotusa | acelerómetro (trepa o roza el poste) más audio de roce; confirmación con foto con flash | noche | **media**: son casi silenciosos y no tienen clase en YAMNet |
-| Escarabajo | audio (Chewing) | noche | **hipótesis**: solo se oiría muy cerca |
+| Escarabajo | audio (Chewing) | noche | **investigación**: solo se oiría muy cerca |
 | Zompopo | ninguno | | **fuera de alcance**: es una hormiga cortadora, no un ave, y su sonido es demasiado débil |
 
 ## Pregunta 5: ¿funciona sin internet?
@@ -160,9 +133,6 @@ medición lo pide, un panel de 15 W.
   banco de sonidos de tacuazín, cotusa o zanate de El Salvador: se construye en
   el piloto, con las respuestas 1 o 2 de los productores y con apoyo técnico
   agrícola.
-- El conteo de polillas necesita fotos etiquetadas de capturas. El trabajo de
-  Kenia reporta buena precisión con más de 100 imágenes de entrenamiento por
-  especie (Rothamsted, arriba).
 
 ## Pregunta 8: ¿cuántos nodos por hectárea?
 
@@ -182,8 +152,6 @@ Lectura rigurosa:
   cubren la hectárea **justo, sin traslape**. Que un vecino cubra a un nodo que
   falla exigiría un radio medido de unos 41 m o más.
 - Si el piloto mide un radio menor que 25 m, 6 nodos por hectárea dejan huecos.
-- Para insectos el radio no aplica: cada nodo es una trampa, así que son 6
-  trampas por hectárea.
 - En ladera, los nodos se ubican sobre curvas de nivel porque el relieve bloquea
   el sonido; la separación de 41 m es horizontal y puede requerir ajuste.
 
@@ -193,8 +161,7 @@ también se mide en el piloto.
 
 ## Pregunta 9: ¿cuánto cuesta un nodo?
 
-Detalle con fuentes en [costos.md](costos.md): entre **USD 38 y 67 por nodo**,
-sin contar la trampa de feromona, que falta cotizar.
+Detalle con fuentes en [costos.md](costos.md): entre **USD 36 y 62 por nodo**.
 
 ## Lo que pocketNode no hace
 
