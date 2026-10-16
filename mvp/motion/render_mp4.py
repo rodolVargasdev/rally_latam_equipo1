@@ -26,7 +26,7 @@ WRAP = D / "_render.html"
 VOZDIR = D / "voz"
 OUT = D / "pocketnode-explicativo.mp4"
 VOZ_PREFERIDAS = ["es-SV-LorenaNeural", "es-SV-RodrigoNeural", "es-MX-DaliaNeural"]
-RATE = "-4%"
+RATE = "+12%"
 FPS = 30
 
 

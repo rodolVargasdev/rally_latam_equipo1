@@ -265,7 +265,7 @@ function probarVoz() {
   if (!HAS_TTS || V.none || !V.voice) return;
   V.stop();
   const u = new SpeechSynthesisUtterance('Así sonará la narración de pocketNode.');
-  u.voice = V.voice; u.lang = V.voice.lang; u.rate = 0.96;
+  u.voice = V.voice; u.lang = V.voice.lang; u.rate = 1.1;
   V.keep.push(u); speechSynthesis.speak(u);
 }
 V.stop = function () { V.tok++; if (HAS_TTS) speechSynthesis.cancel(); V.speaking = false; A.duck(false); };
@@ -289,7 +289,7 @@ function narrate(i, from = 0) {
     const canSpeak = HAS_TTS && !V.none && V.voice && !A.muted;
     if (canSpeak) {
       const u = new SpeechSynthesisUtterance(pron(txt));
-      u.voice = V.voice; u.lang = V.voice.lang; u.rate = 0.96;
+      u.voice = V.voice; u.lang = V.voice.lang; u.rate = 1.1;
       u.onstart = () => { if (tok === V.tok) { V.speaking = true; A.duck(true); } };
       u.onend = finish; u.onerror = finish;
       V.keep.push(u); if (V.keep.length > 12) V.keep.shift();

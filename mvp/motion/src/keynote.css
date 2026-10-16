@@ -26,3 +26,9 @@
 .col3 h3 { margin: 0 0 26px; font: 800 40px 'Urbanist', sans-serif; }
 .col3 p { margin: 0 0 18px; font: 500 30px/1.3 'Urbanist', sans-serif; }
 .est { font: 600 18px 'Urbanist', sans-serif; letter-spacing: .14em; text-transform: uppercase; opacity: .55; }
+.arow .ah { font: 800 34px 'Urbanist', sans-serif; margin-bottom: 18px; }
+.arow .ag { display: flex; gap: 46px; align-items: flex-end; }
+.ai { display: grid; justify-items: center; gap: 12px; width: 200px; }
+.ai span { font: 600 26px 'Urbanist', sans-serif; color: #fff; }
+.ani { height: 150px; width: 200px; display: grid; place-items: center; }
+.ani svg { max-height: 150px; max-width: 200px; width: auto; height: 150px; fill: currentColor; }

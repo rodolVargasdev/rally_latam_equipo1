@@ -78,9 +78,9 @@ Dos simulaciones de una noche, con datos de ejemplo:
 | [mvp/index.html](mvp/index.html) | la finca desde arriba: red de nodos, relevo sin señal, plaga en el maíz, robo en el corral y "Mis números" | [video/pocketnode-red.webm](video/pocketnode-red.webm) |
 | [mvp/vista-cercana.html](mvp/vista-cercana.html) | un nodo de cerca: sensores en vivo, ratas y aviso por SMS y WhatsApp | [video/pocketnode-vista-cercana.webm](video/pocketnode-vista-cercana.webm) |
 
-## Explicativo estilo keynote
+## Explicativo de 1:30
 
-[mvp/motion/pocketnode-motion.html](mvp/motion/pocketnode-motion.html): unos 4 minutos con voz, organizado en seis preguntas (cómo escucha, las polillas, las falsas alarmas, sin internet, la energía y qué detecta), con el modelo 3D del nodo en three.js. Se edita en `mvp/motion/src/` y se ensambla con `python mvp/motion/build.py`; el MP4 se graba con `mvp/motion/render_mp4.py` y se guarda fuera del repositorio. El sustento técnico de cada afirmación está en [docs/deteccion-tecnica.md](docs/deteccion-tecnica.md).
+[mvp/motion/pocketnode-motion.html](mvp/motion/pocketnode-motion.html): unos 85 segundos con voz, en nueve escenas: el problema, el nodo en 3D, cómo escucha, qué animales detecta y con qué confianza, los cuatro filtros, 6 nodos por hectárea en ladera, el precio y el cierre. Se edita en `mvp/motion/src/` y se ensambla con `python mvp/motion/build.py`; el MP4 se graba con `mvp/motion/render_mp4.py` y se guarda fuera del repositorio. El sustento de cada cifra está en [docs/deteccion-tecnica.md](docs/deteccion-tecnica.md) y [docs/costos.md](docs/costos.md).
 
 Grabar el video con Docker (vía principal):
 

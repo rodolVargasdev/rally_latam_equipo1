@@ -192,7 +192,7 @@ const T3 = (() => {
     s2.fog = new THREE.Fog(0x070b09, 110, 190);
     s2.add(new THREE.HemisphereLight(0xf2f6ea, 0x3a2a1a, 0.95));
     const sun = new THREE.DirectionalLight(0xfff1dc, 1.5); sun.position.set(-40, 60, 30); s2.add(sun);
-    const W2 = mode === 'flat' ? 150 : 160, D2 = 70;
+    const W2 = mode === 'flat' ? 150 : 190, D2 = 90;
     const h = mode === 'flat' ? () => 0 : (x, z) => 0.24 * x + 2.2 * Math.sin(z * 0.07) + 1.1 * Math.sin(x * 0.12 + z * 0.05);
     const geo = new THREE.PlaneGeometry(W2, D2, 160, 70); geo.rotateX(-Math.PI / 2);
     const pos = geo.attributes.position, col = [];
@@ -229,15 +229,15 @@ const T3 = (() => {
         s2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lm));
       }
     }
-    const xs = mode === 'flat' ? [-46, -23, 0, 23, 46] : [-48, -24, 0, 24, 48];
-    const zs = mode === 'flat' ? [0, 0, 0, 0, 0] : [8, 2, -4, 2, -6];
+    const xs = mode === 'flat' ? [-46, -23, 0, 23, 46] : [-61, -20.5, 20.5, 61];
+    const zs = mode === 'flat' ? [0, 0, 0, 0, 0] : [6, 0, -4, 2];
     const nodes = xs.map((x, i) => { const z = zs[i], g = nodeMini(); g.position.set(x, h(x, z), z); g.scale.setScalar(3.4); s2.add(g); return g; });
     const domeM = new THREE.MeshBasicMaterial({color: 0xcbdb7c, transparent: true, opacity: 0.1, depthWrite: false, side: THREE.DoubleSide});
     const ringMat = new THREE.MeshBasicMaterial({color: 0xcbdb7c, transparent: true, opacity: 0.55});
     const domes = nodes.map(nd => {
       const d = new THREE.Group();
-      d.add(new THREE.Mesh(new THREE.SphereGeometry(15, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2), domeM));
-      const rg = new THREE.Mesh(new THREE.TorusGeometry(15, 0.12, 8, 96), ringMat); rg.rotation.x = Math.PI / 2; d.add(rg);
+      d.add(new THREE.Mesh(new THREE.SphereGeometry(30, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2), domeM));
+      const rg = new THREE.Mesh(new THREE.TorusGeometry(30, 0.18, 8, 160), ringMat); rg.rotation.x = Math.PI / 2; d.add(rg);
       d.position.copy(nd.position); s2.add(d); return d;
     });
     const pulse = new THREE.Mesh(new THREE.SphereGeometry(0.9, 24, 16), new THREE.MeshBasicMaterial({color: 0xcbdb7c, toneMapped: false}));
@@ -289,100 +289,92 @@ function placeCallouts(list) {
   });
 }
 
-/* Acto 1: el problema. */
+/* Versión de 1:30. Una idea por escena; toda cifra viene de docs/deteccion-tecnica.md y docs/costos.md. */
+function fieldLabels(r, mode, spacing) {
+  const ns = T3.fieldNodes(mode);
+  const gaps = ns.slice(1).map(() => { const e = add(r, `<div class="tagx" style="color:#fff;background:rgba(5,8,7,.55)">${spacing}</div>`); gsap.set(e, {opacity: 0, xPercent: -50, yPercent: -50}); return e; });
+  const cov = add(r, `<div class="abs" style="text-align:center;color:#CBDB7C"><div style="font:800 46px Urbanist">30 m de escucha</div><div class="est" style="opacity:.8">supuesto, se mide en el piloto</div></div>`);
+  gsap.set(cov, {opacity: 0, xPercent: -50, yPercent: -100});
+  return {ns, gaps, cov};
+}
+function placeField(mode, L) {
+  L.gaps.forEach((e, i) => { const a = L.ns[i], b = L.ns[i + 1], m = a.clone().add(b).multiplyScalar(0.5); m.y += 3; const p = T3.fieldAt(mode, m); e.style.left = p.x + 'px'; e.style.top = p.y + 'px'; });
+  const c = L.ns[1].clone(); c.y += 31; const p = T3.fieldAt(mode, c); L.cov.style.left = p.x + 'px'; L.cov.style.top = p.y + 'px';
+}
+function ani(name) { return `<div class="ani">${ANI[name] || ""}</div>`; }
+
 scene({id:'1', label:'Apertura', act:1, name:'pocketNode', bg:'#000', ink:K.ink, trans:'cut',
   cap:'pocketnode',
-  narr:['pocketNode.', 'Escucha. Detecta. Protege.'],
+  narr:['pocketNode: escucha, detecta, protege.'],
   build(r, tl) {
     const lg = add(r, `<div class="abs" style="left:960px;top:470px;width:520px">__LOGO_BLANCO__</div>`);
     gsap.set(lg, {xPercent: -50, yPercent: -50, opacity: 0});
     const w = ['Escucha.', 'Detecta.', 'Protege.'].map((x, i) => txt(r, x, 660 + i * 300, 860, 'kt sm', i === 2 ? `color:${K.lime}` : ''));
-    tl.fromTo(lg, {opacity: 0, scale: 0.94}, {opacity: 1, scale: 1, duration: 2 * M, ease: 'power2.out'}, 0.3);
-    w.forEach((e, i) => { show(tl, e, 2.4 + i * 0.7); sfx(tl, 'tick', 2.4 + i * 0.7); });
-    tl.set({}, {}, 6);
+    tl.fromTo(lg, {opacity: 0, scale: 0.94}, {opacity: 1, scale: 1, duration: 1.2 * M, ease: 'power2.out'}, 0.1);
+    w.forEach((e, i) => { show(tl, e, 1.1 + i * 0.4, {d: 0.6}); sfx(tl, 'tick', 1.1 + i * 0.4); });
+    tl.set({}, {}, 3.4);
   }});
 
 scene({id:'2', label:'Problema', act:1, name:'El problema', bg:K.paper, ink:K.dark, light:true, trans:'fade',
   cap:'el problema',
-  narr:['La plaga trabaja de noche.', 'El productor la descubre de día.', 'Y cuando el daño se ve, ya es tarde.'],
-  build(r, tl, S) {
-    const a = txt(r, 'La plaga trabaja de noche.', 960, 380, 'kt');
-    const b = txt(r, 'El productor la descubre de día.', 960, 540, 'kt', 'color:#9a9a96');
-    const c = txt(r, 'Cuando el daño se ve, ya es tarde.', 960, 700, 'kt', `color:${K.alarm}`);
-    S.onSentence = k => [a, b, c].forEach((e, j) => gsap[window.__RENDER__ ? 'set' : 'to'](e, {opacity: j === k ? 1 : (j < k ? 0.18 : 0), y: 0, duration: 0.5}));
-    show(tl, a, 0.3); show(tl, b, 2.4); show(tl, c, 4.6);
-    tl.to(a, {opacity: 0.18, duration: 0.5}, 2.4); tl.to(b, {opacity: 0.18, duration: 0.5}, 4.6);
-    tl.set({}, {}, 7.5);
+  narr:['Plagas y depredadores atacan de noche.', 'El productor se entera de día, cuando el daño ya está hecho.'],
+  build(r, tl) {
+    const a = txt(r, 'Atacan de noche.', 960, 420, 'kt');
+    const b = txt(r, 'Se descubre de día.', 960, 600, 'kt', `color:${K.alarm}`);
+    show(tl, a, 0.2, {d: 0.6}); show(tl, b, 2.2, {d: 0.6});
+    tl.to(a, {opacity: 0.2, duration: 0.4}, 2.2);
+    tl.set({}, {}, 4.6);
   }});
 
-/* Acto 2: el nodo. */
 scene({id:'3', label:'El nodo', act:2, name:'El nodo', bg:K.black, ink:K.ink, trans:'fade',
   cap:'el nodo',
-  narr:['Este es el nodo pocketNode.', 'Un celular reciclado dentro de una caja sellada, con un panel solar de diez vatios y una trampa de feromona.'],
+  narr:['Un celular reciclado, en una caja sellada, con un panel solar de diez vatios y una batería de respaldo.',
+    'En la trampa de feromona, un micrófono externo escucha dentro del embudo.'],
   build(r, tl, S) {
-    const st = S.st = {e: 0, ry: -0.9, rx: 0.08, cz: 22, cy: 0.4, ly: -0.3, gx: 2.2, ring: 0};
-    const t1 = txt(r, 'pocketNode', 560, 470, 'kt');
-    const t2 = txt(r, 'Un oído que no duerme.', 560, 590, 'ks');
-    tl.to(st, {cz: 15.5, duration: 6 * M, ease: 'power2.out'}, 0);
-    tl.to(st, {ry: 0.7, duration: 11, ease: 'none'}, 0);
-    show(tl, t1, 1.2); show(tl, t2, 4.2);
-    tl.to(st, {ring: 1, duration: 1}, 5.5);
+    const st = S.st = {e: 0, ry: 0.35, rx: 0.12, cz: 20, gx: -0.4, ly: -0.2, ring: 0, moths: 0};
+    S.co = callouts(r, [['panel', 'Panel solar', '10 W, salida USB 5 V', 'r'], ['phone', 'Celular en desuso', 'Android 5 o superior', 'r'],
+      ['bank', 'Batería de respaldo', '10.000 mAh, pass-through', 'l'], ['lid', 'Caja IP67', 'contra lluvia y polvo', 'l', -170],
+      ['trap', 'Trampa de feromona', 'micrófono externo en el embudo', 'l']]);
+    tl.to(st, {e: 1, duration: 1.6 * M, ease: 'power3.inOut'}, 0.2);
+    tl.to(st, {ry: -0.25, duration: 10, ease: 'none'}, 0);
+    S.co.forEach((c, i) => { tl.to(c.el, {opacity: 1, duration: 0.35}, 1.4 + i * 0.4); sfx(tl, 'tick', 1.4 + i * 0.4); });
+    tl.to(S.co.map(c => c.el), {opacity: 0, duration: 0.4}, 6.4);
+    tl.to(st, {e: 0, duration: 1.2 * M, ease: 'power3.inOut'}, 6.5);
+    tl.to(st, {cz: 11, cy: -1.1, ly: -1.9, duration: 1.6 * M, ease: 'power2.inOut'}, 7.6);
+    tl.to(st, {moths: 1, ring: 1, duration: 0.6}, 7.8);
     tl.set({}, {}, 10.5);
-  },
-  frame(n) { T3.render(this.root, this.st, localT(this, n)); }});
-
-scene({id:'4', label:'Piezas', act:2, name:'Cada pieza, una tarea', bg:K.black, ink:K.ink, trans:'fade',
-  cap:'cada pieza, una tarea',
-  narr:['Cada pieza tiene una sola tarea.', 'El panel carga, y la batería de respaldo cubre la noche y los días nublados.',
-    'La membrana deja pasar el sonido y detiene el agua y el polvo.', 'Y el celular hace todo el cálculo.'],
-  build(r, tl, S) {
-    const st = S.st = {e: 0, ry: 0.35, rx: 0.12, cz: 20, gx: -0.4, ly: -0.2};
-    S.co = callouts(r, [['panel', 'Panel solar', '10 W, monocristalino', 'r'], ['phone', 'Celular en desuso', 'Android 5 o superior', 'r'],
-      ['bank', 'Batería de respaldo', '5.000 a 10.000 mAh', 'l'], ['mem', 'Membrana acústica', 'pasa el sonido, no el agua', 'r'],
-      ['lid', 'Caja IP65', 'contra lluvia y polvo', 'l', -170], ['trap', 'Trampa de feromona', 'atrae a la plaga al micrófono', 'l']]);
-    tl.to(st, {e: 1, duration: 2.4 * M, ease: 'power3.inOut'}, 0.4);
-    tl.to(st, {ry: -0.25, duration: 16, ease: 'none'}, 0);
-    S.co.forEach((c, i) => { tl.to(c.el, {opacity: 1, duration: 0.5}, 2.6 + i * 0.5); sfx(tl, 'tick', 2.6 + i * 0.5); });
-    tl.to(S.co.map(c => c.el), {opacity: 0, duration: 0.5}, 13.2);
-    tl.to(st, {e: 0, duration: 2 * M, ease: 'power3.inOut'}, 13.4);
-    sfx(tl, 'hit', 15.2, 0.6);
-    tl.set({}, {}, 16);
   },
   frame(n) { T3.render(this.root, this.st, localT(this, n)); placeCallouts(this.co); }});
 
-/* Acto 3: cómo escucha. */
-scene({id:'5', label:'Escucha', act:3, name:'¿Cómo escucha?', bg:K.black, ink:K.ink, trans:'fade',
+scene({id:'4', label:'Escucha', act:3, name:'Cómo escucha', bg:K.black, ink:K.ink, trans:'fade',
   cap:'cómo escucha',
-  narr:['¿Cómo escucha?', 'El micrófono graba dieciséis mil muestras por segundo.',
-    'Cada segundo de sonido se convierte en un espectrograma: una imagen de sesenta y cuatro bandas de frecuencia.',
-    'Un modelo abierto de Google, YAMNet, que distingue quinientas veintiuna clases de sonidos, la lee dentro del celular.',
-    'Encima entrenamos nuestras propias clases. Aquí reconoce un perro.'],
+  narr:['Graba el sonido, lo convierte en un espectrograma, y un modelo abierto de Google lo clasifica dentro del celular, sin internet.', 'Si confirma, avisa por SMS.'],
   build(r, tl, S) {
-    add(r, q3('Pregunta 1', '¿Cómo escucha?'));
+    add(r, q3('Cómo escucha', 'Del sonido al aviso'));
     const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
     const wv = add(r, `<canvas class="abs" width="1600" height="160" style="left:160px;top:340px;width:1600px;height:160px"></canvas>`);
     const sp = add(r, `<canvas class="abs" width="900" height="320" style="left:160px;top:560px;width:900px;height:320px;border-radius:14px"></canvas>`);
     S.wv = wv; S.sp = sp; gsap.set([wv, sp], {opacity: 0});
-    const l1 = txt(r, '16.000 muestras por segundo', 1560, 300, 'tagx');
-    const l2 = add(r, `<div class="abs" style="left:160px;top:900px;font:600 24px Urbanist;opacity:0">0,96 s | 64 bandas | 125 a 7.500 Hz</div>`);
-    const cls = [['Perro', 0.91], ['Ganado', 0.04], ['Lluvia', 0.03], ['Voces', 0.02]];
-    const box = add(r, `<div class="abs" style="left:1160px;top:560px;width:600px;display:grid;gap:22px">
-      <div style="font:700 26px Urbanist;letter-spacing:.14em;color:${K.lime}">YAMNET + CLASES POCKETNODE</div>
-      ${cls.map(([n]) => `<div class="row2"><span style="width:170px">${n}</span><div style="flex:1;background:rgba(255,255,255,.1);border-radius:9px"><div class="bar2" style="transform:scaleX(0)"></div></div><span class="v" style="width:90px;text-align:right">0,00</span></div>`).join('')}
+    const l2 = add(r, `<div class="abs" style="left:160px;top:900px;font:600 24px Urbanist;opacity:0">16 kHz | 0,96 s | 64 bandas | YAMNet, 521 clases</div>`);
+    const cls = [['Perro', 0.91], ['Vaca', 0.04], ['Lluvia', 0.03]];
+    const box = add(r, `<div class="abs" style="left:1160px;top:580px;width:600px;display:grid;gap:22px">
+      ${cls.map(([n]) => `<div class="row2"><span style="width:150px">${n}</span><div style="flex:1;background:rgba(255,255,255,.1);border-radius:9px"><div class="bar2" style="transform:scaleX(0)"></div></div><span class="v" style="width:90px;text-align:right">0,00</span></div>`).join('')}
       <div class="est">ilustrativo</div></div>`);
+    const sms = txt(r, 'SMS', 1460, 470, 'kt', `color:${K.lime}`);
     gsap.set(box, {opacity: 0});
-    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
-    tl.to(wv, {opacity: 1, duration: 0.6}, 2.2); show(tl, l1, 2.4);
-    tl.to(sp, {opacity: 1, duration: 0.6}, 5.2); tl.to(l2, {opacity: 0.7, duration: 0.6}, 5.6);
-    tl.to(box, {opacity: 1, duration: 0.6}, 10.5);
+    tl.to(qq, {opacity: 1, duration: 0.5, stagger: 0.1}, 0.1);
+    tl.to(wv, {opacity: 1, duration: 0.4}, 0.6);
+    tl.to(sp, {opacity: 1, duration: 0.4}, 2.2); tl.to(l2, {opacity: 0.7, duration: 0.4}, 2.4);
+    tl.to(box, {opacity: 1, duration: 0.4}, 4.4);
     qa(box, '.row2').forEach((row, i) => {
       const p = {v: 0};
-      tl.to(q(row, '.bar2'), {scaleX: cls[i][1], duration: 1.2, ease: 'power3.out'}, 15 + i * 0.15);
-      tl.to(p, {v: cls[i][1], duration: 1.2, ease: 'power3.out'}, 15 + i * 0.15);
+      tl.to(q(row, '.bar2'), {scaleX: cls[i][1], duration: 0.9, ease: 'power3.out'}, 4.6 + i * 0.1);
+      tl.to(p, {v: cls[i][1], duration: 0.9, ease: 'power3.out'}, 4.6 + i * 0.1);
       bind(q(row, '.v'), () => p.v.toFixed(2).replace('.', ','));
     });
-    tl.to(q(box, '.row2'), {color: K.lime, duration: 0.3}, 16.3); sfx(tl, 'chime', 16.3);
-    tl.set({}, {}, 20);
+    tl.to(q(box, '.row2'), {color: K.lime, duration: 0.3}, 5.6); sfx(tl, 'chime', 5.6);
+    show(tl, sms, 7.6, {d: 0.5}); sfx(tl, 'hit', 7.7, 0.6);
+    tl.set({}, {}, 9.4);
   },
   frame(n) {
     const t = localT(this, n);
@@ -403,235 +395,113 @@ scene({id:'5', label:'Escucha', act:3, name:'¿Cómo escucha?', bg:K.black, ink:
         let v = 0.08 + hn(ci, k) * 0.12;
         if (b > 0) for (let h = 1; h < 6; h++) v += b * Math.exp(-Math.pow(k - 9 * h, 2) / 3) * (1 - h * 0.13);
         v = Math.min(1, v);
-        const rr = Math.round(lerp(5, 203, v)), gg = Math.round(lerp(12, 219, v)), bb = Math.round(lerp(10, 124, v));
-        s.fillStyle = `rgb(${rr},${gg},${bb})`;
+        s.fillStyle = `rgb(${Math.round(lerp(5, 203, v))},${Math.round(lerp(12, 219, v))},${Math.round(lerp(10, 124, v))})`;
         s.fillRect(c * cw, 320 - (k + 1) * bh, cw + 0.5, bh + 0.5);
       }
     }
   }});
 
-scene({id:'6', label:'Polillas', act:3, name:'¿Y las polillas?', bg:K.paper, ink:K.dark, light:true, trans:'fade',
-  cap:'y las polillas',
-  narr:['¿Y las polillas?', 'Una polilla como el gusano cogollero bate las alas entre treinta y cincuenta veces por segundo.',
-    'Ese tono es tan grave que queda por debajo de lo que el modelo escucha, y muchos micrófonos de celular lo atenúan.',
-    'Oírla volar a varios metros no es confiable. Por eso no lo prometemos.'],
+scene({id:'5', label:'Animales', act:3, name:'Qué detecta', bg:K.black, ink:K.ink, trans:'fade',
+  cap:'qué detecta',
+  narr:['Perros, vacas y cerdos, con clases que el modelo ya trae.', 'Aves, tacuazín, mapache, zorro y cotusa se entrenan en el piloto.',
+    'Los insectos se cuentan en la trampa; oírlos a distancia sigue siendo investigación.'],
   build(r, tl) {
-    add(r, q3('Pregunta 2', '¿Y las polillas?'));
-    const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
-    const X = f => 220 + f * 1.45;
-    let h = '';
-    for (let k = 1; k <= 17; k++) { const f = 40 * k, hgt = 300 * Math.pow(0.84, k - 1); h += `<rect class="hb" x="${X(f) - 6}" y="${820 - hgt}" width="12" height="${hgt}" rx="4" fill="${k === 1 ? K.brown : K.green}"/>`; }
-    const sv = add(r, `<svg class="abs" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080">
-      <rect class="z1" x="${X(0)}" y="420" width="${X(125) - X(0)}" height="400" fill="${K.alarm}" opacity=".12"/>
-      <line x1="${X(0)}" y1="820" x2="${X(1000)}" y2="820" stroke="#111" stroke-width="3"/>
-      ${[0, 100, 200, 400, 600, 800, 1000].map(f => `<text x="${X(f)}" y="862" font-family="Urbanist" font-size="24" text-anchor="middle" fill="#555">${f}</text>`).join('')}
-      <text x="${X(1000)}" y="900" font-family="Urbanist" font-size="22" text-anchor="end" fill="#555">Hz</text>
-      ${h}</svg>`);
-    const z1 = q(sv, '.z1'), hb = qa(sv, '.hb');
-    gsap.set([z1, ...hb], {opacity: 0});
-    const f0 = txt(r, '30 a 50 Hz', X(40) + 40, 470, 'tagx', `color:${K.brown};transform-origin:0 50%`);
-    const hm = txt(r, 'hasta 17 armónicos', 1150, 560, 'tagx', `color:${K.green}`);
-    const zl = txt(r, 'bajo 125 Hz: el modelo no mira | bajo 100 Hz: el micrófono puede atenuar', 900, 960, 'ks', `font-size:28px;color:${K.alarm};opacity:1`);
-    const no = txt(r, 'Oírla volar a metros', 1260, 220, 'kt sm');
-    const st = add(r, `<div class="abs" style="left:950px;top:214px;width:620px;height:10px;background:${K.alarm};transform-origin:0 50%;transform:scaleX(0)"></div>`);
-    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
-    tl.to(hb[0], {opacity: 1, duration: 0.4}, 2.2); show(tl, f0, 2.4);
-    tl.to(hb.slice(1), {opacity: 1, duration: 0.25, stagger: 0.08}, 3.4); show(tl, hm, 4.2);
-    tl.to(z1, {opacity: 0.12, duration: 0.6}, 7.4); show(tl, zl, 7.6);
-    tl.to(hb[0], {opacity: 0.25, duration: 0.6}, 8.4);
-    show(tl, no, 12.2); tl.to(st, {scaleX: 1, duration: 0.5 * M, ease: 'snap'}, 13.4); sfx(tl, 'thud', 13.5);
-    tl.set({}, {}, 15.5);
+    const G3 = [['Alta confianza', K.lime, [['perro', 'Perro'], ['vaca', 'Vaca'], ['porcino', 'Cerdo']]],
+      ['A entrenar en el piloto', K.leaf, [['ave', 'Aves'], ['tacuazin', 'Tacuazín'], ['mapache', 'Mapache'], ['zorro', 'Zorro'], ['cotusa', 'Cotusa']]],
+      ['En la trampa, en investigación', '#e9c445', [['polilla', 'Polilla'], ['plaga_voladora', 'Plaga voladora'], ['gusano', 'Gusano'], ['escarabajo', 'Escarabajo'], ['broca', 'Broca']]]];
+    const rows = G3.map(([h, c, items], i) => add(r, `<div class="abs arow" style="left:150px;top:${120 + i * 310}px;width:1620px;color:${c}">
+      <div class="ah">${h}</div><div class="ag">${items.map(([k, n]) => `<div class="ai">${ani(k)}<span>${n}</span></div>`).join('')}</div></div>`));
+    rows.forEach(rw => gsap.set(qa(rw, '.ah, .ai'), {opacity: 0}));
+    [0.2, 3.4, 7.2].forEach((t, i) => {
+      tl.fromTo(q(rows[i], '.ah'), {opacity: 0, x: -30}, {opacity: 1, x: 0, duration: 0.4}, t);
+      tl.fromTo(qa(rows[i], '.ai'), {opacity: 0, y: 30, scale: 0.85}, {opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(1.6)', stagger: 0.12}, t + 0.2);
+      sfx(tl, 'tick', t + 0.2);
+    });
+    tl.set({}, {}, 11.5);
   }});
 
-scene({id:'7', label:'Trampa', act:3, name:'La trampa', bg:K.black, ink:K.ink, trans:'fade',
-  cap:'la trampa',
-  narr:['La solución es llevar la polilla al micrófono.', 'La feromona de la trampa atrae a los machos de la especie, y entran por el embudo, a pocos centímetros del celular.',
-    'Al amanecer, la cámara fotografía la trampa y cuenta las capturas.', 'Así funcionan ya trampas inteligentes en Kenia, Brasil y Colombia. Aquí, el cerebro es un celular reciclado.'],
-  build(r, tl, S) {
-    const st = S.st = {e: 0, ry: 0.5, rx: 0.15, cz: 17, ly: 0.4, moths: 0, ring: 0};
-    const t1 = txt(r, 'La solución: una trampa de feromona.', 960, 110, 'kt sm');
-    const n = add(r, `<div class="abs" style="left:1500px;top:640px"><div class="est" style="color:${K.lime}">capturas de esta noche</div><div class="kn">0</div><div class="est">ilustrativo</div></div>`);
-    gsap.set(n, {opacity: 0});
-    const flags = ['Kenia', 'Brasil', 'Colombia'].map((c, i) => txt(r, c, 760 + i * 200, 980, 'tagx'));
-    show(tl, t1, 0.3); hide(tl, t1, 1.3);
-    tl.to(st, {cz: 9.5, cy: -1.1, ly: -1.9, ry: -0.2, duration: 5 * M, ease: 'power2.inOut'}, 1.5);
-    tl.to(st, {moths: 1, duration: 1}, 3.5);
-    tl.to(st, {ring: 1, duration: 1}, 5);
-    tl.to(n, {opacity: 1, duration: 0.5}, 9.5);
-    counter(tl, q(n, '.kn'), 0, 14, 9.5, 3, v => String(Math.round(v)));
-    tl.to(st, {cz: 17, cy: 0, ly: 0.4, ry: 0.6, duration: 4 * M, ease: 'power2.inOut'}, 14);
-    flags.forEach((f, i) => { show(tl, f, 15 + i * 0.4); sfx(tl, 'tick', 15 + i * 0.4); });
-    tl.set({}, {}, 20);
-  },
-  frame(n) { T3.render(this.root, this.st, localT(this, n)); }});
-
-/* Acto 4: cómo decide. */
-scene({id:'8', label:'Falsas alarmas', act:4, name:'¿Cómo evita falsas alarmas?', bg:K.black, ink:K.ink, trans:'fade',
+scene({id:'6', label:'Falsas alarmas', act:4, name:'Falsas alarmas', bg:K.black, ink:K.ink, trans:'fade',
   cap:'falsas alarmas',
-  narr:['¿Cómo evita las falsas alarmas?', 'Ningún sonido aislado dispara un aviso: debe repetirse en tres de cinco ventanas.',
-    'Luego se revisa el contexto: la hora, la luz, la humedad y el modo del nodo.',
-    'El acelerómetro confirma si algo tocó el poste, y un nodo vecino puede confirmar lo mismo.',
-    'Y cada respuesta del productor le enseña al nodo qué era real.'],
+  narr:['Solo avisa si el sonido se repite, el contexto encaja, el poste se mueve o un vecino lo confirma.'],
   build(r, tl) {
-    add(r, q3('Pregunta 3', '¿Cómo evita falsas alarmas?'));
+    add(r, q3('Antes de avisar', 'Cuatro filtros'));
     const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
-    const G4 = [['3/5', 'Persistencia', 'tres de cinco ventanas'], ['', 'Contexto', 'hora, luz, humedad, modo'], ['', 'Movimiento', 'acelerómetro en el poste'], ['2', 'Vecino', 'otro nodo lo confirma']];
+    const G4 = [['Persistencia', '3 de 5 ventanas'], ['Contexto', 'hora, luz, humedad'], ['Movimiento', 'acelerómetro'], ['Vecino', 'otro nodo lo confirma']];
     const xs = [330, 690, 1050, 1410];
-    const gates = G4.map((g, i) => add(r, `<div class="gate" style="left:${xs[i] - 115}px;top:430px"><div class="c">${i + 1}</div><p>${g[1]}</p><small>${g[2]}</small></div>`));
+    const gates = G4.map((g, i) => add(r, `<div class="gate" style="left:${xs[i] - 115}px;top:430px"><div class="c">${i + 1}</div><p>${g[0]}</p><small>${g[1]}</small></div>`));
     gsap.set(gates, {opacity: 0});
     const line = add(r, `<div class="abs" style="left:330px;top:489px;width:1440px;height:3px;background:rgba(255,255,255,.18);transform-origin:0 50%;transform:scaleX(0)"></div>`);
     const out = txt(r, 'Aviso', 1760, 490, 'kt sm', `color:${K.lime}`);
     const dot = add(r, `<div class="abs" style="left:250px;top:478px;width:24px;height:24px;border-radius:50%;background:${K.lime};box-shadow:0 0 24px ${K.lime};opacity:0"></div>`);
-    const fb = txt(r, 'Respuesta 1 o 2 del productor: el nodo aprende', 960, 860, 'ks');
-    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
-    tl.to(line, {scaleX: 1, duration: 1.2 * M, ease: 'power2.out'}, 1.6);
-    gates.forEach((g, i) => { show(tl, g, 2 + i * 0.3); });
-    tl.to(dot, {opacity: 1, duration: 0.2}, 3.6);
-    const T0 = [3.8, 9, 14, 16.5];
+    tl.to(qq, {opacity: 1, duration: 0.5, stagger: 0.1}, 0.1);
+    tl.to(line, {scaleX: 1, duration: 0.8 * M, ease: 'power2.out'}, 0.3);
+    gates.forEach((g, i) => show(tl, g, 0.5 + i * 0.2, {d: 0.5}));
+    tl.to(dot, {opacity: 1, duration: 0.2}, 1.4);
     gates.forEach((g, i) => {
-      tl.to(dot, {left: xs[i] - 12, duration: 1 * M, ease: 'power2.inOut'}, T0[i]);
-      tl.to(q(g, '.c'), {borderColor: K.lime, color: K.lime, duration: 0.3}, T0[i] + 0.9);
-      sfx(tl, 'tick', T0[i] + 0.9);
+      const t = 1.6 + i * 1.1;
+      tl.to(dot, {left: xs[i] - 12, duration: 0.6 * M, ease: 'power2.inOut'}, t);
+      tl.to(q(g, '.c'), {borderColor: K.lime, color: K.lime, duration: 0.25}, t + 0.55);
+      sfx(tl, 'tick', t + 0.55);
     });
-    tl.to(dot, {left: 1690, duration: 0.8, ease: 'power2.in'}, 18.4);
-    show(tl, out, 19); sfx(tl, 'chime', 19);
-    show(tl, fb, 20.5);
-    tl.set({}, {}, 24);
+    tl.to(dot, {left: 1690, duration: 0.5, ease: 'power2.in'}, 6.1);
+    show(tl, out, 6.5, {d: 0.5}); sfx(tl, 'chime', 6.5);
+    tl.set({}, {}, 7.6);
   }});
 
-function fieldLabels(r, mode, spacing) {
-  const ns = T3.fieldNodes(mode);
-  const gaps = ns.slice(1).map(() => { const e = add(r, `<div class="tagx" style="color:#fff;background:rgba(5,8,7,.55)">${spacing}</div>`); gsap.set(e, {opacity: 0, xPercent: -50, yPercent: -50}); return e; });
-  const cov = add(r, `<div class="abs" style="text-align:center;color:#CBDB7C"><div style="font:800 46px Urbanist">30 m</div><div class="est" style="opacity:.8">cobertura supuesta, a medir</div></div>`);
-  gsap.set(cov, {opacity: 0, xPercent: -50, yPercent: -100});
-  return {ns, gaps, cov};
-}
-function placeField(mode, L) {
-  L.gaps.forEach((e, i) => { const a = L.ns[i], b = L.ns[i + 1], m = a.clone().add(b).multiplyScalar(0.5); m.y += 3; const p = T3.fieldAt(mode, m); e.style.left = p.x + 'px'; e.style.top = p.y + 'px'; });
-  const c = L.ns[2].clone(); c.y += 15.5; const p = T3.fieldAt(mode, c); L.cov.style.left = p.x + 'px'; L.cov.style.top = p.y + 'px';
-}
-
-scene({id:'8a', label:'Maizal', act:4, name:'¿Cuántos nodos? Maizal', bg:K.black, ink:K.ink, trans:'fade',
-  cap:'cuántos nodos',
-  narr:['¿Cuántos nodos necesita una finca?', 'En un maizal plano, uno cada veinte a veinticinco metros.',
-    'Sus zonas de escucha se traslapan: si un nodo falla, el vecino cubre su terreno.'],
+scene({id:'7', label:'Hectárea', act:4, name:'Seis nodos por hectárea', bg:K.black, ink:K.ink, trans:'fade',
+  cap:'seis por hectárea',
+  narr:['Seis nodos por hectárea, a unos cuarenta y un metros. Con treinta metros de escucha, la cobertura queda justa, sin traslape.',
+    'En ladera siguen las curvas de nivel, y el aviso salta hasta el nodo con señal.'],
   build(r, tl, S) {
-    S.st = {mode: 'flat', cx: -10, cy: 48, cz: 78, lx: 0, ly: 0, lz: 0, domes: 0, pulse: 0};
-    add(r, q3('Pregunta 4', '¿Cuántos nodos?'));
-    const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
-    S.L = fieldLabels(r, 'flat', '20 a 25 m');
-    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
-    tl.to(S.st, {cx: 8, cy: 30, cz: 62, duration: 13, ease: 'power1.inOut'}, 0);
-    tl.to(S.L.gaps, {opacity: 1, duration: 0.4, stagger: 0.25}, 3.2);
-    tl.to(S.st, {domes: 1, duration: 2.5, ease: 'power2.out'}, 6.5);
-    tl.to(S.L.cov, {opacity: 1, duration: 0.5}, 8.5); sfx(tl, 'chime', 8.5);
-    tl.set({}, {}, 12.5);
-  },
-  frame() { T3.field(this.root, this.st); placeField('flat', this.L); }});
-
-scene({id:'8b', label:'Ladera', act:4, name:'Finca de café en ladera', bg:K.black, ink:K.ink, trans:'fade',
-  cap:'finca en ladera',
-  narr:['En una finca de café en ladera, los nodos siguen las curvas de nivel, porque el propio cerro tapa el sonido.',
-    'Cuando uno detecta algo, el aviso puede saltar de nodo en nodo hasta el que tiene señal.',
-    'Los treinta metros de cobertura son un supuesto que se mide en el piloto: valen para perros, ganado y voces. Para las polillas, manda la trampa.'],
-  build(r, tl, S) {
-    S.st = {mode: 'slope', cx: -70, cy: 20, cz: 70, lx: -5, ly: 2, lz: 0, domes: 0, pulse: 0};
-    const t1 = txt(r, 'Finca de café en ladera', 960, 110, 'kt sm');
-    const t2 = txt(r, 'curvas de nivel', 1640, 980, 'tagx', 'color:#fff');
-    S.L = fieldLabels(r, 'slope', '24 m');
-    show(tl, t1, 0.3); show(tl, t2, 2.5);
-    tl.to(S.st, {cx: 25, cy: 34, cz: 82, lx: 6, ly: 6, duration: 26, ease: 'power1.inOut'}, 0);
-    tl.to(S.st, {domes: 1, duration: 3, ease: 'power2.out'}, 3.5);
-    tl.to(S.L.gaps, {opacity: 1, duration: 0.4, stagger: 0.25}, 5);
-    tl.to(S.st, {pulse: 1, duration: 4.5, ease: 'none'}, 9.5);
-    [0, 1, 2, 3].forEach(i => sfx(tl, 'tick', 9.5 + i * 1.125));
-    sfx(tl, 'chime', 14);
-    tl.to(S.L.cov, {opacity: 1, duration: 0.5}, 16);
-    tl.set({}, {}, 26);
+    S.st = {mode: 'slope', cx: -80, cy: 40, cz: 95, lx: -5, ly: 2, lz: 0, domes: 0, pulse: 0};
+    const t1 = txt(r, '6 nodos por hectárea', 960, 110, 'kt sm');
+    S.L = fieldLabels(r, 'slope', '41 m');
+    show(tl, t1, 0.2, {d: 0.6});
+    tl.to(S.st, {cx: 30, cy: 52, cz: 105, lx: 6, ly: 6, duration: 13, ease: 'power1.inOut'}, 0);
+    tl.to(S.L.gaps, {opacity: 1, duration: 0.3, stagger: 0.2}, 1.2);
+    tl.to(S.st, {domes: 1, duration: 1.8, ease: 'power2.out'}, 2.6);
+    tl.to(S.L.cov, {opacity: 1, duration: 0.4}, 4.2);
+    tl.to(S.st, {pulse: 1, duration: 3, ease: 'none'}, 8.2);
+    [0, 1, 2].forEach(i => sfx(tl, 'tick', 8.2 + i));
+    sfx(tl, 'chime', 11.2);
+    tl.set({}, {}, 12);
   },
   frame() { T3.field(this.root, this.st); placeField('slope', this.L); }});
 
-scene({id:'9', label:'Sin internet', act:4, name:'¿Y sin internet?', bg:K.black, ink:K.ink, trans:'fade',
-  cap:'sin internet',
-  narr:['¿Y sin internet?', 'Todo el cálculo ocurre dentro del celular, con TensorFlow Lite, que todavía funciona en Android cinco.',
-    'El aviso sale como SMS: solo necesita señal celular, no datos móviles.',
-    'Google Play solo permite enviar SMS a la app de mensajes del teléfono. Por eso la app del nodo la instala directamente la cooperativa.'],
-  build(r, tl, S) {
-    const st = S.st = {e: 0, ry: -0.5, rx: 0.1, cz: 9, cy: 0.5, ly: 0.1, gx: -1.6, noTrap: true, ring: 0, screen: 'listen'};
-    add(r, `<div class="kq" style="left:1040px;top:250px">Pregunta 5</div><div class="kt md" style="left:1040px;top:290px">¿Y sin internet?</div>`);
-    const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
-    const rows = [['Modelo en el celular', 'LiteRT, desde Android 5'], ['Aviso por SMS', 'solo señal celular'], ['App del nodo fuera de Play', 'la instala la cooperativa']];
-    const items = rows.map(([a, b], i) => add(r, `<div class="abs" style="left:1040px;top:${470 + i * 130}px"><div style="font:800 42px Urbanist">${a}</div><div style="font:500 28px Urbanist;opacity:.6">${b}</div></div>`));
-    gsap.set(items, {opacity: 0});
-    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
-    tl.to(st, {ry: 0.25, duration: 18, ease: 'none'}, 0);
-    show(tl, items[0], 2.6);
-    show(tl, items[1], 9); tl.set(st, {screen: 'sms'}, 9); tl.to(st, {ring: 1, duration: 0.6}, 9); sfx(tl, 'chime', 9.2);
-    show(tl, items[2], 13.5);
-    tl.set({}, {}, 19);
-  },
-  frame(n) { T3.render(this.root, this.st, localT(this, n)); }});
-
-/* Acto 5: lo que puede y lo que no. */
-scene({id:'10', label:'Energía', act:5, name:'¿Le alcanza la energía?', bg:K.paper, ink:K.dark, light:true, trans:'fade',
-  cap:'energía',
-  narr:['¿Le alcanza la energía?', 'Según nuestra estimación, el nodo consume entre diecinueve y treinta y seis vatios hora al día.',
-    'Con casi seis horas de sol pico, un panel de diez vatios entrega unos treinta y cinco, si se aprovecha el sesenta por ciento.',
-    'En el peor caso queda justo. Por eso escucha por ciclos, lleva batería de respaldo y, si la medición lo pide, sube a quince vatios.'],
+scene({id:'8', label:'Precio', act:5, name:'Precio por nodo', bg:K.paper, ink:K.dark, light:true, trans:'fade',
+  cap:'precio',
+  narr:['Cada nodo cuesta entre treinta y ocho y sesenta y siete dólares, con el celular donado.', 'Seis por hectárea: entre doscientos veintiocho y trescientos noventa y nueve dólares, sin la trampa.'],
   build(r, tl) {
-    add(r, q3('Pregunta 6', '¿Le alcanza la energía?'));
+    add(r, q3('Precio por nodo', 'USD 38 a 67'));
     const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
-    const sx = 18;
-    const rows = [['Batería del celular', 11.5, 11.5, '11,5 Wh', '#9a9a96'], ['Consumo por día', 19, 36, '19 a 36 Wh', K.brown], ['Panel de 10 W por día', 35, 35, 'unos 35 Wh', K.green]];
-    const els = rows.map(([n, a, b, l, c], i) => add(r, `<div class="abs" style="left:160px;top:${420 + i * 150}px;width:1600px">
-      <div style="font:700 32px Urbanist;margin-bottom:14px">${n} <span style="font-weight:500;opacity:.55">${l}</span></div>
-      <div style="position:relative;height:44px;background:rgba(0,0,0,.06);border-radius:22px;width:${40 * sx}px">
-        <div class="f" style="position:absolute;left:0;top:0;height:44px;border-radius:22px;background:${c};width:${a * sx}px;transform-origin:0 50%;transform:scaleX(0)"></div>
-        ${b > a ? `<div class="g" style="position:absolute;left:0;top:0;height:44px;border-radius:22px;background:${c};opacity:.3;width:${b * sx}px;transform-origin:0 50%;transform:scaleX(0)"></div>` : ''}
-      </div></div>`));
-    gsap.set(els, {opacity: 0});
-    const calc = txt(r, '10 W x 5,8 h x 0,6 = 34,8 Wh', 1400, 735, 'tagx', `color:${K.green}`);
-    const note = add(r, `<div class="abs est" style="left:160px;top:900px;opacity:0">estimado: consumo del equipo sin medir; sol pico de NASA POWER; 0,6 es una suposición de pérdidas</div>`);
-    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
-    els.forEach((e, i) => {
-      const t = [2.4, 2.4, 9.5][i];
-      show(tl, e, t);
-      tl.to(q(e, '.f'), {scaleX: 1, duration: 1.2, ease: 'power3.out'}, t + 0.3);
-      if (q(e, '.g')) tl.to(q(e, '.g'), {scaleX: 1, duration: 1.4, ease: 'power3.out'}, t + 0.6);
-    });
-    show(tl, calc, 10.5);
-    tl.to(note, {opacity: 0.55, duration: 0.6}, 11);
-    tl.to(q(els[1], '.g'), {opacity: 0.6, duration: 0.3, yoyo: true, repeat: 3}, 17.5); sfx(tl, 'thud', 17.5);
-    tl.set({}, {}, 23);
+    const items = [['Celular', '0', 0, 0], ['Panel 10 W USB', '12 a 20', 12, 20], ['Batería 10.000 mAh', '12 a 25', 12, 25], ['Caja IP67', '7 a 9', 7, 9], ['Micrófono externo', '2 a 5', 2, 5], ['Cables, aislamiento, SIM', '5 a 7,5', 5, 7.5]];
+    const sx = 26;
+    const rows = items.map(([n, l, a, b], i) => add(r, `<div class="abs" style="left:160px;top:${370 + i * 92}px;display:flex;align-items:center;gap:28px">
+      <div style="width:420px;font:700 32px Urbanist">${n}</div>
+      <div style="position:relative;width:${25 * sx}px;height:30px"><div class="f" style="position:absolute;left:0;top:0;height:30px;border-radius:15px;background:${K.green};width:${Math.max(a, 0.4) * sx}px;transform-origin:0 50%;transform:scaleX(0)"></div>
+      <div class="g" style="position:absolute;left:0;top:0;height:30px;border-radius:15px;background:${K.green};opacity:.3;width:${Math.max(b, 0.4) * sx}px;transform-origin:0 50%;transform:scaleX(0)"></div></div>
+      <div style="font:600 30px Urbanist;opacity:.7">${i === 0 ? 'donado' : 'USD ' + l}</div></div>`));
+    gsap.set(rows, {opacity: 0});
+    const ha = add(r, `<div class="abs" style="left:1380px;top:120px;width:400px;padding:30px;border-radius:24px;background:${K.green};color:#fff">
+      <div class="est" style="opacity:.8;color:${K.lime}">6 nodos por hectárea</div><div style="font:800 64px/1.1 Urbanist;margin-top:10px">USD 228<br>a 399</div><div style="font:500 22px Urbanist;opacity:.75;margin-top:14px">sin la trampa, por cotizar</div></div>`);
+    const note = add(r, `<div class="abs est" style="left:160px;top:960px;opacity:0">referencias de tienda consultadas el 16-10-2026; detalle y fuentes en docs/costos.md</div>`);
+    gsap.set(ha, {opacity: 0});
+    tl.to(qq, {opacity: 1, duration: 0.5, stagger: 0.1}, 0.1);
+    rows.forEach((e, i) => { show(tl, e, 0.6 + i * 0.3, {d: 0.4}); tl.to(qa(e, '.f, .g'), {scaleX: 1, duration: 0.6, ease: 'power3.out'}, 0.8 + i * 0.3); });
+    tl.to(note, {opacity: 0.55, duration: 0.4}, 2.8);
+    show(tl, ha, 5.2, {d: 0.6}); sfx(tl, 'chime', 5.4);
+    tl.set({}, {}, 9.6);
   }});
 
-scene({id:'11', label:'Alcance', act:5, name:'¿Qué detecta?', bg:K.black, ink:K.ink, trans:'fade',
-  cap:'qué detecta',
-  narr:['¿Qué detecta?', 'Con alta confianza: perros, ganado extraviado, personas y vehículos, y el conteo de polillas en la trampa.',
-    'A validar en el piloto: aves de día y animales casi silenciosos, como el tacuazín.',
-    'Y fuera de alcance, lo decimos claro: polillas volando a distancia y zompopos.'],
-  build(r, tl) {
-    add(r, q3('Pregunta 7', '¿Qué detecta?'));
-    const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
-    const C3 = [['Alta confianza', K.lime, ['Perros ferales', 'Ganado extraviado', 'Personas y vehículos', 'Polillas contadas en trampa']],
-      ['A validar', K.leaf, ['Palomas y zanates, de día', 'Tacuazín, mapache, zorro, cotusa', 'Broca del café en trampa']],
-      ['Fuera de alcance', '#ff8a7a', ['Polillas volando a distancia', 'Zompopos']]];
-    const cols = C3.map(([h, c, it], i) => add(r, `<div class="col3" style="left:${160 + i * 560}px;color:${c}"><h3>${h}</h3>${it.map(x => `<p style="color:#fff">${x}</p>`).join('')}</div>`));
-    cols.forEach(c => gsap.set(qa(c, 'h3, p'), {opacity: 0}));
-    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
-    [2.2, 11, 16.5].forEach((t, i) => { tl.fromTo(qa(cols[i], 'h3, p'), {opacity: 0, y: 20}, {opacity: 1, y: 0, duration: 0.5, stagger: 0.25}, t); sfx(tl, 'tick', t); });
-    tl.set({}, {}, 21);
-  }});
-
-scene({id:'12', label:'Cierre', act:6, name:'Cierre', bg:'#000', ink:K.ink, trans:'fade',
+scene({id:'9', label:'Cierre', act:6, name:'Cierre', bg:'#000', ink:K.ink, trans:'fade',
   cap:'cierre',
-  narr:['pocketNode convierte un celular olvidado en el oído de la parcela.', 'Escucha. Detecta. Protege.'],
+  narr:['Escucha. Detecta. Protege.'],
   build(r, tl) {
     const lg = add(r, `<div class="abs" style="left:960px;top:440px;width:460px">__LOGO_BLANCO__</div>`);
     gsap.set(lg, {xPercent: -50, yPercent: -50, opacity: 0});
     const w = ['Escucha.', 'Detecta.', 'Protege.'].map((x, i) => txt(r, x, 660 + i * 300, 820, 'kt sm', i === 2 ? `color:${K.lime}` : ''));
-    tl.fromTo(lg, {opacity: 0, scale: 0.94}, {opacity: 1, scale: 1, duration: 2 * M, ease: 'power2.out'}, 0.3);
-    w.forEach((e, i) => { show(tl, e, 4.2 + i * 0.7); sfx(tl, 'tick', 4.2 + i * 0.7); });
-    sfx(tl, 'bell3', 6.4);
-    tl.set({}, {}, 9);
+    tl.fromTo(lg, {opacity: 0, scale: 0.94}, {opacity: 1, scale: 1, duration: 1.2 * M, ease: 'power2.out'}, 0.1);
+    w.forEach((e, i) => { show(tl, e, 0.6 + i * 0.4, {d: 0.5}); sfx(tl, 'tick', 0.6 + i * 0.4); });
+    sfx(tl, 'bell3', 1.8);
+    tl.set({}, {}, 4.2);
   }});

@@ -8,6 +8,12 @@ logo = (D.parent.parent / "assets" / "logo" / "logo-blanco.svg").read_text(encod
 logo = re.sub(r"<\?xml.*?\?>|<!--.*?-->", "", logo, flags=re.S).strip()
 logo = logo.replace("<svg ", '<svg class="logo" ', 1)
 escenas = (S / "escenas.js").read_text(encoding="utf-8").replace("__LOGO_BLANCO__", logo.replace("`", "").replace("\n", " "))
+import json
+ani = {}
+for f in sorted((D.parent.parent / "assets" / "animales").glob("*.svg")):
+    svg = re.sub(r"<\?xml.*?\?>|<!--.*?-->", "", f.read_text(encoding="utf-8"), flags=re.S).strip()
+    ani[f.stem.replace("-", "_")] = re.sub(r'\s(id|data-name)="[^"]*"', "", svg, count=2).replace("\n", " ")
+escenas = "const ANI = " + json.dumps(ani, ensure_ascii=False) + ";\n" + escenas
 html = ((S / "cabecera.html").read_text(encoding="utf-8")
         + "<style>\n" + (S / "keynote.css").read_text(encoding="utf-8") + "</style>\n<script>\n"
         + (S / "nucleo.js").read_text(encoding="utf-8") + "\n" + escenas + "\n"

@@ -5,7 +5,7 @@ const UI = {userPaused: false, started: false, cur: -1, waiting: -1, rtok: 0, en
 const RENDER = window.__RENDER__ || null;
 if (RENDER) document.documentElement.classList.add('render');
 const master = gsap.timeline({paused: true});
-const voiceSpan = i => { const d = RENDER && RENDER.voz && RENDER.voz[i]; return d ? 0.3 + d.reduce((a, b) => a + b, 0) + 0.42 * (d.length - 1) + 0.9 : 0; };
+const voiceSpan = i => { const d = RENDER && RENDER.voz && RENDER.voz[i]; return d ? 0.3 + d.reduce((a, b) => a + b, 0) + 0.42 * (d.length - 1) + 0.35 : 0; };
 gsap.set(wipe, {x: -1920});
 
 function transition(i, tr, T) {
@@ -47,7 +47,7 @@ SC.forEach((s, i) => {
   const cover = {cut: 0, rgb: 0, wipe: 0.28, whip: 0.2, fade: 0}[tr];
   s.start = T;
   s.cover = cover;
-  let len = Math.ceil((cover + Math.max(tl.duration(), 2, voiceSpan(i)) + B) / B) * B;
+  let len = Math.ceil((cover + Math.max(tl.duration(), 2, voiceSpan(i))) / B) * B;
   transition(i, tr, T);
   master.set(s.root, {autoAlpha: 1}, T + cover);
   if (i > 0) master.set(SC[i - 1].root, {autoAlpha: 0, x: 0}, T + cover);
