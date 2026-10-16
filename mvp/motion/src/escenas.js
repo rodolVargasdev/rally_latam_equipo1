@@ -16,7 +16,7 @@ const T3 = (() => {
   const P = {};
   const part = (name, obj, home, dir) => { obj.userData = {home: new THREE.Vector3(...home), dir: new THREE.Vector3(...dir)}; P[name] = obj; G.add(obj); return obj; };
 
-  part('post', box(0.5, 8, 0.5, mat(0x84451e, {roughness: 0.9})), [0, -1.4, -0.62], [0, 0, -0.8]);
+  part('post', box(0.5, 8, 0.5, mat(0x84441a, {roughness: 0.9})), [0, -1.4, -0.62], [0, 0, -0.8]);
   const shell = new THREE.Group();
   const gray = mat(0xdfe3e1);
   [[1.7, 2.2, 0.08, 0, 0, -0.3], [0.08, 2.2, 0.6, -0.81, 0, 0], [0.08, 2.2, 0.6, 0.81, 0, 0], [1.7, 0.08, 0.6, 0, 1.06, 0], [1.7, 0.08, 0.6, 0, -1.06, 0]]
@@ -26,7 +26,7 @@ const T3 = (() => {
   part('lid', box(1.72, 2.22, 0.06, mat(0xbfd3cf, {transparent: true, opacity: 0.32, roughness: 0.1})), [0, 0, 0.33], [0, 0, 2.6]);
   const ph = new THREE.Group();
   ph.add(box(0.78, 1.5, 0.09, mat(0x161616, {roughness: 0.3})));
-  const scr = box(0.7, 1.38, 0.01, mat(0x0f4a3a, {emissive: 0x0f4a3a, emissiveIntensity: 0.9})); scr.position.z = 0.05; ph.add(scr);
+  const scr = box(0.7, 1.38, 0.01, mat(0x074736, {emissive: 0x074736, emissiveIntensity: 0.9})); scr.position.z = 0.05; ph.add(scr);
   const dot = new THREE.Mesh(new THREE.CircleGeometry(0.12, 24), mat(0xcbdb7c, {emissive: 0xcbdb7c, emissiveIntensity: 1})); dot.position.set(0, 0.25, 0.056); ph.add(dot);
   part('phone', ph, [0, 0.22, 0.08], [1.9, 0.3, 1.6]);
   part('bank', box(0.62, 0.95, 0.18, mat(0x8a9399, {metalness: 0.3})), [0, -0.5, -0.14], [-1.9, -0.2, 1.1]);
@@ -199,7 +199,7 @@ scene({id:'2.3', act:2, name:'Escucha, siente y decide', bg:C.blk, ink:C.crm, tr
   frame() { T3.render(this.root, this.st); }});
 
 /* Acto 3: la red. */
-scene({id:'3.1', act:3, name:'Una red que se confirma sola', bg:'#D1E3B3', ink:'#0F4A3A', light:true, trans:'wipe',
+scene({id:'3.1', act:3, name:'Una red que se confirma sola', bg:'#D1E3B3', ink:'#074736', light:true, trans:'wipe',
   cap:'una red que se confirma sola',
   narr:['Varios nodos cubren la finca y se hablan entre ellos.',
     'Si dos vecinos oyen la misma plaga, la alerta se confirma: aquí, sesenta y cuatro eventos por hora.',
@@ -209,20 +209,20 @@ scene({id:'3.1', act:3, name:'Una red que se confirma sola', bg:'#D1E3B3', ink:'
     const E = [[0, 1], [1, 2], [2, 3], [2, 4], [3, 4], [4, 5], [1, 5]];
     const ant = [1560, 860];
     const sv = add(r, `<svg class="abs" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080">
-      ${E.map(([a, b]) => `<line class="ed" x1="${N[a][0]}" y1="${N[a][1]}" x2="${N[b][0]}" y2="${N[b][1]}" stroke="#0F4A3A" stroke-width="5" stroke-dasharray="10 12"/>`).join('')}
-      <path class="rel" d="M${N[3][0]} ${N[3][1]} L${N[4][0]} ${N[4][1]} L${ant[0]} ${ant[1]}" fill="none" stroke="#84451E" stroke-width="12" stroke-linecap="round" stroke-dasharray="1200" stroke-dashoffset="1200"/>
+      ${E.map(([a, b]) => `<line class="ed" x1="${N[a][0]}" y1="${N[a][1]}" x2="${N[b][0]}" y2="${N[b][1]}" stroke="#074736" stroke-width="5" stroke-dasharray="10 12"/>`).join('')}
+      <path class="rel" d="M${N[3][0]} ${N[3][1]} L${N[4][0]} ${N[4][1]} L${ant[0]} ${ant[1]}" fill="none" stroke="#84441A" stroke-width="12" stroke-linecap="round" stroke-dasharray="1200" stroke-dashoffset="1200"/>
       <path d="M${ant[0] - 40} ${ant[1] + 120} L${ant[0]} ${ant[1]} L${ant[0] + 40} ${ant[1] + 120} Z" fill="none" stroke="#42271A" stroke-width="8" class="an"/>
-      ${N.map(([x, y], i) => `<g class="nd"><circle class="hl" cx="${x}" cy="${y}" r="40" fill="none" stroke="#84451E" stroke-width="6" opacity="0"/><circle class="cr" cx="${x}" cy="${y}" r="34" fill="#0F4A3A" stroke="#fff" stroke-width="6"/></g>`).join('')}
+      ${N.map(([x, y], i) => `<g class="nd"><circle class="hl" cx="${x}" cy="${y}" r="40" fill="none" stroke="#84441A" stroke-width="6" opacity="0"/><circle class="cr" cx="${x}" cy="${y}" r="34" fill="#074736" stroke="#fff" stroke-width="6"/></g>`).join('')}
     </svg>`);
     const nds = qa(sv, '.nd'), eds = qa(sv, '.ed'), hl = qa(sv, '.hl'), cr = qa(sv, '.cr');
-    const ns = add(r, `<div class="abs M" style="left:1440px;top:150px;font:800 26px 'JetBrains Mono';color:#84451E">SIN SEÑAL</div>`);
+    const ns = add(r, `<div class="abs M" style="left:1440px;top:150px;font:800 26px 'JetBrains Mono';color:#84441A">SIN SEÑAL</div>`);
     const cnt = add(r, `<div class="abs" style="left:150px;top:840px"><div class="M" style="font:800 120px 'JetBrains Mono'"><span class="n">0</span><span style="font-size:48px"> / HORA</span></div><div class="lbl">ilustrativo</div></div>`);
     gsap.set([ns, cnt, q(sv, '.an')], {opacity: 0});
     tl.fromTo(nds, {scale: 0, transformOrigin: '50% 50%'}, {scale: 1, duration: 0.4 * M, ease: 'back.out(1.7)', stagger: 0.15}, 0.2);
     nds.forEach((_, i) => sfx(tl, 'tick', 0.2 + i * 0.15));
     tl.fromTo(eds, {opacity: 0}, {opacity: 0.7, duration: 0.4, stagger: 0.12}, 1.2);
     tl.to(q(sv, '.an'), {opacity: 1, duration: 0.3}, 1.8);
-    tl.to([cr[3], cr[4]], {fill: '#84451E', duration: 0.2}, 4.2);
+    tl.to([cr[3], cr[4]], {fill: '#84441A', duration: 0.2}, 4.2);
     tl.fromTo([hl[3], hl[4]], {attr: {r: 40}, opacity: 1}, {attr: {r: 120}, opacity: 0, duration: 1, repeat: 3, ease: 'power2.out'}, 4.2);
     tl.to(cnt, {opacity: 1, duration: 0.3}, 4.6);
     counter(tl, q(cnt, '.n'), 0, 64, 4.6, 2.2, v => String(Math.round(v)));
@@ -232,7 +232,7 @@ scene({id:'3.1', act:3, name:'Una red que se confirma sola', bg:'#D1E3B3', ink:'
     tl.set({}, {}, 13);
   }});
 
-scene({id:'3.2', act:3, name:'Cultivo y ganado', bg:'#84451E', ink:C.crm, trans:'whip',
+scene({id:'3.2', act:3, name:'Cultivo y ganado', bg:'#84441A', ink:C.crm, trans:'whip',
   cap:'cultivo y ganado',
   narr:['En modo cultivo, las voces y los motores se descartan como ruido.',
     'En modo ganado, esas mismas voces de noche junto al corral son la alarma.'],
@@ -267,8 +267,8 @@ scene({id:'4.1', act:4, name:'Un aviso que cualquiera entiende', bg:C.blk, ink:C
       <div style="height:100%;border-radius:40px;background:#FFFFFF;color:#42271A;display:flex;flex-direction:column;gap:20px;padding:30px 26px;box-sizing:border-box;font-family:'JetBrains Mono',monospace">
         <div style="font:700 18px 'JetBrains Mono';opacity:.6">SMS | 1:32</div>
         <div style="background:#D1E3B3;border-radius:22px;padding:22px;font:700 25px/1.45 'JetBrains Mono'"><b style="color:#C0392B">VAYA A VER</b><br><span class="ty"></span></div>
-        <div class="bt" style="margin-top:auto;background:#0F4A3A;color:#fff;border-radius:18px;padding:24px;text-align:center;font:800 26px 'JetBrains Mono'">1 YA FUI A VER</div>
-        <div class="bt" style="background:#D1E3B3;color:#0F4A3A;border-radius:18px;padding:24px;text-align:center;font:800 26px 'JetBrains Mono'">2 NO ERA NADA</div>
+        <div class="bt" style="margin-top:auto;background:#074736;color:#fff;border-radius:18px;padding:24px;text-align:center;font:800 26px 'JetBrains Mono'">1 YA FUI A VER</div>
+        <div class="bt" style="background:#D1E3B3;color:#074736;border-radius:18px;padding:24px;text-align:center;font:800 26px 'JetBrains Mono'">2 NO ERA NADA</div>
       </div></div>`);
     const w = kw(r, 'SMS', {size: 300, x: 560, y: 400, color: C.lime});
     const s2 = kw(r, 'SIN INTERNET', {size: 92, x: 560, y: 640});
@@ -285,7 +285,7 @@ scene({id:'4.1', act:4, name:'Un aviso que cualquiera entiende', bg:C.blk, ink:C
   }});
 
 /* Acto 5: cierre. */
-scene({id:'5', act:5, name:'Escucha, confirma, avisa, aprende', bg:'#CBDB7C', ink:'#0F4A3A', light:true, trans:'wipe',
+scene({id:'5', act:5, name:'Escucha, confirma, avisa, aprende', bg:'#CBDB7C', ink:'#074736', light:true, trans:'wipe',
   cap:'pocketnode',
   narr:['Escucha, confirma, avisa y aprende de cada respuesta.',
     'pocketNode: un celular olvidado que cuida la cosecha y el ganado.'],
@@ -293,10 +293,10 @@ scene({id:'5', act:5, name:'Escucha, confirma, avisa, aprende', bg:'#CBDB7C', in
     const steps = ['ESCUCHA', 'CONFIRMA', 'AVISA', 'APRENDE'];
     const xs = [360, 760, 1160, 1560];
     const sv = add(r, `<svg class="abs" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080">
-      <line class="pl" x1="360" y1="420" x2="1560" y2="420" stroke="#0F4A3A" stroke-width="10" stroke-dasharray="1200" stroke-dashoffset="1200"/>
-      ${xs.map(x => `<circle class="nd" cx="${x}" cy="420" r="44" fill="#0F4A3A"/>`).join('')}</svg>`);
+      <line class="pl" x1="360" y1="420" x2="1560" y2="420" stroke="#074736" stroke-width="10" stroke-dasharray="1200" stroke-dashoffset="1200"/>
+      ${xs.map(x => `<circle class="nd" cx="${x}" cy="420" r="44" fill="#074736"/>`).join('')}</svg>`);
     const labs = steps.map((t, i) => { const e = add(r, `<div class="abs M" style="left:${xs[i]}px;top:500px;font:800 34px 'JetBrains Mono';letter-spacing:.08em">${t}</div>`); gsap.set(e, {xPercent: -50, opacity: 0}); return e; });
-    const brand = kw(r, 'POCKETNODE', {size: 200, x: 960, y: 760, acc: {6: '#84451E', 7: '#84451E', 8: '#84451E', 9: '#84451E'}});
+    const brand = kw(r, 'POCKETNODE', {size: 200, x: 960, y: 760, acc: {6: '#84441A', 7: '#84441A', 8: '#84441A', 9: '#84441A'}});
     gsap.set(brand.L, {opacity: 0});
     tl.to(q(sv, '.pl'), {strokeDashoffset: 0, duration: 2.4 * M, ease: 'none'}, 0.4);
     qa(sv, '.nd').forEach((c, i) => {

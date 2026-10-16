@@ -5,7 +5,7 @@ const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const M = RM ? 0.2 : 1;
 const B = 60 / 100;
 /* Paleta del equipo pocketNode; el rojo es solo para alarma. */
-const C = {blk:'#0F4A3A', crm:'#FFFFFF', lime:'#CBDB7C', blue:'#84451E', team:'#D1E3B3', ok:'#0F4A3A', red:'#C0392B', amb:'#84451E', gry:'#8A99A8', vio:'#8B5CF6', cyan:'#D1E3B3', navy:'#42271A'};
+const C = {blk:'#074736', crm:'#FFFFFF', lime:'#CBDB7C', blue:'#84441A', team:'#D1E3B3', ok:'#074736', red:'#C0392B', amb:'#84441A', gry:'#8A99A8', vio:'#8B5CF6', cyan:'#D1E3B3', navy:'#42271A'};
 const LV = {
   dx:{n:'Diagnosticado', c:C.ok, t:'#FFFFFF'},
   alta:{n:'Alta', c:C.red, t:'#FFFFFF'},

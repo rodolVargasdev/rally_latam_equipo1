@@ -4,7 +4,7 @@
 <style>
 /* Layout: the farm seen from above on the left, the farmer's phone on the right, one caption underneath. Team palette; single deliberate look. */
 :root {
-  --white: #FFFFFF; --leaf: #D1E3B3; --forest: #0F4A3A; --lime: #CBDB7C; --rust: #84451E; --soil: #42271A;
+  --white: #FFFFFF; --leaf: #D1E3B3; --forest: #074736; --lime: #CBDB7C; --rust: #84441A; --soil: #42271A;
   --alarm: #C0392B;          /* urgent only, outside the palette on purpose */
   --ink: #0b2a22; --panel: #123d31; --line: #2a5a4a; --muted: #a9c3b4;
   --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
@@ -101,10 +101,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--lime); outline-
   <div class="farm" aria-label="Finca vista desde arriba con la red de aparatos">
     <svg viewBox="0 0 1000 620" role="img" aria-label="Mapa de la finca">
       <defs>
-        <pattern id="cafe" width="26" height="26" patternUnits="userSpaceOnUse"><rect width="26" height="26" fill="#1d5a3f"/><circle cx="13" cy="13" r="7" fill="#0F4A3A"/><circle cx="11" cy="11" r="2" fill="#84451E"/></pattern>
+        <pattern id="cafe" width="26" height="26" patternUnits="userSpaceOnUse"><rect width="26" height="26" fill="#1d5a3f"/><circle cx="13" cy="13" r="7" fill="#074736"/><circle cx="11" cy="11" r="2" fill="#84441A"/></pattern>
         <pattern id="maiz" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(90)"><rect width="18" height="18" fill="#9fb35a"/><rect width="7" height="18" fill="#CBDB7C"/></pattern>
         <pattern id="pasto" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="20" fill="#a8c08a"/><path d="M4 14 l2 -5 l2 5 M13 8 l2 -5 l2 5" stroke="#6f8d58" stroke-width="1.5" fill="none"/></pattern>
-        <radialGradient id="heatg"><stop offset="0" stop-color="#C0392B" stop-opacity=".75"/><stop offset=".6" stop-color="#84451E" stop-opacity=".35"/><stop offset="1" stop-color="#84451E" stop-opacity="0"/></radialGradient>
+        <radialGradient id="heatg"><stop offset="0" stop-color="#C0392B" stop-opacity=".75"/><stop offset=".6" stop-color="#84441A" stop-opacity=".35"/><stop offset="1" stop-color="#84441A" stop-opacity="0"/></radialGradient>
       </defs>
       <rect width="1000" height="620" fill="#7e9a66"/>
       <rect x="30" y="30" width="400" height="300" rx="10" fill="url(#cafe)"/>
@@ -113,13 +113,13 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--lime); outline-
       <text x="474" y="320" font-family="IBM Plex Mono, monospace" font-size="14" fill="#42271A">MAÍZ</text>
       <rect x="0" y="352" width="1000" height="40" fill="#b7a27e"/>
       <text x="16" y="377" font-family="IBM Plex Mono, monospace" font-size="12" fill="#42271A">CALLE</text>
-      <rect x="600" y="410" width="370" height="190" rx="6" fill="url(#pasto)" stroke="#84451E" stroke-width="6" stroke-dasharray="14 6"/>
-      <rect x="664" y="404" width="56" height="12" fill="#84451E"/>
+      <rect x="600" y="410" width="370" height="190" rx="6" fill="url(#pasto)" stroke="#84441A" stroke-width="6" stroke-dasharray="14 6"/>
+      <rect x="664" y="404" width="56" height="12" fill="#84441A"/>
       <text x="830" y="590" font-family="IBM Plex Mono, monospace" font-size="14" fill="#42271A">CORRAL</text>
-      <g fill="#84451E" stroke="#42271A" stroke-width="2">
+      <g fill="#84441A" stroke="#42271A" stroke-width="2">
         <ellipse cx="760" cy="500" rx="20" ry="12"/><ellipse cx="820" cy="470" rx="20" ry="12"/><ellipse cx="880" cy="520" rx="20" ry="12"/><ellipse cx="830" cy="545" rx="20" ry="12"/>
       </g>
-      <g id="house"><rect x="110" y="440" width="90" height="70" fill="#FFFFFF" stroke="#42271A" stroke-width="3"/><path d="M100 444 L155 405 L210 444 Z" fill="#84451E"/><rect id="win" x="140" y="465" width="30" height="22" fill="#42271A"/></g>
+      <g id="house"><rect x="110" y="440" width="90" height="70" fill="#FFFFFF" stroke="#42271A" stroke-width="3"/><path d="M100 444 L155 405 L210 444 Z" fill="#84441A"/><rect id="win" x="140" y="465" width="30" height="22" fill="#42271A"/></g>
       <text x="104" y="534" font-family="IBM Plex Mono, monospace" font-size="12" fill="#42271A">CASA</text>
       <g id="tower"><path d="M480 560 L500 470 L520 560 Z" fill="none" stroke="#42271A" stroke-width="4"/><circle cx="500" cy="466" r="6" fill="#42271A"/></g>
       <text x="462" y="582" font-family="IBM Plex Mono, monospace" font-size="12" fill="#42271A">ANTENA</text>
@@ -160,23 +160,23 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--lime); outline-
     </svg>
     <div class="clock" id="clock">17:45</div>
     <div class="badge" id="badge">Noche cálida y húmeda tras la lluvia</div>
-    <div class="legend"><span><i style="background:#CBDB7C"></i>vigilando</span><span><i style="background:#84451E"></i>atención</span><span><i style="background:#C0392B"></i>urgente</span><span><i style="background:#6d7f77"></i>apagado de día</span></div>
+    <div class="legend"><span><i style="background:#CBDB7C"></i>vigilando</span><span><i style="background:#84441A"></i>atención</span><span><i style="background:#C0392B"></i>urgente</span><span><i style="background:#6d7f77"></i>apagado de día</span></div>
   </div>
 
   <div class="phone" aria-label="Celular del productor"><div class="screen">
     <div class="notif" id="notif"><b id="notifT">pocketNode</b><span id="notifB"></span></div>
 
     <div class="scr calm show" id="s-calm"><div class="bar"><span>17:45</span><span>80%</span></div>
-      <div class="big"><svg viewBox="0 0 64 64" width="76" height="76" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#0F4A3A"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Todo tranquilo</b><span>Finca El Roble.<br>6 aparatos listos.</span></div>
+      <div class="big"><svg viewBox="0 0 64 64" width="76" height="76" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#074736"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Todo tranquilo</b><span>Finca El Roble.<br>6 aparatos listos.</span></div>
       <div class="btns"><div class="btn speak">Escuchar</div><div class="btn sec">Mis números</div></div></div>
 
     <div class="scr calm" id="s-watch"><div class="bar"><span>18:05</span><span>79%</span></div>
-      <div class="big"><svg viewBox="0 0 64 64" width="76" height="76" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#0F4A3A"/><path d="M40 14 a18 18 0 1 0 10 30 a14 14 0 1 1 -10 -30z" fill="#CBDB7C"/></svg><b>Vigilando de noche</b><span>Café, maíz y corral.<br>Le avisamos si algo pasa.</span></div>
+      <div class="big"><svg viewBox="0 0 64 64" width="76" height="76" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#074736"/><path d="M40 14 a18 18 0 1 0 10 30 a14 14 0 1 1 -10 -30z" fill="#CBDB7C"/></svg><b>Vigilando de noche</b><span>Café, maíz y corral.<br>Le avisamos si algo pasa.</span></div>
       <div class="btns"><div class="btn speak">Escuchar</div><div class="btn sec">Mis números</div></div></div>
 
     <div class="scr att" id="s-crop"><div class="bar"><span>1:32</span><span>77%</span></div>
-      <span class="tagm" style="background:#0F4A3A">CULTIVO</span>
-      <div class="big"><svg viewBox="0 0 96 64" width="104" height="70" aria-hidden="true"><ellipse cx="48" cy="34" rx="8" ry="20" fill="#42271A"/><path d="M42 26 C18 6 6 24 22 38 C30 44 40 40 44 34 Z M54 26 C78 6 90 24 74 38 C66 44 56 40 52 34 Z" fill="#84451E"/></svg><b>Ojo con el maíz</b><span>Polilla del gusano cogollero.<br>Lado norte, 64 por hora.<br>Puede llenarse de gusano.</span></div>
+      <span class="tagm" style="background:#074736">CULTIVO</span>
+      <div class="big"><svg viewBox="0 0 96 64" width="104" height="70" aria-hidden="true"><ellipse cx="48" cy="34" rx="8" ry="20" fill="#42271A"/><path d="M42 26 C18 6 6 24 22 38 C30 44 40 40 44 34 Z M54 26 C78 6 90 24 74 38 C66 44 56 40 52 34 Z" fill="#84441A"/></svg><b>Ojo con el maíz</b><span>Polilla del gusano cogollero.<br>Lado norte, 64 por hora.<br>Puede llenarse de gusano.</span></div>
       <div class="btns"><div class="btn speak">Escuchar</div><div class="btn main">Ya fui a ver</div><div class="btn sec">Llamar al técnico</div></div></div>
 
     <div class="scr urg" id="s-cattle"><div class="bar"><span>2:40</span><span>76%</span></div>

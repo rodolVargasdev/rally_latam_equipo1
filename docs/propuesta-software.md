@@ -33,7 +33,7 @@ señales para bajar las falsas alarmas.
 | sensor | papel en pocketNode | señal que produce |
 |---|---|---|
 | Sensor de luz | interruptor del modo noche; antirrobo de la caja | `noche` (bajo 10 lux); `caja_abierta` si hay luz de golpe de noche |
-| Micrófono | detector principal | aleteo de insectos (banda de 100 a 600 Hz), roedores y animales (chillidos, pisadas, roer) |
+| Micrófono | detector principal | perros, ganado, aves, personas y vehículos; en la trampa de feromona, armónicos del aleteo de polillas (ver [deteccion-tecnica.md](deteccion-tecnica.md)) |
 | Acelerómetro | vibración del poste o estaca | `contacto` cuando un animal roza o trepa; `viento` para descartar ruido |
 | Giroscopio | inclinación del nodo | `nodo_caido` si el poste se inclina o cae |
 | Magnetómetro | orientación fija desde la instalación | `nodo_movido` si alguien gira o se lleva el equipo |
@@ -59,6 +59,8 @@ El mismo nodo trabaja en uno de dos modos, elegido al instalarlo.
 | Aviso típico | "Gusano cogollero: riesgo de infestación en el maíz" | "Portón abierto y voces en el corral a las 2:40" |
 
 ## Plagas que busca el modo cultivo
+
+**Actualizado:** las polillas se detectan con trampa de feromona y conteo por cámara, no oyéndolas volar a distancia. El detalle técnico, con fuentes, está en [deteccion-tecnica.md](deteccion-tecnica.md).
 
 | plaga | cultivo | firma acústica | estado |
 |---|---|---|---|
@@ -184,9 +186,9 @@ Responda 1 si ya fue a ver, 2 si no era nada.
 |---|---|
 | `#FFFFFF` blanco | fondo de tarjetas y texto sobre verde bosque |
 | `#D1E3B3` verde claro | fondo de la app, estado tranquilo |
-| `#0F4A3A` verde bosque | marca, encabezados, botón principal |
+| `#074736` verde bosque | marca, encabezados, botón principal |
 | `#CBDB7C` verde lima | acento, botón Escuchar, resaltados |
-| `#84451E` café rojizo | ganado, tierra, estado de atención |
+| `#84441A` café rojizo | ganado, tierra, estado de atención |
 | `#42271A` café oscuro | texto principal |
 
 El rojo de aviso urgente (`#C0392B`) queda fuera de la paleta a propósito: es

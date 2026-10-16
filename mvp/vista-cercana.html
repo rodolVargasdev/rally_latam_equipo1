@@ -5,7 +5,7 @@
 /* Layout: field scene with the node on the left, the farmer's phone on the right, captions underneath. Single night look on purpose. */
 :root {
   --ink: #0b1018; --panel: #141b28; --line: #2a3448; --text: #e6e9f0; --muted: #9aa4b8;
-  --moon: #CBDB7C; --post: #CBDB7C; --ok: #0F4A3A; --crit: #C0392B;
+  --moon: #CBDB7C; --post: #CBDB7C; --ok: #074736; --crit: #C0392B;
   --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
@@ -63,12 +63,12 @@ button:focus-visible { outline: 2px solid var(--moon); outline-offset: 2px; }
 .bar { display: flex; justify-content: space-between; padding: 8px 16px 4px; font: 10px var(--mono); color: #5b6475; }
 .big { display: grid; justify-items: center; text-align: center; gap: 8px; padding: 22px 14px 18px; }
 .big b { font: 800 26px/1.1 var(--display); } .big span { font-size: 14px; }
-.calm .big { background: #D1E3B3; color: #0F4A3A; }
+.calm .big { background: #D1E3B3; color: #074736; }
 .watch .big { background: #e2e8f5; color: #23365e; }
 .alert { background: var(--crit); color: #fff; } .alert .bar { color: #f6d3d9; } .alert .big { color: #fff; }
 .btns { padding: 10px 12px; display: grid; gap: 8px; }
 .btn { min-height: 46px; display: grid; place-items: center; border-radius: 12px; font: 600 15px var(--body); }
-.speak { background: var(--moon); color: #1b2230; } .main { background: #0F4A3A; color: #fff; } .sec { background: #e7e3d9; color: #1b2230; }
+.speak { background: var(--moon); color: #1b2230; } .main { background: #074736; color: #fff; } .sec { background: #e7e3d9; color: #1b2230; }
 .alert .main { background: #fff; color: var(--crit); } .alert .sec { background: #8f1c2e; color: #fff; }
 .btn.tap { animation: tap .6s; } @keyframes tap { 50% { transform: scale(.94); filter: brightness(.85); } }
 .notif { position: absolute; left: 8px; right: 8px; top: 8px; background: #fff; color: #1b2230; border-radius: 14px; padding: 10px 12px; box-shadow: 0 6px 20px rgba(0,0,0,.35); font-size: 12px; transform: translateY(-140%); transition: transform .5s; z-index: 3; }
@@ -116,7 +116,7 @@ button:focus-visible { outline: 2px solid var(--moon); outline-offset: 2px; }
     <div class="notif" id="notif"><b>pocketNode: VAYA A VER</b>Ratas en la orilla norte</div>
 
     <div class="scr calm show" id="s-calm"><div class="bar"><span>17:50</span><span>78%</span></div>
-      <div class="big"><svg viewBox="0 0 64 64" width="80" height="80" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#0F4A3A"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Todo tranquilo</b><span>Su parcela está bien.</span></div>
+      <div class="big"><svg viewBox="0 0 64 64" width="80" height="80" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#074736"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Todo tranquilo</b><span>Su parcela está bien.</span></div>
       <div class="btns"><div class="btn speak">Escuchar</div><div class="btn sec">Mis aparatos</div></div></div>
 
     <div class="scr watch" id="s-watch"><div class="bar"><span>18:02</span><span>77%</span></div>
@@ -135,7 +135,7 @@ button:focus-visible { outline: 2px solid var(--moon); outline-offset: 2px; }
       </div></div>
 
     <div class="scr calm" id="s-sum"><div class="bar"><span>6:05</span><span>81%</span></div>
-      <div class="big"><svg viewBox="0 0 64 64" width="80" height="80" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#0F4A3A"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Buenos días</b><span>Anoche hubo 1 aviso y usted ya lo atendió.</span></div>
+      <div class="big"><svg viewBox="0 0 64 64" width="80" height="80" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#074736"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Buenos días</b><span>Anoche hubo 1 aviso y usted ya lo atendió.</span></div>
       <div class="sum"><div class="row"><b>2:14</b><span>Ratas, orilla norte</span><span>Atendido</span></div><div class="row"><b>Aparatos</b><span>3 de 3 bien</span></div></div>
       <div class="btns"><div class="btn speak">Escuchar</div></div></div>
   </div></div>
