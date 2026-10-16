@@ -688,17 +688,17 @@ function q3(tag, title) {
   return `<div class="kq" style="left:160px;top:120px">${tag}</div><div class="kt md" style="left:160px;top:160px">${title}</div>`;
 }
 function callouts(r, items) {
-  return items.map(([k, a, b, side]) => {
+  return items.map(([k, a, b, side, dy = 0]) => {
     const e = add(r, `<div class="co" style="${side === 'l' ? 'flex-direction:row-reverse' : ''}"><i></i><b></b><span>${a}<small>${b}</small></span></div>`);
     gsap.set(e, {opacity: 0});
-    return {k, el: e, side};
+    return {k, el: e, side, dy};
   });
 }
 function placeCallouts(list) {
   list.forEach(l => {
     const p = T3.at(l.k), w = l.el.offsetWidth;
     l.el.style.left = (l.side === 'l' ? p.x - w + 5 : p.x - 5) + 'px';
-    l.el.style.top = (p.y - l.el.offsetHeight / 2) + 'px';
+    l.el.style.top = (p.y - l.el.offsetHeight / 2 + l.dy) + 'px';
   });
 }
 
@@ -749,10 +749,10 @@ scene({id:'4', label:'Piezas', act:2, name:'Cada pieza, una tarea', bg:K.black, 
   narr:['Cada pieza tiene una sola tarea.', 'El panel carga, y la batería de respaldo cubre la noche y los días nublados.',
     'La membrana deja pasar el sonido y detiene el agua y el polvo.', 'Y el celular hace todo el cálculo.'],
   build(r, tl, S) {
-    const st = S.st = {e: 0, ry: 0.35, rx: 0.12, cz: 17, gx: -0.4, ly: -0.5};
+    const st = S.st = {e: 0, ry: 0.35, rx: 0.12, cz: 20, gx: -0.4, ly: -0.2};
     S.co = callouts(r, [['panel', 'Panel solar', '10 W, monocristalino', 'r'], ['phone', 'Celular en desuso', 'Android 5 o superior', 'r'],
       ['bank', 'Batería de respaldo', '5.000 a 10.000 mAh', 'l'], ['mem', 'Membrana acústica', 'pasa el sonido, no el agua', 'r'],
-      ['lid', 'Caja IP65', 'sellada contra lluvia y polvo', 'l'], ['trap', 'Trampa de feromona', 'atrae a la plaga al micrófono', 'l']]);
+      ['lid', 'Caja IP65', 'contra lluvia y polvo', 'l', -170], ['trap', 'Trampa de feromona', 'atrae a la plaga al micrófono', 'l']]);
     tl.to(st, {e: 1, duration: 2.4 * M, ease: 'power3.inOut'}, 0.4);
     tl.to(st, {ry: -0.25, duration: 16, ease: 'none'}, 0);
     S.co.forEach((c, i) => { tl.to(c.el, {opacity: 1, duration: 0.5}, 2.6 + i * 0.5); sfx(tl, 'tick', 2.6 + i * 0.5); });
@@ -850,7 +850,7 @@ scene({id:'6', label:'Polillas', act:3, name:'¿Y las polillas?', bg:K.paper, in
     tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
     tl.to(hb[0], {opacity: 1, duration: 0.4}, 2.2); show(tl, f0, 2.4);
     tl.to(hb.slice(1), {opacity: 1, duration: 0.25, stagger: 0.08}, 3.4); show(tl, hm, 4.2);
-    tl.to(z1, {opacity: 1, duration: 0.6}, 7.4); show(tl, zl, 7.6);
+    tl.to(z1, {opacity: 0.12, duration: 0.6}, 7.4); show(tl, zl, 7.6);
     tl.to(hb[0], {opacity: 0.25, duration: 0.6}, 8.4);
     show(tl, no, 12.2); tl.to(st, {scaleX: 1, duration: 0.5 * M, ease: 'snap'}, 13.4); sfx(tl, 'thud', 13.5);
     tl.set({}, {}, 15.5);
