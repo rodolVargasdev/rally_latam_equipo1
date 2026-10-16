@@ -18,7 +18,7 @@ con Playwright (no hay suite automatizada).
 | id | specs | ruta | estado | commit |
 |---|---|---|---|---|
 | T1 | S3, S6 | inline | hecho | docs: modos, plagas, red y paleta |
-| T2 | S1, S2, S3, S4 | inline | pendiente | |
+| T2 | S1, S2, S3, S4 | inline | hecho | feat: vista aérea, ganado y métricas |
 | T3 | S4, S5 | inline | pendiente | |
 
 ## Log

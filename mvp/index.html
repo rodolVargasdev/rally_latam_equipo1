@@ -1,230 +1,279 @@
-<title>pocketNode MVP</title>
+<title>pocketNode red de nodos</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: field scene with the node on the left, the farmer's phone on the right, captions underneath. Single night look on purpose. */
+/* Layout: the farm seen from above on the left, the farmer's phone on the right, one caption underneath. Team palette; single deliberate look. */
 :root {
-  --ink: #0b1018; --panel: #141b28; --line: #2a3448; --text: #e6e9f0; --muted: #9aa4b8;
-  --moon: #f2c46d; --post: #ff7a93; --ok: #2f9e6a; --crit: #b3243a;
+  --white: #FFFFFF; --leaf: #D1E3B3; --forest: #0F4A3A; --lime: #CBDB7C; --rust: #84451E; --soil: #42271A;
+  --alarm: #C0392B;          /* urgent only, outside the palette on purpose */
+  --ink: #0b2a22; --panel: #123d31; --line: #2a5a4a; --muted: #a9c3b4;
   --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
   color-scheme: dark;
 }
 *, *::before, *::after { box-sizing: border-box; }
-html, body { background: var(--ink); color: var(--text); font-family: var(--body); }
-.stage { max-width: 1240px; margin: 0 auto; padding-block: 20px;
+html, body { background: var(--ink); color: var(--white); font-family: var(--body); }
+.stage { max-width: 1260px; margin: 0 auto; padding-block: 18px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; }
-@media (max-width: 820px) { .stage { grid-template-columns: minmax(0, 1fr); justify-items: center; } .field { width: 100%; } }
-.top { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; width: 100%; }
-.brand { font-family: var(--display); font-weight: 800; font-size: 1.6rem; } .brand span { color: var(--moon); }
-.ctrl { display: flex; gap: 8px; }
-button { font: 600 .9rem var(--body); background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; cursor: pointer; }
-button:focus-visible { outline: 2px solid var(--moon); outline-offset: 2px; }
+  display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 18px; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); justify-items: center; } .farm { width: 100%; } }
+.top { grid-column: 1 / -1; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.brand { font: 800 1.5rem var(--display); } .brand span { color: var(--lime); }
+.ctrl { display: flex; gap: 8px; flex-wrap: wrap; }
+button, .ctrl a { font: 600 .9rem var(--body); background: var(--panel); color: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; cursor: pointer; text-decoration: none; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
 
-.field { position: relative; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 16 / 10.5; max-width: 100%; }
-.sky { position: absolute; inset: 0; transition: background 1.2s; }
-.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 38%; background: repeating-linear-gradient(100deg, #1d3a24 0 22px, #19331f 22px 44px); transition: filter 1.2s; }
-.crop { position: absolute; bottom: 30%; width: 22px; height: 46px; border-radius: 50% 50% 4px 4px; background: #2f6b3a; }
-.clock { position: absolute; top: 14px; left: 16px; font-family: var(--mono); font-size: 1.5rem; background: rgba(0,0,0,.35); padding: 4px 12px; border-radius: 8px; }
-.post { position: absolute; left: 30%; bottom: 18%; width: 12px; height: 46%; background: #6b4a2b; border-radius: 3px; }
-.box { position: absolute; left: calc(30% - 34px); bottom: 50%; width: 80px; height: 96px; border-radius: 10px; background: rgba(200,210,220,.25); border: 2px solid #c9d2dc; display: grid; place-items: center; }
-.box .ph { width: 40px; height: 72px; border-radius: 7px; background: #111; border: 2px solid #444; position: relative; }
-.box .led { position: absolute; top: 6px; left: 50%; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: #555; }
-.box.on .led { background: #6fd3a0; box-shadow: 0 0 10px #6fd3a0; }
-.box.alarm .led { background: #ff6b6b; box-shadow: 0 0 14px #ff6b6b; animation: blink .5s infinite; }
-.panel-sol { position: absolute; left: calc(30% - 26px); bottom: 70%; width: 64px; height: 22px; background: #1d3557; border: 2px solid #8aa; transform: skewX(-18deg); }
-.rat { position: absolute; bottom: 20%; left: 70%; width: 70px; opacity: 0; transition: left 3s linear, opacity .6s; }
-.rat.in { opacity: 1; left: 36%; }
-.wave { position: absolute; left: calc(30% + 40px); bottom: 58%; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--moon); opacity: 0; }
-.wave.go { animation: ping 1.2s ease-out infinite; }
-.sms-fly { position: absolute; left: 34%; bottom: 66%; font: 600 .8rem var(--mono); background: var(--moon); color: #1b2230; padding: 4px 8px; border-radius: 6px; opacity: 0; }
-.sms-fly.go { animation: fly 1.6s ease-in forwards; }
-@keyframes blink { 50% { opacity: .3; } }
-@keyframes ping { from { transform: scale(1); opacity: .9; } to { transform: scale(9); opacity: 0; } }
-@keyframes fly { 0% { opacity: 1; transform: translate(0,0); } 100% { opacity: 0; transform: translate(520px,-80px); } }
+.farm { position: relative; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); max-width: 100%; }
+.farm svg { display: block; width: 100%; height: auto; }
+.night { transition: opacity 1.2s; }
+.clock { position: absolute; top: 12px; left: 14px; font: 500 1.35rem var(--mono); background: rgba(15,74,58,.85); padding: 3px 12px; border-radius: 8px; }
+.legend { position: absolute; bottom: 12px; left: 14px; display: flex; gap: 10px; flex-wrap: wrap; font: .72rem var(--mono); }
+.legend span { background: rgba(11,42,34,.85); padding: 3px 8px; border-radius: 6px; display: inline-flex; gap: 6px; align-items: center; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.badge { position: absolute; top: 12px; right: 14px; font: 500 .8rem var(--mono); background: rgba(132,69,30,.92); padding: 5px 10px; border-radius: 8px; opacity: 0; transition: opacity .5s; }
+.badge.show { opacity: 1; }
 
-.hud { position: absolute; right: 12px; top: 12px; width: min(46%, 300px); background: rgba(11,16,24,.82); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; font-family: var(--mono); font-size: .76rem; }
-.hud h4 { margin: 0; font: 600 .72rem var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-.meter { display: grid; grid-template-columns: 92px 1fr auto; gap: 8px; align-items: center; }
-.meter canvas { width: 100%; height: 26px; }
-.verdict { padding: 6px 8px; border-radius: 6px; background: #23304a; color: var(--muted); text-align: center; font-weight: 500; }
-.verdict.warn { background: #3d3220; color: var(--moon); } .verdict.crit { background: #4a1f28; color: #ff8a8a; }
+.node .halo { fill: none; stroke: var(--lime); stroke-width: 2; opacity: 0; }
+.node.on .core { fill: var(--lime); }
+.node.warn .core { fill: var(--rust); }
+.node.alarm .core { fill: var(--alarm); }
+.node .core { fill: #6d7f77; stroke: var(--white); stroke-width: 3; transition: fill .4s; }
+.node.ping .halo { animation: halo 1.4s ease-out infinite; }
+.node.alarm .halo { stroke: var(--alarm); }
+.node.warn .halo { stroke: var(--rust); }
+.node text { font: 600 13px var(--mono); fill: var(--white); }
+.link { stroke: var(--lime); stroke-width: 2; stroke-dasharray: 5 7; opacity: 0; transition: opacity .8s; }
+.link.on { opacity: .55; }
+.link.hot { stroke: var(--rust); stroke-width: 4; opacity: 1; stroke-dasharray: 10 6; animation: flow .6s linear infinite; }
+.up { stroke: var(--white); stroke-width: 1.5; stroke-dasharray: 2 6; opacity: 0; transition: opacity .8s; }
+.up.on { opacity: .35; }
+.up.hot { stroke: var(--lime); stroke-width: 3.5; opacity: 1; stroke-dasharray: 10 6; animation: flow .6s linear infinite; }
+.count { font: 600 15px var(--mono); fill: var(--white); opacity: 0; transition: opacity .4s; }
+.moth, .intruder { opacity: 0; transition: opacity .6s; }
+.heat { opacity: 0; transition: opacity 1.5s; }
+@keyframes halo { from { r: 16; opacity: .9; } to { r: 60; opacity: 0; } }
+@keyframes flow { to { stroke-dashoffset: -32; } }
 
-.caption { grid-column: 1 / -1; width: 100%; min-height: 64px; display: flex; gap: 14px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; }
-.caption .n { font: 800 1.6rem var(--display); color: var(--post); min-width: 2ch; }
-.caption p { margin: 0; font-size: 1.15rem; }
+.caption { grid-column: 1 / -1; width: 100%; display: flex; gap: 14px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; min-height: 62px; }
+.caption .n { font: 800 1.5rem var(--display); color: var(--lime); min-width: 2ch; }
+.caption p { margin: 0; font-size: 1.1rem; }
 
-.phone { width: 280px; max-width: 100%; aspect-ratio: 9 / 18.5; background: #05070c; border: 2px solid #323c52; border-radius: 36px; padding: 10px; align-self: center; }
-.screen { position: relative; height: 100%; border-radius: 28px; overflow: hidden; background: #f6f4ef; color: #1b2230; font-size: 14px; }
+.phone { width: 280px; max-width: 100%; aspect-ratio: 9 / 18.5; background: #05100c; border: 2px solid #2f5a4c; border-radius: 36px; padding: 10px; align-self: center; }
+.screen { position: relative; height: 100%; border-radius: 28px; overflow: hidden; background: var(--white); color: var(--soil); font-size: 14px; }
 .scr { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; transition: opacity .5s; }
 .scr.show { opacity: 1; }
-.bar { display: flex; justify-content: space-between; padding: 8px 16px 4px; font: 10px var(--mono); color: #5b6475; }
-.big { display: grid; justify-items: center; text-align: center; gap: 8px; padding: 22px 14px 18px; }
-.big b { font: 800 26px/1.1 var(--display); } .big span { font-size: 14px; }
-.calm .big { background: #e3f4ea; color: #14543a; }
-.watch .big { background: #e2e8f5; color: #23365e; }
-.alert { background: var(--crit); color: #fff; } .alert .bar { color: #f6d3d9; } .alert .big { color: #fff; }
+.bar { display: flex; justify-content: space-between; padding: 8px 16px 4px; font: 10px var(--mono); opacity: .8; }
+.big { display: grid; justify-items: center; text-align: center; gap: 6px; padding: 18px 14px 16px; }
+.big b { font: 800 24px/1.1 var(--display); } .big span { font-size: 14px; line-height: 1.35; }
+.calm .big { background: var(--leaf); color: var(--forest); }
+.att { background: var(--lime); } .att .big { color: var(--soil); }
+.urg { background: var(--alarm); color: var(--white); } .urg .big { color: var(--white); }
 .btns { padding: 10px 12px; display: grid; gap: 8px; }
-.btn { min-height: 46px; display: grid; place-items: center; border-radius: 12px; font: 600 15px var(--body); }
-.speak { background: var(--moon); color: #1b2230; } .main { background: #1b2230; color: #fff; } .sec { background: #e7e3d9; color: #1b2230; }
-.alert .main { background: #fff; color: var(--crit); } .alert .sec { background: #8f1c2e; color: #fff; }
+.btn { min-height: 44px; display: grid; place-items: center; border-radius: 12px; font: 600 15px var(--body); text-align: center; padding: 0 8px; }
+.speak { background: var(--lime); color: var(--soil); }
+.main { background: var(--forest); color: var(--white); }
+.sec { background: var(--leaf); color: var(--forest); }
+.att .speak { background: var(--white); }
+.urg .speak { background: var(--lime); } .urg .main { background: var(--white); color: var(--alarm); } .urg .sec { background: #8e2a20; color: var(--white); }
 .btn.tap { animation: tap .6s; } @keyframes tap { 50% { transform: scale(.94); filter: brightness(.85); } }
-.notif { position: absolute; left: 8px; right: 8px; top: 8px; background: #fff; color: #1b2230; border-radius: 14px; padding: 10px 12px; box-shadow: 0 6px 20px rgba(0,0,0,.35); font-size: 12px; transform: translateY(-140%); transition: transform .5s; z-index: 3; }
-.notif.show { transform: none; } .notif b { display: block; color: var(--crit); }
-.wa { background: #e9ddd0; } .wa .head { background: #1f6f5c; color: #fff; padding: 12px 16px; font: 700 17px var(--display); }
-.msgs { padding: 10px; display: grid; gap: 8px; align-content: start; }
-.bubble { background: #fff; border-radius: 10px 10px 10px 2px; padding: 8px 10px; font-size: 12px; max-width: 92%; opacity: 0; transform: translateY(8px); transition: .4s; }
-.bubble.me { background: #d4f3c4; justify-self: end; border-radius: 10px 10px 2px 10px; }
-.bubble.show { opacity: 1; transform: none; }
-.sum { padding: 0 12px; display: grid; gap: 8px; }
-.row { background: #fff; border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
-.row b { font-weight: 600; }
+.tagm { align-self: center; font: 600 11px var(--mono); padding: 3px 10px; border-radius: 999px; background: var(--rust); color: var(--white); }
+.notif { position: absolute; left: 8px; right: 8px; top: 8px; background: var(--white); color: var(--soil); border-radius: 14px; padding: 9px 12px; box-shadow: 0 6px 20px rgba(0,0,0,.35); font-size: 12px; transform: translateY(-140%); transition: transform .5s; z-index: 3; }
+.notif.show { transform: none; } .notif b { display: block; }
+.head { padding: 6px 16px 8px; display: grid; gap: 2px; } .head b { font: 800 20px var(--display); color: var(--forest); } .head small { color: var(--rust); font-weight: 600; }
+.cards { padding: 0 12px 12px; display: grid; gap: 8px; }
+.card { background: var(--leaf); border-radius: 14px; padding: 10px 12px; display: grid; gap: 6px; }
+.card .t { font-size: 12.5px; color: var(--forest); font-weight: 600; }
+.card .v { font: 800 22px var(--display); color: var(--soil); line-height: 1; }
+.card .v small { font: 600 13px var(--body); color: var(--forest); }
+.meter { height: 12px; border-radius: 6px; background: var(--white); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--forest); width: 0; transition: width 1.2s ease-out; }
+.ex { font: 10px var(--mono); color: var(--rust); text-align: center; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 
 <div class="stage">
   <div class="top">
-    <div class="brand">pocket<span>Node</span> | una noche en Los Naranjos</div>
-    <div class="ctrl"><button id="play" type="button">Reproducir</button><button id="restart" type="button">Desde el inicio</button></div>
+    <div class="brand">pocket<span>Node</span> | la red de la finca El Roble</div>
+    <div class="ctrl"><button id="play" type="button">Reproducir</button><button id="restart" type="button">Desde el inicio</button><a href="vista-cercana.html">Vista cercana</a></div>
   </div>
 
-  <div class="field" aria-label="Parcela con el nodo instalado">
-    <div class="sky" id="sky"></div>
-    <div class="ground" id="ground"></div>
-    <div class="crop" style="left:52%"></div><div class="crop" style="left:60%"></div><div class="crop" style="left:68%"></div><div class="crop" style="left:76%"></div><div class="crop" style="left:84%"></div>
-    <div class="clock" id="clock">17:50</div>
-    <div class="post"></div>
-    <div class="panel-sol"></div>
-    <div class="box" id="box"><div class="ph"><span class="led"></span></div></div>
-    <div class="wave" id="wave"></div>
-    <div class="sms-fly" id="smsfly">SMS</div>
-    <svg class="rat" id="rat" viewBox="0 0 96 64" aria-hidden="true"><ellipse cx="48" cy="38" rx="26" ry="15" fill="#8d8a86"/><circle cx="22" cy="31" r="11" fill="#8d8a86"/><circle cx="26" cy="21" r="5" fill="#a6a29d"/><circle cx="17" cy="29" r="2.4" fill="#111"/><path d="M74 40 C90 44 92 56 80 58" stroke="#8d8a86" stroke-width="4" fill="none" stroke-linecap="round"/></svg>
+  <div class="farm" aria-label="Finca vista desde arriba con la red de aparatos">
+    <svg viewBox="0 0 1000 620" role="img" aria-label="Mapa de la finca">
+      <defs>
+        <pattern id="cafe" width="26" height="26" patternUnits="userSpaceOnUse"><rect width="26" height="26" fill="#1d5a3f"/><circle cx="13" cy="13" r="7" fill="#0F4A3A"/><circle cx="11" cy="11" r="2" fill="#84451E"/></pattern>
+        <pattern id="maiz" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(90)"><rect width="18" height="18" fill="#9fb35a"/><rect width="7" height="18" fill="#CBDB7C"/></pattern>
+        <pattern id="pasto" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="20" fill="#a8c08a"/><path d="M4 14 l2 -5 l2 5 M13 8 l2 -5 l2 5" stroke="#6f8d58" stroke-width="1.5" fill="none"/></pattern>
+        <radialGradient id="heatg"><stop offset="0" stop-color="#C0392B" stop-opacity=".75"/><stop offset=".6" stop-color="#84451E" stop-opacity=".35"/><stop offset="1" stop-color="#84451E" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect width="1000" height="620" fill="#7e9a66"/>
+      <rect x="30" y="30" width="400" height="300" rx="10" fill="url(#cafe)"/>
+      <text x="44" y="320" font-family="IBM Plex Mono, monospace" font-size="14" fill="#fff">CAFÉ</text>
+      <rect x="460" y="30" width="510" height="300" rx="10" fill="url(#maiz)"/>
+      <text x="474" y="320" font-family="IBM Plex Mono, monospace" font-size="14" fill="#42271A">MAÍZ</text>
+      <rect x="0" y="352" width="1000" height="40" fill="#b7a27e"/>
+      <text x="16" y="377" font-family="IBM Plex Mono, monospace" font-size="12" fill="#42271A">CALLE</text>
+      <rect x="600" y="410" width="370" height="190" rx="6" fill="url(#pasto)" stroke="#84451E" stroke-width="6" stroke-dasharray="14 6"/>
+      <rect x="664" y="404" width="56" height="12" fill="#84451E"/>
+      <text x="830" y="590" font-family="IBM Plex Mono, monospace" font-size="14" fill="#42271A">CORRAL</text>
+      <g fill="#84451E" stroke="#42271A" stroke-width="2">
+        <ellipse cx="760" cy="500" rx="20" ry="12"/><ellipse cx="820" cy="470" rx="20" ry="12"/><ellipse cx="880" cy="520" rx="20" ry="12"/><ellipse cx="830" cy="545" rx="20" ry="12"/>
+      </g>
+      <g id="house"><rect x="110" y="440" width="90" height="70" fill="#FFFFFF" stroke="#42271A" stroke-width="3"/><path d="M100 444 L155 405 L210 444 Z" fill="#84451E"/><rect id="win" x="140" y="465" width="30" height="22" fill="#42271A"/></g>
+      <text x="104" y="534" font-family="IBM Plex Mono, monospace" font-size="12" fill="#42271A">CASA</text>
+      <g id="tower"><path d="M480 560 L500 470 L520 560 Z" fill="none" stroke="#42271A" stroke-width="4"/><circle cx="500" cy="466" r="6" fill="#42271A"/></g>
+      <text x="462" y="582" font-family="IBM Plex Mono, monospace" font-size="12" fill="#42271A">ANTENA</text>
 
-    <div class="hud" aria-label="Lecturas del nodo">
-      <h4>Nodo 2 | orilla norte</h4>
-      <div class="meter"><span>Luz</span><canvas id="cLux" width="160" height="26"></canvas><span id="vLux">800 lx</span></div>
-      <div class="meter"><span>Micrófono</span><canvas id="cMic" width="160" height="26"></canvas><span id="vMic">bajo</span></div>
-      <div class="meter"><span>Acelerómetro</span><canvas id="cAcc" width="160" height="26"></canvas><span id="vAcc">quieto</span></div>
-      <div class="meter"><span>Batería</span><canvas id="cBat" width="160" height="26"></canvas><span id="vBat">92 %</span></div>
-      <div class="verdict" id="verdict">Modo día: cargando</div>
-    </div>
+      <ellipse class="heat" id="heat" cx="790" cy="120" rx="190" ry="110" fill="url(#heatg)"/>
+
+      <rect class="night" id="night" width="1000" height="620" fill="#061a14" opacity="0"/>
+
+      <g id="links">
+        <line class="link" id="l-c1c2" x1="150" y1="120" x2="320" y2="230"/>
+        <line class="link" id="l-c2m1" x1="320" y1="230" x2="560" y2="110"/>
+        <line class="link" id="l-m1m2" x1="560" y1="110" x2="810" y2="90"/>
+        <line class="link" id="l-m1m3" x1="560" y1="110" x2="760" y2="250"/>
+        <line class="link" id="l-m2m3" x1="810" y1="90" x2="760" y2="250"/>
+        <line class="link" id="l-m3g1" x1="760" y1="250" x2="692" y2="430"/>
+        <line class="up" id="u-c2" x1="320" y1="230" x2="500" y2="466"/>
+        <line class="up" id="u-m1" x1="560" y1="110" x2="500" y2="466"/>
+        <line class="up" id="u-m3" x1="760" y1="250" x2="500" y2="466"/>
+        <line class="up" id="u-g1" x1="692" y1="430" x2="500" y2="466"/>
+        <line class="up" id="u-h" x1="500" y1="466" x2="155" y2="440"/>
+      </g>
+
+      <g id="moths" class="moth">
+        <circle cx="830" cy="70" r="4" fill="#fff"/><circle cx="790" cy="110" r="4" fill="#fff"/><circle cx="845" cy="125" r="4" fill="#fff"/><circle cx="770" cy="80" r="4" fill="#fff"/><circle cx="745" cy="230" r="4" fill="#fff"/><circle cx="785" cy="270" r="4" fill="#fff"/><circle cx="810" cy="160" r="4" fill="#fff"/>
+      </g>
+      <g id="intruders" class="intruder">
+        <rect x="560" y="358" width="70" height="30" rx="6" fill="#42271A" stroke="#fff" stroke-width="2"/>
+        <circle cx="660" cy="398" r="9" fill="#FFFFFF"/><circle cx="684" cy="394" r="9" fill="#FFFFFF"/>
+      </g>
+
+      <g class="node" id="n-c1"><circle class="halo" cx="150" cy="120" r="16"/><circle class="core" cx="150" cy="120" r="13"/><text x="168" y="114">C1</text></g>
+      <g class="node" id="n-c2"><circle class="halo" cx="320" cy="230" r="16"/><circle class="core" cx="320" cy="230" r="13"/><text x="338" y="224">C2</text></g>
+      <g class="node" id="n-m1"><circle class="halo" cx="560" cy="110" r="16"/><circle class="core" cx="560" cy="110" r="13"/><text x="578" y="104">M1</text></g>
+      <g class="node" id="n-m2"><circle class="halo" cx="810" cy="90" r="16"/><circle class="core" cx="810" cy="90" r="13"/><text x="828" y="84">M2</text><text id="nosig" x="828" y="102" style="font-size:11px;opacity:0">sin señal</text></g>
+      <g class="node" id="n-m3"><circle class="halo" cx="760" cy="250" r="16"/><circle class="core" cx="760" cy="250" r="13"/><text x="778" y="244">M3</text></g>
+      <g class="node" id="n-g1"><circle class="halo" cx="692" cy="430" r="16"/><circle class="core" cx="692" cy="430" r="13"/><text x="712" y="446">G1 portón</text></g>
+      <text class="count" id="count" x="850" y="186">0 / hora</text>
+    </svg>
+    <div class="clock" id="clock">17:45</div>
+    <div class="badge" id="badge">Noche cálida y húmeda tras la lluvia</div>
+    <div class="legend"><span><i style="background:#CBDB7C"></i>vigilando</span><span><i style="background:#84451E"></i>atención</span><span><i style="background:#C0392B"></i>urgente</span><span><i style="background:#6d7f77"></i>apagado de día</span></div>
   </div>
 
   <div class="phone" aria-label="Celular del productor"><div class="screen">
-    <div class="notif" id="notif"><b>pocketNode: VAYA A VER</b>Ratas en la orilla norte</div>
+    <div class="notif" id="notif"><b id="notifT">pocketNode</b><span id="notifB"></span></div>
 
-    <div class="scr calm show" id="s-calm"><div class="bar"><span>17:50</span><span>78%</span></div>
-      <div class="big"><svg viewBox="0 0 64 64" width="80" height="80" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#2f9e6a"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Todo tranquilo</b><span>Su parcela está bien.</span></div>
-      <div class="btns"><div class="btn speak">Escuchar</div><div class="btn sec">Mis aparatos</div></div></div>
+    <div class="scr calm show" id="s-calm"><div class="bar"><span>17:45</span><span>80%</span></div>
+      <div class="big"><svg viewBox="0 0 64 64" width="76" height="76" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#0F4A3A"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Todo tranquilo</b><span>Finca El Roble.<br>6 aparatos listos.</span></div>
+      <div class="btns"><div class="btn speak">Escuchar</div><div class="btn sec">Mis números</div></div></div>
 
-    <div class="scr watch" id="s-watch"><div class="bar"><span>18:02</span><span>77%</span></div>
-      <div class="big"><svg viewBox="0 0 64 64" width="80" height="80" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#23365e"/><path d="M40 14 a18 18 0 1 0 10 30 a14 14 0 1 1 -10 -30z" fill="#f2c46d"/></svg><b>Vigilando de noche</b><span>Le avisamos si algo pasa.<br>Puede dormir tranquilo.</span></div>
-      <div class="btns"><div class="btn speak">Escuchar</div><div class="btn sec">Mis aparatos</div></div></div>
+    <div class="scr calm" id="s-watch"><div class="bar"><span>18:05</span><span>79%</span></div>
+      <div class="big"><svg viewBox="0 0 64 64" width="76" height="76" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#0F4A3A"/><path d="M40 14 a18 18 0 1 0 10 30 a14 14 0 1 1 -10 -30z" fill="#CBDB7C"/></svg><b>Vigilando de noche</b><span>Café, maíz y corral.<br>Le avisamos si algo pasa.</span></div>
+      <div class="btns"><div class="btn speak">Escuchar</div><div class="btn sec">Mis números</div></div></div>
 
-    <div class="scr alert" id="s-alert"><div class="bar"><span>2:16</span><span>74%</span></div>
-      <div class="big"><svg viewBox="0 0 96 64" width="110" height="74" aria-hidden="true"><ellipse cx="48" cy="38" rx="26" ry="16" fill="#fff"/><circle cx="74" cy="30" r="11" fill="#fff"/><circle cx="70" cy="20" r="5" fill="#fff"/><circle cx="78" cy="29" r="2.4" fill="#b3243a"/><path d="M22 40 C8 44 6 56 18 58" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg><b>Vaya a ver</b><span>Ratas en la orilla norte.<br>Desde las 2:14. Seguro.</span></div>
-      <div class="btns"><div class="btn speak">Escuchar</div><div class="btn main" id="bSeen">Ya fui a ver</div><div class="btn sec">No era nada</div></div></div>
+    <div class="scr att" id="s-crop"><div class="bar"><span>1:32</span><span>77%</span></div>
+      <span class="tagm" style="background:#0F4A3A">CULTIVO</span>
+      <div class="big"><svg viewBox="0 0 96 64" width="104" height="70" aria-hidden="true"><ellipse cx="48" cy="34" rx="8" ry="20" fill="#42271A"/><path d="M42 26 C18 6 6 24 22 38 C30 44 40 40 44 34 Z M54 26 C78 6 90 24 74 38 C66 44 56 40 52 34 Z" fill="#84451E"/></svg><b>Ojo con el maíz</b><span>Polilla del gusano cogollero.<br>Lado norte, 64 por hora.<br>Puede llenarse de gusano.</span></div>
+      <div class="btns"><div class="btn speak">Escuchar</div><div class="btn main">Ya fui a ver</div><div class="btn sec">Llamar al técnico</div></div></div>
 
-    <div class="scr wa" id="s-wa"><div class="bar" style="background:#1f6f5c;color:#cfe7df"><span>2:17</span><span>74%</span></div><div class="head">pocketNode</div>
-      <div class="msgs">
-        <div class="bubble" id="m1"><b>pocketNode: VAYA A VER</b><br>Ratas en la orilla norte de Los Naranjos. Desde las 2:14. Seguro. Responda 1 si ya fue a ver, 2 si no era nada.</div>
-        <div class="bubble me" id="m2">1</div>
-        <div class="bubble" id="m3">Gracias. Esa orilla queda vigilada toda la noche.</div>
+    <div class="scr urg" id="s-cattle"><div class="bar"><span>2:40</span><span>76%</span></div>
+      <span class="tagm">GANADO</span>
+      <div class="big"><svg viewBox="0 0 96 64" width="104" height="70" aria-hidden="true"><rect x="10" y="20" width="76" height="34" rx="4" fill="none" stroke="#fff" stroke-width="5"/><path d="M48 20 v34 M10 37 h76" stroke="#fff" stroke-width="5"/><path d="M60 8 l16 10" stroke="#CBDB7C" stroke-width="6" stroke-linecap="round"/></svg><b>Vaya al corral</b><span>Portón abierto, voces<br>y un motor. 2:40.</span></div>
+      <div class="btns"><div class="btn speak">Escuchar</div><div class="btn main" id="bLight">Ya voy</div><div class="btn sec">Llamar al 911</div></div></div>
+
+    <div class="scr" id="s-metrics"><div class="bar"><span>6:10</span><span>81%</span></div>
+      <div class="head"><b>Mis números</b><small>Octubre | El Roble</small></div>
+      <div class="cards">
+        <div class="card"><span class="t">Noches tranquilas</span><span class="v">24 <small>de 30</small></span><div class="meter"><i data-w="80"></i></div></div>
+        <div class="card"><span class="t">Avisos que usted atendió</span><span class="v">5 <small>de 6</small></span><div class="meter"><i data-w="83"></i></div></div>
+        <div class="card"><span class="t">Lo que más apareció</span><span class="v" style="font-size:17px">Gusano cogollero</span><span class="t" style="font-weight:400">Casi siempre en el maíz norte</span></div>
+        <div class="card"><span class="t">Aparatos trabajando</span><span class="v">6 <small>de 6</small></span><div class="meter"><i data-w="100"></i></div></div>
+        <div class="ex">datos de ejemplo</div>
       </div></div>
-
-    <div class="scr calm" id="s-sum"><div class="bar"><span>6:05</span><span>81%</span></div>
-      <div class="big"><svg viewBox="0 0 64 64" width="80" height="80" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#2f9e6a"/><path d="M18 33 l9 9 l19 -20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Buenos días</b><span>Anoche hubo 1 aviso y usted ya lo atendió.</span></div>
-      <div class="sum"><div class="row"><b>2:14</b><span>Ratas, orilla norte</span><span>Atendido</span></div><div class="row"><b>Aparatos</b><span>3 de 3 bien</span></div></div>
-      <div class="btns"><div class="btn speak">Escuchar</div></div></div>
   </div></div>
 
-  <div class="caption" aria-live="polite"><span class="n" id="capN">1</span><p id="capT">Atardece en Los Naranjos. El nodo pasó el día cargando con el sol.</p></div>
+  <div class="caption" aria-live="polite"><span class="n" id="capN">1</span><p id="capT">Finca El Roble: café, maíz y un corral. Seis aparatos pocketNode cubren el terreno.</p></div>
 </div>
 
 <script>
 (() => {
   const $ = id => document.getElementById(id);
-  // Each step: start time (s), clock label, caption, and what changes.
+  const nodes = ["c1", "c2", "m1", "m2", "m3", "g1"];
+  const links = ["l-c1c2", "l-c2m1", "l-m1m2", "l-m1m3", "l-m2m3", "l-m3g1"];
+  const ups = ["u-c2", "u-m1", "u-m3", "u-g1"];
+  const node = (id, cls, on = true) => $("n-" + id).classList.toggle(cls, on);
+  let count = { v: 0, to: 0 };
+
+  // Each step: start second, clock, caption and what changes on the map and the phone.
   const STEPS = [
-    { t: 0,  clock: "17:50", cap: "Atardece en Los Naranjos. El nodo pasó el día cargando con el sol.", sky: "day", phone: "s-calm", lux: 800, verdict: ["Modo día: cargando", ""] },
-    { t: 4,  clock: "18:02", cap: "El sensor de luz baja de 10 lux: el nodo entra en modo noche y empieza a escuchar.", sky: "night", phone: "s-watch", lux: 4, on: true, verdict: ["Modo noche: escuchando", ""] },
-    { t: 9,  clock: "1:40",  cap: "Grillos y viento. Es el ruido base de la parcela: no hay aviso.", mic: "base", verdict: ["Ruido base: sin plagas", ""] },
-    { t: 14, clock: "2:14",  cap: "El micrófono oye chillidos y roídos fuera del ruido base. El celular los reconoce: ratas.", rat: true, mic: "rat", verdict: ["Ratas: posible", "warn"] },
-    { t: 19, clock: "2:15",  cap: "El acelerómetro siente que algo roza el poste. Dos señales juntas: aviso urgente.", acc: true, verdict: ["Ratas: seguro | URGENTE", "crit"], alarm: true },
-    { t: 23, clock: "2:16",  cap: "Sale un SMS desde la SIM del propio nodo. No necesita internet.", sms: true, notif: true, phone: "s-alert" },
-    { t: 29, clock: "2:17",  cap: "Con datos móviles, el aviso también llega por WhatsApp, con letra grande y palabras sencillas.", phone: "s-wa", wa: 1 },
-    { t: 34, clock: "2:21",  cap: "El productor responde 1: ya fue a ver. El nodo aprende que la alerta era real.", wa: 3, ratOut: true, mic: "base", accOff: true, verdict: ["Atendido: vigilancia reforzada", ""] },
-    { t: 40, clock: "6:05",  cap: "Amanece. El productor recibe el resumen de la noche y el nodo vuelve a cargar.", sky: "dawn", phone: "s-sum", lux: 650, mic: "quiet", verdict: ["Modo día: cargando", ""] },
-    { t: 47, end: true }
+    { t: 0,  clock: "17:45", cap: "Finca El Roble: café, maíz y un corral. Seis aparatos pocketNode cubren el terreno.", phone: "s-calm" },
+    { t: 5,  clock: "18:05", cap: "Anochece. Cada aparato entra en modo noche y se conecta con sus vecinos.", night: true, on: true, phone: "s-watch" },
+    { t: 11, clock: "1:20",  cap: "Un aparato del maíz oye el aleteo de la polilla del gusano cogollero.", moths: true, warn: ["m2"], ping: ["m2"], count: 12 },
+    { t: 16, clock: "1:28",  cap: "Su vecino oye lo mismo. Ya son 64 por hora y la noche está húmeda: riesgo de infestación.", warn: ["m3"], ping: ["m3"], hot: ["l-m2m3"], count: 64, badge: true },
+    { t: 22, clock: "1:32",  cap: "M2 no tiene señal: pasa el aviso a M3, que lo sube a la antena y sale el SMS.", nosig: true, hotUp: ["u-m3", "u-h"], phone: "s-crop", notif: ["pocketNode: OJO CON EL MAÍZ", "Gusano cogollero, lado norte"] },
+    { t: 28, clock: "2:38",  cap: "En el corral, el aparato del portón siente que se abre y oye voces y un motor.", clearCrop: true, intruders: true, alarm: ["g1"], ping: ["g1"] },
+    { t: 33, clock: "2:40",  cap: "En modo ganado el ruido humano no se descarta: es la alarma. Aviso urgente al dueño.", hotUp: ["u-g1", "u-h"], phone: "s-cattle", notif: ["pocketNode: VAYA AL CORRAL", "Portón abierto y voces"] },
+    { t: 39, clock: "2:41",  cap: "El productor toca Ya voy, enciende las luces y sale. Los intrusos se van.", tap: true, houseLight: true, flee: true },
+    { t: 45, clock: "6:10",  cap: "Amanece. El mapa marca dónde se concentró la plaga y la app resume el mes con números sencillos.", day: true, heat: true, phone: "s-metrics" },
+    { t: 54, end: true }
   ];
-  const SKY = { day: "linear-gradient(#f6b26b, #f7d9a0 55%, #c9e4b5)", night: "radial-gradient(circle at 80% 14%, #f4e7c0 0 18px, transparent 20px), linear-gradient(#070b16, #142038 70%)", dawn: "linear-gradient(#8fb3e6, #f3c98b 60%, #cfe3b8)" };
-  const st = { lux: 800, mic: "quiet", acc: false, t: 0, playing: false, idx: -1 };
-  window.__mvpDone = false;
 
   function apply(s, i) {
     $("capN").textContent = i + 1; $("capT").textContent = s.cap; $("clock").textContent = s.clock;
-    if (s.sky) { $("sky").style.background = SKY[s.sky]; $("ground").style.filter = s.sky === "night" ? "brightness(.45)" : "none"; }
-    if (s.lux != null) st.lux = s.lux;
-    if (s.mic) st.mic = s.mic;
-    if (s.acc) st.acc = true; if (s.accOff) st.acc = false;
-    if (s.on) $("box").classList.add("on");
-    if (s.alarm) $("box").classList.add("alarm");
-    if (s.rat) $("rat").classList.add("in");
-    if (s.ratOut) { $("rat").classList.remove("in"); $("box").classList.remove("alarm"); }
-    if (s.verdict) { $("verdict").textContent = s.verdict[0]; $("verdict").className = "verdict " + s.verdict[1]; }
-    if (s.sms) { $("wave").classList.add("go"); $("smsfly").classList.add("go"); setTimeout(() => $("wave").classList.remove("go"), 3500); }
-    if (s.notif) { $("notif").classList.add("show"); setTimeout(() => $("notif").classList.remove("show"), 2200); }
-    if (s.phone) { document.querySelectorAll(".scr").forEach(e => e.classList.toggle("show", e.id === s.phone)); }
-    if (s.wa) { ["m1", "m2", "m3"].forEach((m, k) => setTimeout(() => $(m).classList.toggle("show", k < s.wa), k * 900)); }
-    if (s.wa === 3) { $("bSeen").classList.add("tap"); }
+    if (s.night) $("night").setAttribute("opacity", ".55");
+    if (s.day) { $("night").setAttribute("opacity", "0"); nodes.forEach(n => { node(n, "ping", false); node(n, "alarm", false); node(n, "warn", false); }); }
+    if (s.on) { nodes.forEach(n => node(n, "on")); links.forEach(l => $(l).classList.add("on")); ups.forEach(u => $(u).classList.add("on")); $("u-h").classList.add("on"); }
+    (s.warn || []).forEach(n => node(n, "warn"));
+    (s.alarm || []).forEach(n => node(n, "alarm"));
+    (s.ping || []).forEach(n => node(n, "ping"));
+    (s.hot || []).forEach(l => $(l).classList.add("hot"));
+    (s.hotUp || []).forEach(l => $(l).classList.add("hot"));
+    if (s.moths) $("moths").style.opacity = 1;
+    if (s.count != null) { count.to = s.count; $("count").style.opacity = 1; }
+    if (s.badge) $("badge").classList.add("show");
+    if (s.nosig) $("nosig").style.opacity = 1;
+    if (s.clearCrop) { $("moths").style.opacity = 0; ["m2", "m3"].forEach(n => { node(n, "ping", false); node(n, "warn", false); }); document.querySelectorAll(".hot").forEach(e => e.classList.remove("hot")); $("count").style.opacity = 0; $("badge").classList.remove("show"); }
+    if (s.intruders) $("intruders").style.opacity = 1;
+    if (s.tap) $("bLight").classList.add("tap");
+    if (s.houseLight) $("win").setAttribute("fill", "#CBDB7C");
+    if (s.flee) { $("intruders").style.opacity = 0; node("g1", "alarm", false); node("g1", "ping", false); document.querySelectorAll(".hot").forEach(e => e.classList.remove("hot")); }
+    if (s.heat) $("heat").style.opacity = 1;
+    if (s.notif) { $("notifT").textContent = s.notif[0]; $("notifB").textContent = s.notif[1]; $("notif").classList.add("show"); setTimeout(() => $("notif").classList.remove("show"), 2400); }
+    if (s.phone) {
+      document.querySelectorAll(".scr").forEach(e => e.classList.toggle("show", e.id === s.phone));
+      if (s.phone === "s-metrics") setTimeout(() => document.querySelectorAll(".meter i").forEach(m => m.style.width = m.dataset.w + "%"), 400);
+    }
   }
 
-  // Sensor traces drawn every frame.
-  const hist = { cLux: [], cMic: [], cAcc: [], cBat: [] };
-  function draw(id, val, color) {
-    const c = $(id), g = c.getContext("2d"), h = hist[id];
-    h.push(val); if (h.length > 80) h.shift();
-    g.clearRect(0, 0, c.width, c.height);
-    g.strokeStyle = "#2a3448"; g.beginPath(); g.moveTo(0, c.height - .5); g.lineTo(c.width, c.height - .5); g.stroke();
-    g.strokeStyle = color; g.lineWidth = 2; g.beginPath();
-    h.forEach((v, k) => { const x = k * (c.width / 79), y = c.height - 2 - v * (c.height - 4); k ? g.lineTo(x, y) : g.moveTo(x, y); });
-    g.stroke();
-  }
-  let shown = 800, bat = 92;
   function frame() {
-    shown += (st.lux - shown) * .06;
-    const micLvl = st.mic === "rat" ? .55 + Math.random() * .4 : st.mic === "base" ? .15 + Math.random() * .12 : .05 + Math.random() * .04;
-    const accLvl = st.acc ? .3 + Math.random() * .65 : .04 + Math.random() * .03;
-    if (st.playing) bat = Math.max(64, bat - .01);
-    draw("cLux", Math.min(1, shown / 800), "#f2c46d");
-    draw("cMic", micLvl, st.mic === "rat" ? "#ff7a93" : "#9aa4b8");
-    draw("cAcc", accLvl, st.acc ? "#ff6b6b" : "#9aa4b8");
-    draw("cBat", bat / 100, "#6fd3a0");
-    $("vLux").textContent = Math.round(shown) + " lx";
-    $("vMic").textContent = st.mic === "rat" ? "chillidos" : st.mic === "base" ? "grillos" : "bajo";
-    $("vAcc").textContent = st.acc ? "roce" : "quieto";
-    $("vBat").textContent = Math.round(bat) + " %";
+    if (count.v !== count.to) { count.v += Math.sign(count.to - count.v); $("count").textContent = count.v + " / hora"; }
     requestAnimationFrame(frame);
   }
 
+  const st = { idx: -1, playing: false };
   let start = 0;
+  window.__mvpDone = false;
   function tick(now) {
     if (!st.playing) return;
     const t = (now - start) / 1000;
     while (st.idx + 1 < STEPS.length && STEPS[st.idx + 1].t <= t) {
-      st.idx++;
-      const s = STEPS[st.idx];
+      const s = STEPS[++st.idx];
       if (s.end) { st.playing = false; window.__mvpDone = true; $("play").textContent = "Reproducir"; return; }
       apply(s, st.idx);
     }
     requestAnimationFrame(tick);
   }
   function reset() {
-    st.idx = -1; st.mic = "quiet"; st.acc = false; st.lux = 800; bat = 92; window.__mvpDone = false;
-    ["box"].forEach(id => $(id).className = "box"); $("rat").classList.remove("in"); $("bSeen").classList.remove("tap");
-    ["m1", "m2", "m3"].forEach(m => $(m).classList.remove("show"));
+    $("night").setAttribute("opacity", "0"); $("win").setAttribute("fill", "#42271A");
+    nodes.forEach(n => $("n-" + n).setAttribute("class", "node"));
+    [...links, ...ups, "u-h"].forEach(l => $(l).setAttribute("class", l.startsWith("u") ? "up" : "link"));
+    ["moths", "intruders", "count", "nosig"].forEach(id => $(id).style.opacity = 0);
+    $("heat").style.opacity = 0; $("badge").classList.remove("show"); $("bLight").classList.remove("tap");
+    document.querySelectorAll(".meter i").forEach(m => m.style.width = 0);
+    count = { v: 0, to: 0 }; window.__mvpDone = false;
     apply(STEPS[0], 0); st.idx = 0;
   }
   function play() { reset(); st.playing = true; $("play").textContent = "Reproduciendo"; start = performance.now(); requestAnimationFrame(tick); }

@@ -71,11 +71,12 @@ La lista íntegra de los nueve desafíos está en
 
 ## MVP animado
 
-Simulación de una noche completa: el nodo entra en modo noche, detecta ratas,
-envía SMS y WhatsApp, y el productor responde.
+Dos simulaciones de una noche, con datos de ejemplo:
 
-- Página: [mvp/index.html](mvp/index.html) (abrir en el navegador y pulsar Reproducir)
-- Video: [video/pocketnode-mvp.webm](video/pocketnode-mvp.webm)
+| página | qué muestra | video |
+|---|---|---|
+| [mvp/index.html](mvp/index.html) | la finca desde arriba: red de nodos, relevo sin señal, plaga en el maíz, robo en el corral y "Mis números" | [video/pocketnode-red.webm](video/pocketnode-red.webm) |
+| [mvp/vista-cercana.html](mvp/vista-cercana.html) | un nodo de cerca: sensores en vivo, ratas y aviso por SMS y WhatsApp | [video/pocketnode-vista-cercana.webm](video/pocketnode-vista-cercana.webm) |
 
 Grabar el video con Docker (vía principal):
 
