@@ -19,9 +19,10 @@ con Playwright (no hay suite automatizada).
 |---|---|---|---|---|
 | T1 | S3, S6 | inline | hecho | docs: modos, plagas, red y paleta |
 | T2 | S1, S2, S3, S4 | inline | hecho | feat: vista aérea, ganado y métricas |
-| T3 | S4, S5 | inline | pendiente | |
+| T3 | S4, S5 | inline | hecho | feat: explicativo con modelo 3D |
 
 ## Log
 
 - L1 (2026-10-16): pedido original del usuario, citado en S1 a S5.
 - L2: texto de plagas del usuario, resumido en S6. Advertencia dada: la detección de la broca por aire no está verificada; se presenta como hipótesis. El ruido humano se filtra en modo cultivo y es señal en modo ganado.
+- L3: edge-tts 7.2.8 da 403 en el servicio de voz; se sube a 7.3.1 (3 días de antigüedad, pip-audit limpio). Docker Desktop no arrancó: los videos se graban con Edge local.

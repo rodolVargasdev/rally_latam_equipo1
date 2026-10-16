@@ -1,0 +1,162 @@
+<title>pocketNode explicativo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;700;800&display=swap">
+<style>
+:root{color-scheme:dark;--blk:#0F4A3A;--crm:#FFFFFF;--lime:#CBDB7C;--blue:#84451E;--red:#C0392B;--amb:#84451E;--gry:#8A99A8;--vio:#8B5CF6;--ui:#123d31;--line:#2a5a4a;--mut:#a9c3b4}
+html,body{background:#0b2a22;color:var(--crm)}
+body{font-family:'JetBrains Mono',ui-monospace,Consolas,monospace;font-size:14px}
+.page{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 40px;display:flex;flex-direction:column;gap:12px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.top h1{margin:0;font:400 clamp(18px,3vw,28px)/1 'Archivo Black','Arial Black',Impact,sans-serif;letter-spacing:-.01em;text-transform:uppercase}
+.top h1 b{color:var(--lime);font-weight:400}
+.top p{margin:0;color:var(--mut);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+#stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:var(--blk);border-radius:6px;max-width:100%}
+#world{font-variant-ligatures:none;position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden}
+#scenes{position:absolute;inset:0}
+.scene{position:absolute;left:0;top:0;width:1920px;height:1080px;visibility:hidden;overflow:hidden}
+.abs{position:absolute}
+.K{position:absolute;font-family:'Archivo Black','Arial Black',Impact,sans-serif;text-transform:uppercase;line-height:.86;letter-spacing:-.01em;white-space:nowrap}
+.K span{display:inline-block;transform-origin:50% 100%}
+.K .sp{width:.28em}
+.M{font-family:'JetBrains Mono',ui-monospace,Consolas,monospace}
+.lbl{font:700 18px/1.2 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+.win{position:absolute;border:2px solid currentColor;border-radius:16px;overflow:hidden;background:var(--wbg)}
+.scene{--wbg:#123d31}
+.scene.light{--wbg:#FFFFFF}
+.win>.bar{height:46px;display:flex;align-items:center;gap:10px;padding:0 18px;border-bottom:2px solid currentColor;font:700 17px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
+.win>.bar i{width:13px;height:13px;border-radius:50%;display:block;border:2px solid currentColor}
+.win>.bar i:nth-child(1){background:var(--red);border-color:var(--red)}
+.win>.bar i:nth-child(2){background:var(--amb);border-color:var(--amb)}
+.win>.bar i:nth-child(3){background:var(--lime);border-color:var(--lime)}
+.win>.bar span{margin-left:10px}
+.win .wb{position:relative;padding:22px 30px}
+.pill{display:inline-flex;align-items:center;justify-content:center;padding:10px 22px;border-radius:999px;font:800 24px 'JetBrains Mono',monospace;white-space:nowrap;color:var(--blk);box-sizing:border-box}
+.ol{background:transparent;border:3px solid currentColor}
+.tag{display:inline-block;padding:7px 15px;border:2px solid currentColor;border-radius:999px;font:700 20px 'JetBrains Mono',monospace;margin:0 10px 12px 0;white-space:nowrap}
+.box{position:absolute;border:3px solid currentColor;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;font:800 24px/1.25 'JetBrains Mono',monospace;box-sizing:border-box;padding:10px 16px}
+.cita11{position:absolute;left:0;top:517px;width:70px;height:46px;border:2px solid currentColor;border-radius:6px;padding:7px;box-sizing:border-box;display:flex;flex-direction:column;gap:5px}
+.cita11 b,.citaC b{display:block;height:4px;background:currentColor;opacity:.6;border-radius:2px}
+.citaC{position:absolute;width:170px;height:210px;border:3px solid currentColor;border-radius:14px;padding:18px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;background:var(--blk)}
+.gl{position:absolute;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;border:3px solid currentColor;background:var(--blk);display:grid;place-items:center;font:800 24px 'JetBrains Mono',monospace}
+.lvc{position:absolute;width:320px;height:570px;background:var(--blk);color:var(--crm);border-radius:20px;padding:26px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px}
+.lvc .sw{height:110px;border-radius:12px}
+.lvc p{margin:0;font:400 23px/1.5 'JetBrains Mono',monospace}
+.lvc .pill{font-size:21px;padding:9px 16px;align-self:flex-start}
+.row{position:absolute;left:100px;width:1720px;height:132px;border:2px solid var(--line);border-radius:14px;background:#0A3D7A;display:grid;grid-template-columns:90px 1fr 440px 380px;align-items:center;gap:22px;padding:0 26px;box-sizing:border-box}
+.row .n{width:64px;height:64px;border-radius:12px;border:3px solid currentColor;display:grid;place-items:center;font:800 30px 'JetBrains Mono',monospace}
+.row .tx{font:700 24px/1.35 'JetBrains Mono',monospace}
+.row .rg{font:700 22px 'JetBrains Mono',monospace;color:var(--lime)}
+.row .pill{font-size:19px;padding:7px 14px;margin:3px 6px 3px 0}
+.cell{position:absolute;box-sizing:border-box}
+mark{background:var(--lime);color:var(--blk);border-radius:4px;padding:0 4px}
+.st{position:absolute;left:-6px;right:-6px;top:48%;height:6px;background:var(--red);transform:scaleX(0);transform-origin:0 50%}
+.term,.cue,.cut{position:relative;display:inline-block;border-radius:4px}
+.bd{display:inline-block;color:var(--amb);font-weight:800}
+#wipe{position:absolute;left:0;top:0;width:1920px;height:1080px;background:var(--lime);transform:translateX(-1920px);pointer-events:none}
+#fx{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(4,24,18,.42) 100%)}
+#hud{position:absolute;inset:0;pointer-events:none;color:var(--crm);font:700 18px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase}
+#hud .br{position:absolute;width:36px;height:36px;border:0 solid currentColor;opacity:.6}
+#hud .b1{left:24px;top:24px;border-width:3px 0 0 3px}
+#hud .b2{right:24px;top:24px;border-width:3px 3px 0 0}
+#hud .b3{left:24px;bottom:24px;border-width:0 0 3px 3px}
+#hud .b4{right:24px;bottom:24px;border-width:0 3px 3px 0}
+#hud .t{position:absolute;opacity:.6;white-space:nowrap}
+#hTL{left:76px;top:36px}
+#hTC{right:76px;top:36px;font-variant-numeric:tabular-nums}
+#hSq{left:50%;top:38px;transform:translateX(-50%);display:flex;gap:8px;opacity:.8}
+#hSq b{width:14px;height:14px;border:2px solid currentColor;display:block}
+#hSq b.on{background:currentColor}
+#hBL{left:76px;bottom:34px}
+#hBR{right:76px;bottom:34px;font-variant-numeric:tabular-nums}
+#hBL .ul{height:3px;margin-top:9px;width:440px;background:rgba(128,128,128,.35)}
+#hProg{height:100%;width:0;background:currentColor}
+#cap{position:absolute;left:0;right:0;top:958px;text-align:center;font:800 26px 'JetBrains Mono',monospace;letter-spacing:.22em;text-transform:uppercase;pointer-events:none;white-space:nowrap}
+#cap span{display:inline-block}
+#playOv{position:absolute;inset:0;display:grid;place-items:center;background:rgba(11,42,34,.62);z-index:5}
+#playOv[hidden]{display:none}
+#playBtn{font:400 clamp(16px,3.2vw,34px)/1 'Archivo Black','Arial Black',sans-serif;text-transform:uppercase;background:var(--lime);color:var(--blk);border:0;border-radius:999px;padding:.7em 1.4em;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.4em}
+#playBtn small{font:700 clamp(9px,1.2vw,13px) 'JetBrains Mono',monospace;letter-spacing:.12em}
+#subs{min-height:4.6em;background:var(--ui);border:1px solid var(--line);border-radius:8px;padding:12px 16px;font-size:15px;line-height:1.55;color:var(--mut)}
+#subs span{transition:color .2s}
+#subs .now{color:var(--crm)}
+#subs .past{color:#7FA3C9}
+.ctr{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ctr button,.ctr select,#chap button{font:700 13px 'JetBrains Mono',monospace;background:var(--ui);color:var(--crm);border:1px solid var(--line);border-radius:6px;padding:8px 12px;cursor:pointer;max-width:100%}
+.ctr select{min-width:0;flex:1 1 220px}
+.ctr button:hover,#chap button:hover{border-color:var(--crm)}
+button:focus-visible,select:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+#chap{display:flex;flex-wrap:wrap;gap:6px}
+#chap button{padding:6px 9px;font-size:12px}
+#chap button[aria-current="true"]{background:var(--lime);color:var(--blk);border-color:var(--lime)}
+#vNote{margin:0;color:var(--amb);font-size:13px}
+.hint{color:var(--mut);font-size:12px;margin:0}
+html.render,html.render body{margin:0;overflow:hidden;background:#0F4A3A}
+.lab{display:flex;align-items:center;gap:12px;font:800 22px 'JetBrains Mono',monospace;letter-spacing:.1em;white-space:nowrap}
+.lab i{width:46px;height:3px;background:var(--lime);display:block}
+.lab span{background:rgba(15,74,58,.9);border:2px solid var(--lime);padding:6px 12px;border-radius:8px}
+.sr{display:flex;align-items:center;gap:22px}
+html.render .page{padding:0;max-width:none;display:block}
+html.render .top,html.render #subs,html.render .ctr,html.render #chap,html.render .hint,html.render #vNote,html.render #playOv{display:none!important}
+html.render #stage{width:1920px;height:1080px;border-radius:0;aspect-ratio:auto}
+</style>
+
+<div class="page">
+  <header class="top">
+    <h1>pocket<b>Node</b></h1>
+    <p>Explicativo animado | 5 actos</p>
+  </header>
+  <div id="stage" aria-label="Animación: cómo funciona pocketNode">
+    <div id="world">
+      <div id="scenes"></div>
+      <div id="wipe"></div>
+      <canvas id="fx" width="960" height="540"></canvas>
+      <div id="vig"></div>
+      <div id="cap"></div>
+      <div id="hud">
+        <i class="br b1"></i><i class="br b2"></i><i class="br b3"></i><i class="br b4"></i>
+        <div class="t" id="hTL">POCKETNODE / EL NODO</div>
+        <div class="t" id="hSq"><b></b><b></b><b></b><b></b></div>
+        <div class="t" id="hTC">TC 00:00:00:00</div>
+        <div class="t" id="hBL"><span id="hAct">01 - EL PROBLEMA</span><div class="ul"><div id="hProg"></div></div></div>
+        <div class="t" id="hBR">1920x1080 | 60FPS | BEAT <span id="hBeat">001/000</span></div>
+      </div>
+    </div>
+    <div id="playOv"><button id="playBtn" type="button">Reproducir<small>activa sonido y voz</small></button></div>
+  </div>
+  <div id="subs" aria-live="polite"></div>
+  <div class="ctr">
+    <button id="bPause" type="button">Pausa</button>
+    <button id="bMute" type="button">Silenciar</button>
+    <button id="bRestart" type="button">Reiniciar</button>
+    <select id="vSel" aria-label="Voz de la narración"><option value="">Cargando voces</option></select>
+    <button id="bTest" type="button" title="Oír una frase con la voz elegida">Probar voz</button>
+    <span id="vCount" class="hint"></span>
+  </div>
+  <p id="vNote" hidden>Este navegador no ofrece voces naturales latinas. Para tenerlas (El Salvador, México, Colombia, Argentina y más), abra este enlace en Microsoft Edge con conexión a internet.</p>
+  <nav id="chap" aria-label="Capítulos"></nav>
+  <p class="hint">Toda cifra marcada "ilustrativo" no es una medición. Los datos técnicos vienen de la propuesta del equipo.</p>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="mblur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur id="mbx" stdDeviation="0 0"/></filter>
+    <filter id="rgb" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+      <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/>
+      <feOffset id="rgbR" in="r" dx="0" dy="0" result="r2"/>
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g"/>
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"/>
+      <feOffset id="rgbB" in="b" dx="0" dy="0" result="b2"/>
+      <feBlend in="r2" in2="g" mode="screen" result="rg"/>
+      <feBlend in="rg" in2="b2" mode="screen"/>
+    </filter>
+    <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="16" result="bl"/><feColorMatrix in="bl" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 26 -11" result="g"/><feComposite in="SourceGraphic" in2="g" operator="atop"/></filter>
+  </defs>
+</svg>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
