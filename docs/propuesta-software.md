@@ -46,6 +46,62 @@ Sobre hongos: el celular no mide humedad. El riesgo de hongos es una
 **estimación** (noches con lluvia detectada por audio y barómetro, más
 temperatura) y así se presenta, no como detección.
 
+## Dos modos: cultivo y ganado
+
+El mismo nodo trabaja en uno de dos modos, elegido al instalarlo.
+
+| | modo cultivo | modo ganado |
+|---|---|---|
+| Dónde va | poste en la parcela (café, maíz, frijol) | poste del corral, portón o cerco |
+| Qué busca | plagas nocturnas | robo de ganado (abigeato), depredadores, animal en apuros, cerco caído |
+| Ruido humano (voces, motores) | se descarta | es señal: personas o vehículo de noche cerca del corral |
+| Acelerómetro | roce en el poste | apertura del portón, golpe o inclinación del cerco |
+| Aviso típico | "Gusano cogollero: riesgo de infestación en el maíz" | "Portón abierto y voces en el corral a las 2:40" |
+
+## Plagas que busca el modo cultivo
+
+| plaga | cultivo | firma acústica | estado |
+|---|---|---|---|
+| Polilla del gusano cogollero (*Spodoptera frugiperda*) | maíz | aleteo continuo del adulto antes de poner huevos en el cogollo | a entrenar |
+| Gusano elotero (*Helicoverpa zea*) | granos básicos | vuelo y actividad nocturna del adulto | a entrenar |
+| Escarabajos y plagas voladoras nocturnas | varios | masticado masivo o zumbido grueso cuando la población sube | a entrenar |
+| Broca del café (*Hypothenemus hampei*) | café | zumbido de baja amplitud del adulto al volar entre frutos | **hipótesis a validar**: mide unos 2 mm y no está comprobado que un micrófono de celular la capte a distancia |
+
+## Lógica de riesgo (modo cultivo)
+
+| fase | qué evalúa | resultado |
+|---|---|---|
+| 1. Presencia | eventos acústicos aislados | queda en el resumen de la mañana |
+| 2. Densidad | eventos por hora contra el umbral económico (ejemplo: más de 50 por hora) | sube a alerta |
+| 3. Microclima | noches cálidas y húmedas después de lluvia (barómetro, lluvia oída, temperatura) | baja el umbral: es cuando brotan plagas y hongos como la roya |
+| 4. Riesgo de infestación | densidad e intensidad sobre el umbral de daño | SMS al productor |
+
+El umbral de 50 eventos por hora es un ejemplo. El valor real se calibra por
+cultivo en la prueba de campo.
+
+## Filtrado de ruido
+
+El modelo se entrena con un conjunto de sonidos de fondo que aprende a
+descartar:
+
+- Naturaleza: lluvia, viento en el follaje, truenos.
+- Fauna no dañina: grillos, ranas, chicharras, aves nocturnas.
+- Ruido humano: vehículos, motores, herramientas, voces. **Solo en modo
+  cultivo**; en modo ganado es la señal de alarma.
+
+## Red de nodos
+
+Un terreno amplio lleva varios nodos, uno cada 50 a 100 metros según el
+cultivo (distancia a validar en campo).
+
+- **Confirmación cruzada:** si dos nodos vecinos oyen lo mismo, la confianza
+  sube y el aviso dice por dónde avanza la plaga.
+- **Relevo:** un nodo sin señal pasa su aviso por Wi-Fi o Bluetooth al vecino
+  que sí tiene señal, y ese envía el SMS.
+- **Mapa de calor:** el tablero muestra qué zona de la finca concentra más
+  eventos por semana.
+- **Salud de la red:** si un nodo deja de reportar, el vecino lo nota y avisa.
+
 ## Motor de reglas en el nodo
 
 Cada evento sale con un nivel y una confianza.
@@ -108,6 +164,11 @@ app se diseña para que se entienda sin leer instrucciones.
    batería, Movido).
 4. **WhatsApp y SMS:** el mismo aviso para quien no abre la app.
 
+5. **Mis números:** métricas sencillas, una por tarjeta, con palabra y
+   dibujo: noches tranquilas del mes, avisos atendidos, la plaga más vista,
+   la zona con más avisos y cuánto trabajaron los aparatos. Barras grandes,
+   sin ejes ni decimales.
+
 ## Ejemplo de mensaje
 
 ```text
@@ -116,6 +177,20 @@ Ratas en la orilla norte de Los Naranjos (aparato 2).
 Desde las 2:14 de la madrugada. Seguro.
 Responda 1 si ya fue a ver, 2 si no era nada.
 ```
+
+## Paleta
+
+| color | uso |
+|---|---|
+| `#FFFFFF` blanco | fondo de tarjetas y texto sobre verde bosque |
+| `#D1E3B3` verde claro | fondo de la app, estado tranquilo |
+| `#0F4A3A` verde bosque | marca, encabezados, botón principal |
+| `#CBDB7C` verde lima | acento, botón Escuchar, resaltados |
+| `#84451E` café rojizo | ganado, tierra, estado de atención |
+| `#42271A` café oscuro | texto principal |
+
+El rojo de aviso urgente (`#C0392B`) queda fuera de la paleta a propósito: es
+un color de alarma y no se reutiliza para nada más.
 
 ## Tecnología propuesta
 
