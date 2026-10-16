@@ -451,8 +451,9 @@ function scoreVoice(v) {
   if (LATAM.includes(reg)) s += 100;
   if (reg === 'ES') s -= 100;
   if (esNatural(v)) s += 200;
-  if (reg === 'SV') s += 30;
-  else if (reg === 'MX' || reg === 'US' || reg === '419') s += 10;
+  if (/Dalia/i.test(v.name)) s += 40;
+  if (reg === 'MX') s += 30;
+  else if (reg === 'SV' || reg === 'US' || reg === '419') s += 10;
   if (/google/i.test(v.name)) s += 5;
   return s;
 }

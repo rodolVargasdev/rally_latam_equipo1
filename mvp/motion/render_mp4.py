@@ -25,7 +25,8 @@ D.mkdir(parents=True, exist_ok=True)
 WRAP = D / "_render.html"
 VOZDIR = D / "voz"
 OUT = D / "pocketnode-explicativo.mp4"
-VOZ_PREFERIDAS = ["es-SV-LorenaNeural", "es-SV-RodrigoNeural", "es-MX-DaliaNeural"]
+VOZ_PREFERIDAS = ["es-MX-DaliaNeural", "es-SV-LorenaNeural"]
+PITCH = "+8Hz"  # tono algo más alto: voz más animada (elegida por el equipo, 2026-10-16)
 RATE = "+16%"
 FPS = 30
 
@@ -72,7 +73,7 @@ async def voces(textos):
         for k, t in enumerate(frases):
             mp3 = VOZDIR / f"{i:02d}_{k}.mp3"
             if not mp3.exists() or mp3.stat().st_size == 0:
-                await edge_tts.Communicate(t, voz, rate=RATE).save(str(mp3))
+                await edge_tts.Communicate(t, voz, rate=RATE, pitch=PITCH).save(str(mp3))
             fila.append(round(duracion(mp3), 3))
         dur.append(fila)
     return voz, dur
