@@ -78,9 +78,9 @@ Dos simulaciones de una noche, con datos de ejemplo:
 | [mvp/index.html](mvp/index.html) | la finca desde arriba: red de nodos, relevo sin señal, plaga en el maíz, robo en el corral y "Mis números" | [video/pocketnode-red.webm](video/pocketnode-red.webm) |
 | [mvp/vista-cercana.html](mvp/vista-cercana.html) | un nodo de cerca: sensores en vivo, ratas y aviso por SMS y WhatsApp | [video/pocketnode-vista-cercana.webm](video/pocketnode-vista-cercana.webm) |
 
-## Explicativo en motion graphics
+## Explicativo estilo keynote
 
-[mvp/motion/pocketnode-motion.html](mvp/motion/pocketnode-motion.html): cinco actos de unos dos minutos, con voz, subtítulos y el modelo 3D del nodo (three.js) que se arma pieza por pieza. Se edita en `mvp/motion/src/` y se ensambla con `python mvp/motion/build.py`. El MP4 se graba con `mvp/motion/render_mp4.py` y se guarda fuera del repositorio.
+[mvp/motion/pocketnode-motion.html](mvp/motion/pocketnode-motion.html): unos 4 minutos con voz, organizado en seis preguntas (cómo escucha, las polillas, las falsas alarmas, sin internet, la energía y qué detecta), con el modelo 3D del nodo en three.js. Se edita en `mvp/motion/src/` y se ensambla con `python mvp/motion/build.py`; el MP4 se graba con `mvp/motion/render_mp4.py` y se guarda fuera del repositorio. El sustento técnico de cada afirmación está en [docs/deteccion-tecnica.md](docs/deteccion-tecnica.md).
 
 Grabar el video con Docker (vía principal):
 

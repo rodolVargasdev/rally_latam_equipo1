@@ -13,7 +13,7 @@ const LV = {
   baja:{n:'Baja', c:C.crm, t:C.blk},
   di:{n:'Descartado', c:C.gry, t:C.blk}
 };
-const ACTN = {1:'EL PROBLEMA', 2:'EL DISPOSITIVO', 3:'LA RED', 4:'EL AVISO', 5:'CIERRE'};
+const ACTN = {1:'EL PROBLEMA', 2:'EL NODO', 3:'CÓMO ESCUCHA', 4:'CÓMO DECIDE', 5:'LO QUE PUEDE Y LO QUE NO', 6:'CIERRE'};
 const SC = [];
 const BOUND = [];
 const scene = d => SC.push(d);
@@ -229,7 +229,7 @@ function voiceLabel(v) {
   return `${nombre} | ${PAIS[region(v)] || v.lang}${esNatural(v) ? ' | natural' : ''}`;
 }
 const PRON = [
-  [/pocketNode/gi, 'póket nóud'], [/SMS/g, 'ese eme ese'], [/SIM/g, 'sim'], [/GPS/g, 'ge pe ese'], [/Wi-Fi/g, 'uai fai']
+  [/pocketNode/gi, 'póket nóud'], [/SMS/g, 'ese eme ese'], [/SIM/g, 'sim'], [/GPS/g, 'ge pe ese'], [/Wi-Fi/g, 'uai fai'], [/YAMNet/g, 'iam net'], [/LiteRT/g, 'lait ar ti'], [/TensorFlow Lite/g, 'ténsor flou lait'], [/IP65/g, 'i pe sesenta y cinco']
 ];
 const pron = s => PRON.reduce((a, [re, r]) => a.replace(re, r), s);
 function loadVoices() {

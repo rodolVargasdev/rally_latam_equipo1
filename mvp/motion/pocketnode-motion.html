@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;700;800&family=Urbanist:wght@400;500;700;800&display=swap">
 <style>
 :root{color-scheme:dark;--blk:#074736;--crm:#FFFFFF;--lime:#CBDB7C;--blue:#84441A;--red:#C0392B;--amb:#84441A;--gry:#8A99A8;--vio:#8B5CF6;--ui:#123d31;--line:#2a5a4a;--mut:#a9c3b4}
 html,body{background:#0b2a22;color:var(--crm)}
@@ -160,6 +160,36 @@ html.render #stage{width:1920px;height:1080px;border-radius:0;aspect-ratio:auto}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+/* Estilo keynote: sin marco HUD ni grano; fondo negro, producto al centro, una idea por pantalla. */
+#hud, #vig, #fx, #cap { display: none !important; }
+.top h1 { font-family: 'Urbanist', 'Segoe UI', system-ui, sans-serif; font-weight: 800; text-transform: none; letter-spacing: -.01em; }
+.scene { font-family: 'Urbanist', 'Segoe UI', system-ui, sans-serif; }
+.kt { position: absolute; font: 800 118px/1.02 'Urbanist', 'Segoe UI', system-ui, sans-serif; letter-spacing: -.025em; white-space: nowrap; }
+.kt.md { font-size: 84px; }
+.kt.sm { font-size: 60px; }
+.ks { position: absolute; font: 500 40px/1.3 'Urbanist', 'Segoe UI', system-ui, sans-serif; opacity: .72; white-space: nowrap; }
+.kq { position: absolute; font: 700 24px 'Urbanist', 'Segoe UI', system-ui, sans-serif; letter-spacing: .22em; text-transform: uppercase; color: #CBDB7C; white-space: nowrap; }
+.light .kq { color: #84441A; }
+.kn { position: absolute; font: 800 150px/1 'Urbanist', 'Segoe UI', system-ui, sans-serif; letter-spacing: -.03em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tagx { position: absolute; font: 600 20px 'Urbanist', 'Segoe UI', sans-serif; letter-spacing: .14em; text-transform: uppercase; padding: 6px 14px; border: 1.5px solid currentColor; border-radius: 999px; opacity: .8; white-space: nowrap; }
+.co { position: absolute; display: flex; align-items: center; gap: 0; white-space: nowrap; pointer-events: none; }
+.co i { width: 10px; height: 10px; border-radius: 50%; background: #CBDB7C; box-shadow: 0 0 18px #CBDB7C; flex: none; }
+.co b { display: block; width: 90px; height: 1.5px; background: rgba(255,255,255,.55); }
+.co span { font: 600 26px 'Urbanist', sans-serif; color: #fff; padding-left: 14px; }
+.co span small { display: block; font-weight: 500; font-size: 19px; opacity: .6; }
+.logo { display: block; width: 100%; height: auto; }
+.row2 { display: flex; align-items: center; gap: 24px; font: 600 34px 'Urbanist', sans-serif; }
+.bar2 { height: 18px; border-radius: 9px; background: #CBDB7C; transform-origin: 0 50%; }
+.gate { position: absolute; width: 230px; text-align: center; }
+.gate .c { width: 120px; height: 120px; margin: 0 auto 22px; border-radius: 50%; border: 3px solid rgba(255,255,255,.35); display: grid; place-items: center; font: 800 44px 'Urbanist', sans-serif; transition: none; }
+.gate p { margin: 0; font: 700 28px/1.2 'Urbanist', sans-serif; }
+.gate small { display: block; margin-top: 8px; font: 500 21px/1.3 'Urbanist', sans-serif; opacity: .6; }
+.col3 { position: absolute; top: 300px; width: 520px; }
+.col3 h3 { margin: 0 0 26px; font: 800 40px 'Urbanist', sans-serif; }
+.col3 p { margin: 0 0 18px; font: 500 30px/1.3 'Urbanist', sans-serif; }
+.est { font: 600 18px 'Urbanist', sans-serif; letter-spacing: .14em; text-transform: uppercase; opacity: .55; }
+</style>
 <script>
 /* Núcleo: constantes, utilidades, audio generado y voz. */
 gsap.registerPlugin(CustomEase, MotionPathPlugin);
@@ -176,7 +206,7 @@ const LV = {
   baja:{n:'Baja', c:C.crm, t:C.blk},
   di:{n:'Descartado', c:C.gry, t:C.blk}
 };
-const ACTN = {1:'EL PROBLEMA', 2:'EL DISPOSITIVO', 3:'LA RED', 4:'EL AVISO', 5:'CIERRE'};
+const ACTN = {1:'EL PROBLEMA', 2:'EL NODO', 3:'CÓMO ESCUCHA', 4:'CÓMO DECIDE', 5:'LO QUE PUEDE Y LO QUE NO', 6:'CIERRE'};
 const SC = [];
 const BOUND = [];
 const scene = d => SC.push(d);
@@ -392,7 +422,7 @@ function voiceLabel(v) {
   return `${nombre} | ${PAIS[region(v)] || v.lang}${esNatural(v) ? ' | natural' : ''}`;
 }
 const PRON = [
-  [/pocketNode/gi, 'póket nóud'], [/SMS/g, 'ese eme ese'], [/SIM/g, 'sim'], [/GPS/g, 'ge pe ese'], [/Wi-Fi/g, 'uai fai']
+  [/pocketNode/gi, 'póket nóud'], [/SMS/g, 'ese eme ese'], [/SIM/g, 'sim'], [/GPS/g, 'ge pe ese'], [/Wi-Fi/g, 'uai fai'], [/YAMNet/g, 'iam net'], [/LiteRT/g, 'lait ar ti'], [/TensorFlow Lite/g, 'ténsor flou lait'], [/IP65/g, 'i pe sesenta y cinco']
 ];
 const pron = s => PRON.reduce((a, [re, r]) => a.replace(re, r), s);
 function loadVoices() {
@@ -465,315 +495,506 @@ function narrate(i, from = 0) {
   next();
 }
 
-/* Modelo 3D del nodo (three.js r128): un solo lienzo que se monta en la escena activa. */
+/* Explicativo pocketNode, estilo keynote. Modelo 3D en three.js r128 con luz de estudio. */
+const K = {black: 'radial-gradient(ellipse at 50% 42%, #10201a 0%, #050807 62%)', ink: '#FFFFFF', paper: '#F5F5F2', dark: '#111111',
+  green: '#074736', brown: '#84441A', lime: '#CBDB7C', leaf: '#D1E3B3', alarm: '#C0392B'};
+
 const T3 = (() => {
   const W = 1920, H = 1080;
   const r = new THREE.WebGLRenderer({antialias: true, alpha: true, preserveDrawingBuffer: true});
   r.setPixelRatio(1); r.setSize(W, H, false);
+  r.outputEncoding = THREE.sRGBEncoding;
+  r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05;
   r.domElement.className = 'abs';
   r.domElement.style.cssText = 'left:0;top:0;width:1920px;height:1080px';
   const sc = new THREE.Scene();
-  const cam = new THREE.PerspectiveCamera(30, W / H, 0.1, 100);
-  cam.position.set(2.6, 0.9, 9.5); cam.lookAt(0, 0.4, 0);
-  sc.add(new THREE.HemisphereLight(0xffffff, 0x42271a, 0.85));
-  const sun = new THREE.DirectionalLight(0xffffff, 0.95); sun.position.set(5, 7, 6); sc.add(sun);
-  const mat = (c, o = {}) => new THREE.MeshStandardMaterial({color: c, roughness: 0.55, metalness: 0.08, ...o});
-  const box = (w, h, d, m) => new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+
+  // Estudio fotográfico: un cuarto oscuro con cajas de luz, convertido en mapa de reflejos.
+  const pm = new THREE.PMREMGenerator(r);
+  const env = new THREE.Scene();
+  env.add(new THREE.Mesh(new THREE.BoxGeometry(24, 14, 24), new THREE.MeshBasicMaterial({color: 0x15181a, side: THREE.BackSide})));
+  const soft = (w, h, x, y, z, c, i) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({color: new THREE.Color(c).multiplyScalar(i), side: THREE.DoubleSide}));
+    m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m);
+  };
+  soft(10, 3, 0, 6.5, 3, 0xffffff, 3); soft(3, 8, -10, 1, 4, 0xffffff, 2.2); soft(3, 8, 10, 1, -4, 0xd1e3b3, 1.6); soft(8, 2, 0, -2, 10, 0xffffff, 0.8);
+  sc.environment = pm.fromScene(env, 0.035).texture;
+
+  const cam = new THREE.PerspectiveCamera(28, W / H, 0.1, 100);
+  const key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(4, 6, 7); sc.add(key);
+  const rim = new THREE.DirectionalLight(0xcbdb7c, 1.6); rim.position.set(-6, 3, -6); sc.add(rim);
+  sc.add(new THREE.AmbientLight(0xffffff, 0.12));
+
+  const phys = (c, o = {}) => new THREE.MeshPhysicalMaterial({color: c, roughness: 0.45, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.4, ...o});
+  function rr(w, h, rad) {
+    const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+    s.moveTo(x + rad, y); s.lineTo(x + w - rad, y); s.quadraticCurveTo(x + w, y, x + w, y + rad);
+    s.lineTo(x + w, y + h - rad); s.quadraticCurveTo(x + w, y + h, x + w - rad, y + h);
+    s.lineTo(x + rad, y + h); s.quadraticCurveTo(x, y + h, x, y + h - rad);
+    s.lineTo(x, y + rad); s.quadraticCurveTo(x, y, x + rad, y);
+    return s;
+  }
+  function rbox(w, h, d, rad, m, bev = 0.02) {
+    const g = new THREE.ExtrudeGeometry(rr(w - 2 * bev, h - 2 * bev, Math.max(0.005, rad - bev)), {depth: Math.max(0.005, d - 2 * bev), bevelEnabled: true, bevelThickness: bev, bevelSize: bev, bevelSegments: 4, curveSegments: 10});
+    g.center(); return new THREE.Mesh(g, m);
+  }
+  function frameBox(w, h, d, rad, t, m) {
+    const s = rr(w, h, rad); s.holes.push(rr(w - 2 * t, h - 2 * t, Math.max(0.005, rad - t)));
+    const g = new THREE.ExtrudeGeometry(s, {depth: d, bevelEnabled: true, bevelThickness: 0.015, bevelSize: 0.015, bevelSegments: 3, curveSegments: 10});
+    g.center(); return new THREE.Mesh(g, m);
+  }
+  function canvasTex(w, h, draw) {
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.anisotropy = 4;
+    const api = {tex: t, set(mode) { if (api.mode === mode) return; api.mode = mode; draw(c.getContext('2d'), w, h, mode); t.needsUpdate = true; }};
+    return api;
+  }
+
   const G = new THREE.Group(); sc.add(G);
   const P = {};
   const part = (name, obj, home, dir) => { obj.userData = {home: new THREE.Vector3(...home), dir: new THREE.Vector3(...dir)}; P[name] = obj; G.add(obj); return obj; };
 
-  part('post', box(0.5, 8, 0.5, mat(0x84441a, {roughness: 0.9})), [0, -1.4, -0.62], [0, 0, -0.8]);
+  part('post', new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.29, 11, 32), phys(0x84441a, {roughness: 0.85, clearcoat: 0})), [0, -2.2, -0.62], [0, 0, -0.9]);
+  [1.35, -1.45].forEach((y, i) => { const t = new THREE.Mesh(new THREE.TorusGeometry(0.31, 0.03, 12, 48), phys(0xc9cfd2, {metalness: 0.9, roughness: 0.25})); t.rotation.x = Math.PI / 2; part('clamp' + i, t, [0, y, -0.62], [0, 0, -0.9]); });
+
+  const caseM = phys(0xe8ebe7, {roughness: 0.5, clearcoat: 0.15});
   const shell = new THREE.Group();
-  const gray = mat(0xdfe3e1);
-  [[1.7, 2.2, 0.08, 0, 0, -0.3], [0.08, 2.2, 0.6, -0.81, 0, 0], [0.08, 2.2, 0.6, 0.81, 0, 0], [1.7, 0.08, 0.6, 0, 1.06, 0], [1.7, 0.08, 0.6, 0, -1.06, 0]]
-    .forEach(([w, h, d, x, y, z]) => { const m = box(w, h, d, gray); m.position.set(x, y, z); shell.add(m); });
-  [-0.45, 0.45].forEach(x => { const g = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.22, 16), mat(0x42271a)); g.position.set(x, -1.18, 0); shell.add(g); });
+  const back = rbox(1.7, 2.2, 0.06, 0.16, caseM); back.position.z = -0.28; shell.add(back);
+  const walls = frameBox(1.7, 2.2, 0.56, 0.16, 0.07, caseM); shell.add(walls);
+  [[-0.88, 0.6], [-0.88, -0.6], [0.88, 0.6], [0.88, -0.6]].forEach(([x, y]) => { const l = rbox(0.06, 0.22, 0.12, 0.02, phys(0xd5dadc, {metalness: 0.9, roughness: 0.2})); l.position.set(x, y, 0.2); shell.add(l); });
+  [-0.45, 0.45].forEach(x => { const g = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.11, 0.2, 24), phys(0x1c1c1c, {roughness: 0.6})); g.position.set(x, -1.18, -0.02); shell.add(g); });
   part('case', shell, [0, 0, 0], [0, 0, 0]);
-  part('lid', box(1.72, 2.22, 0.06, mat(0xbfd3cf, {transparent: true, opacity: 0.32, roughness: 0.1})), [0, 0, 0.33], [0, 0, 2.6]);
+  part('lid', rbox(1.72, 2.22, 0.05, 0.17, phys(0xffffff, {transparent: true, opacity: 0.22, roughness: 0.04, clearcoat: 1, metalness: 0})), [0, 0, 0.33], [0, 0, 2.8]);
+
+  const screen = canvasTex(360, 740, (g, w, h, mode) => {
+    const alert = mode === 'alert', sms = mode === 'sms';
+    g.fillStyle = alert ? '#C0392B' : '#074736'; g.fillRect(0, 0, w, h);
+    g.fillStyle = 'rgba(255,255,255,.85)'; g.font = '600 26px Urbanist, sans-serif'; g.textAlign = 'center';
+    g.fillText('pocketnode', w / 2, 70);
+    g.font = '800 44px Urbanist, sans-serif'; g.fillStyle = '#fff';
+    g.fillText(alert ? 'Aviso' : sms ? 'SMS enviado' : 'Escuchando', w / 2, 330);
+    g.strokeStyle = '#CBDB7C'; g.lineWidth = 6; g.beginPath();
+    for (let x = 30; x <= w - 30; x += 4) { const y = 450 + Math.sin(x * 0.09) * 26 * Math.sin(x * 0.013); x === 30 ? g.moveTo(x, y) : g.lineTo(x, y); }
+    g.stroke();
+    g.font = '500 24px Urbanist, sans-serif'; g.fillStyle = 'rgba(255,255,255,.7)';
+    g.fillText(alert ? 'cogollero | 14 capturas' : sms ? 'sin datos móviles' : 'modo noche', w / 2, 560);
+  });
   const ph = new THREE.Group();
-  ph.add(box(0.78, 1.5, 0.09, mat(0x161616, {roughness: 0.3})));
-  const scr = box(0.7, 1.38, 0.01, mat(0x074736, {emissive: 0x074736, emissiveIntensity: 0.9})); scr.position.z = 0.05; ph.add(scr);
-  const dot = new THREE.Mesh(new THREE.CircleGeometry(0.12, 24), mat(0xcbdb7c, {emissive: 0xcbdb7c, emissiveIntensity: 1})); dot.position.set(0, 0.25, 0.056); ph.add(dot);
-  part('phone', ph, [0, 0.22, 0.08], [1.9, 0.3, 1.6]);
-  part('bank', box(0.62, 0.95, 0.18, mat(0x8a9399, {metalness: 0.3})), [0, -0.5, -0.14], [-1.9, -0.2, 1.1]);
-  const mem = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.05, 32), mat(0xcbdb7c)); mem.rotation.x = Math.PI / 2;
-  part('mem', mem, [0, -0.72, 0.37], [0.4, -0.8, 3.4]);
+  ph.add(rbox(0.76, 1.52, 0.085, 0.1, phys(0x1b1d20, {metalness: 0.65, roughness: 0.3, clearcoat: 0.8})));
+  const scr = new THREE.Mesh(new THREE.PlaneGeometry(0.68, 1.4), new THREE.MeshBasicMaterial({map: screen.tex, toneMapped: false}));
+  scr.position.z = 0.0435; ph.add(scr);
+  const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.02, 24), phys(0x050505, {metalness: 0.2, roughness: 0.05, clearcoat: 1}));
+  lens.rotation.x = Math.PI / 2; lens.position.set(-0.22, 0.6, -0.05); ph.add(lens);
+  part('phone', ph, [0, 0.2, 0.06], [2.1, 0.3, 1.7]);
+  part('bank', rbox(0.6, 0.95, 0.18, 0.07, phys(0x9aa3a8, {metalness: 0.55, roughness: 0.35})), [0, -0.52, -0.15], [-2.1, -0.2, 1.1]);
+  const mem = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.04, 48), phys(0xcbdb7c, {roughness: 0.8, clearcoat: 0}));
+  mem.rotation.x = Math.PI / 2;
+  part('mem', mem, [0, -0.78, 0.37], [0.5, -0.6, 3.4]);
+
+  const cells = canvasTex(512, 352, g => {
+    g.fillStyle = '#0d1b33'; g.fillRect(0, 0, 512, 352);
+    g.strokeStyle = 'rgba(190,205,225,.55)'; g.lineWidth = 2;
+    for (let i = 1; i < 6; i++) { g.beginPath(); g.moveTo(i * 512 / 6, 0); g.lineTo(i * 512 / 6, 352); g.stroke(); }
+    for (let j = 1; j < 4; j++) { g.beginPath(); g.moveTo(0, j * 352 / 4); g.lineTo(512, j * 352 / 4); g.stroke(); }
+    g.strokeStyle = 'rgba(190,205,225,.18)'; g.lineWidth = 1;
+    for (let x = 0; x < 512; x += 10) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 352); g.stroke(); }
+  });
+  cells.set('on');
   const pan = new THREE.Group();
-  pan.add(box(2.1, 0.07, 1.45, mat(0xd0d6da)));
-  const cells = box(1.95, 0.02, 1.3, mat(0x1d3557, {metalness: 0.5, roughness: 0.25})); cells.position.y = 0.045; pan.add(cells);
-  for (let i = 1; i < 6; i++) { const l = box(0.012, 0.03, 1.3, mat(0x8aa0b8)); l.position.set(-0.975 + i * 0.325, 0.06, 0); pan.add(l); }
-  pan.rotation.x = 0.75;
-  part('panel', pan, [0, 2.35, 0.25], [0, 0.9, 1.4]);
-  const cable = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.6, 1.85, 0.2), new THREE.Vector3(0.95, 1.5, 0.15), new THREE.Vector3(0.75, 1.1, 0.05)]), 30, 0.035, 8), mat(0x111111));
-  part('cable', cable, [0, 0, 0], [0, 0, 0]);
-  [1.35, -1.45].forEach((y, i) => { const t = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.035, 8, 32), mat(0xb8bfc4, {metalness: 0.7})); t.rotation.x = Math.PI / 2; part('clamp' + i, t, [0, y, -0.62], [0, 0, -0.8]); });
+  pan.add(rbox(2.1, 1.45, 0.06, 0.05, phys(0xd8dde0, {metalness: 0.85, roughness: 0.28})));
+  const cm = new THREE.Mesh(new THREE.PlaneGeometry(1.98, 1.34), new THREE.MeshPhysicalMaterial({map: cells.tex, metalness: 0.4, roughness: 0.15, clearcoat: 1}));
+  cm.position.z = 0.032; pan.add(cm);
+  pan.rotation.x = -0.85;
+  part('panel', pan, [0, 2.4, 0.15], [0, 1.0, 1.3]);
+  part('cable', new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.75, 2.0, 0.1), new THREE.Vector3(1.1, 1.55, 0.05), new THREE.Vector3(0.75, 1.12, 0)]), 40, 0.03, 10), phys(0x111111, {roughness: 0.6})), [0, 0, 0], [0, 0, 0]);
+
+  // Trampa de embudo con feromona: techo, embudo amarillo y vaso colector.
+  const trap = new THREE.Group();
+  const roof = new THREE.Mesh(new THREE.CylinderGeometry(0.78, 0.78, 0.06, 64), phys(0x074736, {roughness: 0.5})); roof.position.y = 0.6; trap.add(roof);
+  for (let i = 0; i < 3; i++) { const a = i * Math.PI * 2 / 3, s = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.45, 8), phys(0x074736)); s.position.set(Math.cos(a) * 0.6, 0.38, Math.sin(a) * 0.6); trap.add(s); }
+  const lure = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.14, 16), phys(0xc0392b)); lure.position.y = 0.42; trap.add(lure);
+  const fun = new THREE.Mesh(new THREE.CylinderGeometry(0.64, 0.12, 0.5, 64, 1, true), phys(0xe9c445, {side: THREE.DoubleSide, roughness: 0.4})); fun.position.y = 0.12; trap.add(fun);
+  const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.52, 0.85, 64, 1, true), phys(0xf4f4f0, {side: THREE.DoubleSide, transparent: true, opacity: 0.55, roughness: 0.2, clearcoat: 1})); cup.position.y = -0.45; trap.add(cup);
+  const bot = new THREE.Mesh(new THREE.CircleGeometry(0.52, 64), phys(0xf4f4f0)); bot.rotation.x = -Math.PI / 2; bot.position.y = -0.87; trap.add(bot);
+  part('trap', trap, [0, -2.3, 0.1], [0, -1.5, 0.8]);
+
+  // Polillas que vuelan hacia el embudo y anillos de sonido que salen de la membrana.
+  const mothM = new THREE.MeshStandardMaterial({color: 0x8a6b4a, roughness: 0.8, transparent: true, side: THREE.DoubleSide});
+  const wingS = new THREE.Shape(); wingS.moveTo(0, 0); wingS.quadraticCurveTo(0.12, 0.1, 0.16, -0.02); wingS.quadraticCurveTo(0.08, -0.08, 0, 0);
+  const moths = [];
+  for (let i = 0; i < 9; i++) {
+    const m = new THREE.Group();
+    const wl = new THREE.Mesh(new THREE.ShapeGeometry(wingS), mothM), wr = wl.clone(); wr.scale.x = -1;
+    m.add(wl, wr); m.userData = {wl, wr}; G.add(m); moths.push(m);
+  }
+  const ringM = [0, 1, 2].map(() => { const t = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.012, 8, 64), new THREE.MeshBasicMaterial({color: 0xcbdb7c, transparent: true, toneMapped: false})); G.add(t); return t; });
 
   const all = Object.keys(P);
   const v = new THREE.Vector3();
-  function render(root, s) {
+  function render(root, s, t) {
     if (r.domElement.parentNode !== root) root.insertBefore(r.domElement, root.firstChild);
     all.forEach(k => {
       const o = P[k], u = o.userData;
       o.visible = s.only ? s.only.includes(k) : true;
       o.position.copy(u.home).addScaledVector(u.dir, s.e || 0);
     });
+    if (s.noTrap) P.trap.visible = false;
     P.cable.visible = P.cable.visible && (s.e || 0) < 0.05;
-    P.lid.material.opacity = 0.32 * (s.lid ?? 1);
+    screen.set(s.screen || 'listen');
     G.position.set(s.gx || 0, s.gy || 0, 0);
     G.rotation.set(s.rx || 0, s.ry || 0, 0);
     G.scale.setScalar(s.sc || 1);
+    cam.position.set(s.cx ?? 0, s.cy ?? 0, s.cz ?? 15);
+    cam.lookAt(s.lx ?? 0, s.ly ?? -0.4, 0);
+    const trapTop = P.trap.position.clone().add(new THREE.Vector3(0, 0.4, 0));
+    moths.forEach((m, i) => {
+      const a = s.moths || 0;
+      m.visible = a > 0.01;
+      if (!m.visible) return;
+      const p = (t * 0.16 + i / moths.length) % 1, ang = i * 2.399;
+      const start = new THREE.Vector3(Math.cos(ang) * 3.4, -1.2 + (i % 3) * 0.5, Math.sin(ang) * 2.2);
+      m.position.lerpVectors(start, trapTop, Math.pow(p, 1.4));
+      m.position.y += Math.sin(p * 9 + i) * 0.12 * (1 - p);
+      m.lookAt(trapTop);
+      const f = Math.sin(t * 38 + i) * 0.9;
+      m.userData.wl.rotation.y = f; m.userData.wr.rotation.y = -f;
+      mothM.opacity = a;
+      m.scale.setScalar(p > 0.92 ? 0.001 : 1.4);
+    });
+    const mp = P.mem.position;
+    ringM.forEach((g, i) => {
+      const p = (t * 0.7 + i / 3) % 1;
+      g.visible = (s.ring || 0) > 0.01 && P.mem.visible;
+      g.position.set(mp.x, mp.y, mp.z + 0.03);
+      g.scale.setScalar(1 + p * 4);
+      g.material.opacity = (1 - p) * (s.ring || 0) * 0.9;
+    });
     r.render(sc, cam);
   }
-  function at(k) {
-    G.updateMatrixWorld();
-    P[k].getWorldPosition(v); v.project(cam);
-    return {x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * H};
-  }
+  function at(k) { G.updateMatrixWorld(); P[k].getWorldPosition(v); v.project(cam); return {x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * H}; }
   return {render, at};
 })();
+
 const localT = (s, nowS) => (window.__RENDER__ ? master.time() - s.start : nowS);
+function txt(r, html, x, y, cls, css = '') {
+  const e = add(r, `<div class="${cls}" style="left:${x}px;top:${y}px;${css}">${html}</div>`);
+  gsap.set(e, {xPercent: -50, yPercent: -50, opacity: 0});
+  return e;
+}
+function show(tl, e, t, o = {}) { tl.fromTo(e, {opacity: 0, y: o.y ?? 30}, {opacity: 1, y: 0, duration: (o.d ?? 0.9) * M, ease: 'power3.out'}, t); }
+function hide(tl, e, t) { tl.to(e, {opacity: 0, y: -24, duration: 0.5 * M, ease: 'power2.in'}, t); }
+function q3(tag, title) {
+  return `<div class="kq" style="left:160px;top:120px">${tag}</div><div class="kt md" style="left:160px;top:160px">${title}</div>`;
+}
+function callouts(r, items) {
+  return items.map(([k, a, b, side]) => {
+    const e = add(r, `<div class="co" style="${side === 'l' ? 'flex-direction:row-reverse' : ''}"><i></i><b></b><span>${a}<small>${b}</small></span></div>`);
+    gsap.set(e, {opacity: 0});
+    return {k, el: e, side};
+  });
+}
+function placeCallouts(list) {
+  list.forEach(l => {
+    const p = T3.at(l.k), w = l.el.offsetWidth;
+    l.el.style.left = (l.side === 'l' ? p.x - w + 5 : p.x - 5) + 'px';
+    l.el.style.top = (p.y - l.el.offsetHeight / 2) + 'px';
+  });
+}
 
 /* Acto 1: el problema. */
-scene({id:'1.1', act:1, name:'La plaga llega de noche', bg:C.blk, ink:C.crm, trans:'cut',
-  cap:'la plaga llega de noche',
-  narr:['Cada noche, plagas como el gusano cogollero llegan a la parcela.',
-    'El productor suele enterarse de día, cuando el daño ya se ve.'],
+scene({id:'1', label:'Apertura', act:1, name:'pocketNode', bg:'#000', ink:K.ink, trans:'cut',
+  cap:'pocketnode',
+  narr:['pocketNode.', 'Escucha. Detecta. Protege.'],
+  build(r, tl) {
+    const lg = add(r, `<div class="abs" style="left:960px;top:470px;width:520px"><svg class="logo" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" 	 viewBox="0 0 730.78 601.13" style="enable-background:new 0 0 730.78 601.13;" xml:space="preserve"> <style type="text/css"> 	.st0{fill:#FFFFFF;} </style> <g> 	<g> 		<g> 			<path class="st0" d="M122.04,591.49c-2.16,0-4.2-0.31-6.12-0.92c-1.92-0.61-3.43-1.39-4.53-2.31l1.59-2.78 				c1.06,0.8,2.42,1.48,4.08,2.06c1.66,0.58,3.4,0.87,5.22,0.87c2.49,0,4.28-0.39,5.37-1.17c1.09-0.78,1.64-1.82,1.64-3.11 				c0-0.96-0.31-1.72-0.92-2.26c-0.61-0.55-1.42-0.96-2.41-1.24c-1-0.28-2.11-0.52-3.33-0.72c-1.23-0.2-2.45-0.43-3.66-0.7 				c-1.21-0.27-2.31-0.65-3.31-1.17c-0.99-0.51-1.8-1.22-2.41-2.11c-0.61-0.9-0.92-2.09-0.92-3.58c0-1.42,0.4-2.7,1.19-3.83 				c0.8-1.13,1.96-2.01,3.51-2.66c1.54-0.65,3.42-0.97,5.65-0.97c1.69,0,3.38,0.22,5.07,0.67c1.69,0.45,3.08,1.04,4.18,1.77 				l-1.54,2.83c-1.16-0.8-2.4-1.37-3.73-1.72c-1.33-0.35-2.65-0.52-3.98-0.52c-2.35,0-4.09,0.4-5.2,1.22 				c-1.11,0.81-1.67,1.85-1.67,3.11c0,1,0.31,1.78,0.92,2.34c0.61,0.56,1.42,1,2.44,1.32c1.01,0.31,2.12,0.57,3.33,0.77 				c1.21,0.2,2.42,0.44,3.63,0.72c1.21,0.28,2.32,0.66,3.33,1.15c1.01,0.48,1.82,1.16,2.44,2.04c0.61,0.88,0.92,2.03,0.92,3.46 				c0,1.52-0.42,2.84-1.27,3.95c-0.85,1.11-2.07,1.98-3.68,2.59S124.32,591.49,122.04,591.49z"/> 			<path class="st0" d="M150.39,591.49c-2.72,0-5.11-0.57-7.16-1.72c-2.06-1.14-3.66-2.72-4.82-4.73c-1.16-2.01-1.74-4.3-1.74-6.89 				c0-2.59,0.56-4.87,1.67-6.86c1.11-1.99,2.64-3.56,4.58-4.7c1.94-1.14,4.12-1.72,6.54-1.72c2.45,0,4.63,0.56,6.54,1.67 				c1.91,1.11,3.41,2.67,4.5,4.68c1.09,2.01,1.64,4.32,1.64,6.94c0,0.17-0.01,0.34-0.02,0.52c-0.02,0.18-0.03,0.37-0.03,0.57h-22.73 				v-2.64h20.84l-1.39,1.04c0-1.89-0.41-3.57-1.22-5.05c-0.81-1.48-1.92-2.63-3.31-3.46c-1.39-0.83-3-1.24-4.83-1.24 				c-1.79,0-3.4,0.41-4.82,1.24c-1.43,0.83-2.54,1.99-3.33,3.48c-0.8,1.49-1.19,3.2-1.19,5.12v0.55c0,1.99,0.44,3.74,1.32,5.25 				c0.88,1.51,2.1,2.69,3.68,3.53c1.58,0.85,3.37,1.27,5.4,1.27c1.59,0,3.08-0.28,4.45-0.85c1.38-0.56,2.56-1.42,3.56-2.59 				l1.99,2.29c-1.16,1.39-2.61,2.45-4.35,3.18C154.39,591.12,152.48,591.49,150.39,591.49z"/> 			<path class="st0" d="M180.18,591.49c-2.59,0-4.9-0.57-6.94-1.72c-2.04-1.14-3.64-2.72-4.8-4.73c-1.16-2.01-1.74-4.3-1.74-6.89 				c0-2.62,0.58-4.92,1.74-6.91c1.16-1.99,2.76-3.55,4.8-4.67c2.04-1.13,4.35-1.69,6.94-1.69c2.22,0,4.23,0.43,6.02,1.29 				c1.79,0.86,3.2,2.16,4.23,3.88l-2.64,1.79c-0.9-1.33-2.01-2.3-3.33-2.93c-1.33-0.63-2.77-0.95-4.33-0.95 				c-1.86,0-3.53,0.42-5.02,1.27c-1.49,0.85-2.67,2.03-3.53,3.56c-0.86,1.53-1.29,3.32-1.29,5.37c0,2.06,0.43,3.85,1.29,5.37 				c0.86,1.52,2.04,2.71,3.53,3.56c1.49,0.85,3.17,1.27,5.02,1.27c1.56,0,3-0.31,4.33-0.95c1.33-0.63,2.44-1.59,3.33-2.88l2.64,1.79 				c-1.03,1.69-2.44,2.98-4.23,3.86C184.41,591.05,182.4,591.49,180.18,591.49z"/> 			<path class="st0" d="M193.56,568.06v-2.94h16.17v2.94H193.56z M205.9,591.49c-2.45,0-4.34-0.66-5.67-1.99 				c-1.33-1.33-1.99-3.2-1.99-5.62v-24.52h3.53v24.32c0,1.53,0.39,2.7,1.17,3.53c0.78,0.83,1.9,1.24,3.36,1.24 				c1.56,0,2.85-0.45,3.88-1.34l1.24,2.54c-0.7,0.63-1.53,1.09-2.51,1.39C207.93,591.34,206.93,591.49,205.9,591.49z"/> 			<path class="st0" d="M227.54,591.49c-2.52,0-4.78-0.57-6.79-1.72c-2.01-1.14-3.59-2.72-4.75-4.73c-1.16-2.01-1.74-4.3-1.74-6.89 				c0-2.62,0.58-4.92,1.74-6.91c1.16-1.99,2.74-3.55,4.72-4.67c1.99-1.13,4.26-1.69,6.82-1.69c2.59,0,4.88,0.56,6.89,1.69 				c2.01,1.13,3.58,2.69,4.73,4.67c1.14,1.99,1.72,4.3,1.72,6.91c0,2.59-0.57,4.89-1.72,6.89s-2.73,3.58-4.75,4.73 				C232.38,590.91,230.09,591.49,227.54,591.49z M227.54,588.35c1.89,0,3.56-0.42,5.02-1.27c1.46-0.84,2.61-2.04,3.46-3.58 				c0.85-1.54,1.27-3.32,1.27-5.35c0-2.05-0.42-3.84-1.27-5.37c-0.85-1.52-2-2.71-3.46-3.56c-1.46-0.84-3.12-1.27-4.97-1.27 				c-1.86,0-3.52,0.42-4.97,1.27c-1.46,0.85-2.62,2.03-3.48,3.56c-0.86,1.53-1.29,3.32-1.29,5.37c0,2.02,0.43,3.81,1.29,5.35 				c0.86,1.54,2.02,2.74,3.48,3.58C224.07,587.93,225.71,588.35,227.54,588.35z"/> 			<path class="st0" d="M248.08,591.24v-26.11h3.38v7.11l-0.35-1.24c0.73-1.99,1.96-3.51,3.68-4.55c1.72-1.04,3.86-1.57,6.42-1.57 				v3.43c-0.13,0-0.27-0.01-0.4-0.03c-0.13-0.02-0.27-0.03-0.4-0.03c-2.75,0-4.91,0.84-6.47,2.51c-1.56,1.67-2.34,4.05-2.34,7.14 				v13.33H248.08z"/> 			<path class="st0" d="M288.42,591.49c-1.96,0-3.66-0.32-5.1-0.97c-1.44-0.65-2.55-1.54-3.31-2.69c-0.76-1.14-1.14-2.46-1.14-3.96 				c0-1.36,0.32-2.59,0.97-3.71c0.65-1.11,1.71-2.01,3.18-2.69c1.47-0.68,3.46-1.02,5.94-1.02h9v2.64h-8.9 				c-2.52,0-4.27,0.45-5.25,1.34c-0.98,0.9-1.47,2.01-1.47,3.33c0,1.49,0.58,2.69,1.74,3.58c1.16,0.9,2.79,1.34,4.87,1.34 				c1.99,0,3.71-0.46,5.15-1.37c1.44-0.91,2.5-2.23,3.16-3.96l0.8,2.44c-0.66,1.73-1.82,3.1-3.46,4.13 				C292.97,590.97,290.9,591.49,288.42,591.49z M297.42,591.24v-5.77l-0.15-0.95v-9.65c0-2.22-0.62-3.93-1.86-5.12 				c-1.24-1.19-3.09-1.79-5.55-1.79c-1.69,0-3.3,0.28-4.83,0.85c-1.53,0.56-2.82,1.31-3.88,2.24l-1.59-2.63 				c1.33-1.13,2.92-2,4.77-2.61c1.86-0.61,3.81-0.92,5.87-0.92c3.38,0,5.99,0.84,7.83,2.51s2.76,4.22,2.76,7.64v16.21H297.42z"/> 			<path class="st0" d="M320.9,590.24c-2.49,0-4.72-0.54-6.71-1.62c-1.99-1.08-3.56-2.58-4.7-4.5c-1.14-1.92-1.72-4.13-1.72-6.62 				s0.57-4.68,1.72-6.59c1.14-1.91,2.71-3.39,4.7-4.45c1.99-1.06,4.23-1.59,6.71-1.59c2.32,0,4.41,0.48,6.27,1.44 				c1.86,0.96,3.33,2.39,4.43,4.28c1.09,1.89,1.64,4.2,1.64,6.91c0,2.72-0.55,5.02-1.64,6.91c-1.09,1.89-2.57,3.33-4.43,4.33 				S323.22,590.24,320.9,590.24z M321.55,601.13c-2.39,0-4.68-0.35-6.87-1.04c-2.19-0.7-3.96-1.69-5.32-2.99l1.79-2.69 				c1.23,1.09,2.74,1.97,4.55,2.61c1.81,0.65,3.72,0.97,5.75,0.97c3.31,0,5.75-0.77,7.31-2.31c1.56-1.54,2.34-3.94,2.34-7.19v-6.52 				l0.5-4.48l-0.35-4.48v-7.91h3.38v22.93c0,4.51-1.1,7.82-3.31,9.92C329.11,600.08,325.85,601.13,321.55,601.13z M321.25,587.11 				c1.92,0,3.63-0.4,5.12-1.22c1.49-0.81,2.67-1.94,3.53-3.38c0.86-1.44,1.29-3.11,1.29-5c0-1.89-0.43-3.55-1.29-4.98 				c-0.86-1.42-2.04-2.54-3.53-3.36c-1.49-0.81-3.2-1.22-5.12-1.22c-1.89,0-3.59,0.41-5.1,1.22c-1.51,0.81-2.69,1.93-3.53,3.36 				c-0.85,1.43-1.27,3.09-1.27,4.98c0,1.89,0.42,3.56,1.27,5s2.02,2.57,3.53,3.38C317.66,586.7,319.36,587.11,321.25,587.11z"/> 			<path class="st0" d="M344.48,591.24v-26.11h3.38v7.11l-0.35-1.24c0.73-1.99,1.96-3.51,3.68-4.55c1.72-1.04,3.86-1.57,6.42-1.57 				v3.43c-0.13,0-0.27-0.01-0.4-0.03c-0.13-0.02-0.27-0.03-0.4-0.03c-2.75,0-4.91,0.84-6.47,2.51c-1.56,1.67-2.34,4.05-2.34,7.14 				v13.33H344.48z"/> 			<path class="st0" d="M374.42,591.49c-2.52,0-4.78-0.57-6.79-1.72c-2.01-1.14-3.59-2.72-4.75-4.73c-1.16-2.01-1.74-4.3-1.74-6.89 				c0-2.62,0.58-4.92,1.74-6.91c1.16-1.99,2.74-3.55,4.72-4.67c1.99-1.13,4.26-1.69,6.82-1.69c2.59,0,4.88,0.56,6.89,1.69 				c2.01,1.13,3.58,2.69,4.73,4.67c1.14,1.99,1.72,4.3,1.72,6.91c0,2.59-0.57,4.89-1.72,6.89s-2.73,3.58-4.75,4.73 				C379.26,590.91,376.97,591.49,374.42,591.49z M374.42,588.35c1.89,0,3.56-0.42,5.02-1.27c1.46-0.84,2.61-2.04,3.46-3.58 				c0.85-1.54,1.27-3.32,1.27-5.35c0-2.05-0.42-3.84-1.27-5.37c-0.85-1.52-2-2.71-3.46-3.56c-1.46-0.84-3.12-1.27-4.97-1.27 				c-1.86,0-3.52,0.42-4.97,1.27c-1.46,0.85-2.62,2.03-3.48,3.56c-0.86,1.53-1.29,3.32-1.29,5.37c0,2.02,0.43,3.81,1.29,5.35 				c0.86,1.54,2.02,2.74,3.48,3.58C370.95,587.93,372.59,588.35,374.42,588.35z"/> 			<path class="st0" d="M396.75,559.35c-0.73,0-1.34-0.25-1.84-0.75s-0.75-1.09-0.75-1.79s0.25-1.28,0.75-1.76s1.11-0.72,1.84-0.72 				c0.73,0,1.34,0.23,1.84,0.7c0.5,0.46,0.75,1.05,0.75,1.74c0,0.73-0.24,1.34-0.72,1.84C398.14,559.1,397.51,559.35,396.75,559.35z 				 M394.96,591.24v-26.11h3.53v26.11H394.96z"/> 			<path class="st0" d="M408.34,591.24v-26.11h3.38v7.16l-0.55-1.34c0.83-1.89,2.16-3.37,3.98-4.45c1.82-1.08,4-1.62,6.52-1.62 				c2.12,0,3.99,0.41,5.6,1.22s2.87,2.05,3.78,3.71c0.91,1.66,1.37,3.75,1.37,6.27v15.17h-3.53v-14.82c0-2.75-0.69-4.83-2.06-6.24 				c-1.38-1.41-3.31-2.11-5.79-2.11c-1.86,0-3.47,0.37-4.85,1.12c-1.38,0.75-2.44,1.83-3.18,3.23s-1.12,3.11-1.12,5.1v13.73H408.34z 				"/> 			<path class="st0" d="M452.36,591.49c-2.49,0-4.72-0.56-6.69-1.69c-1.97-1.13-3.52-2.69-4.65-4.7c-1.13-2.01-1.69-4.32-1.69-6.94 				c0-2.65,0.56-4.97,1.69-6.96c1.13-1.99,2.68-3.54,4.65-4.65c1.97-1.11,4.2-1.67,6.69-1.67c2.29,0,4.34,0.51,6.14,1.54 				c1.81,1.03,3.25,2.53,4.33,4.5c1.08,1.97,1.62,4.39,1.62,7.24c0,2.82-0.53,5.22-1.59,7.21c-1.06,1.99-2.5,3.51-4.3,4.55 				C456.75,590.96,454.68,591.49,452.36,591.49z M452.61,588.35c1.86,0,3.52-0.42,5-1.27c1.47-0.84,2.64-2.04,3.48-3.58 				c0.85-1.54,1.27-3.32,1.27-5.35c0-2.05-0.42-3.84-1.27-5.37c-0.85-1.52-2.01-2.71-3.48-3.56c-1.48-0.84-3.14-1.27-5-1.27 				c-1.83,0-3.47,0.42-4.92,1.27c-1.46,0.85-2.62,2.03-3.48,3.56c-0.86,1.53-1.29,3.32-1.29,5.37c0,2.02,0.43,3.81,1.29,5.35 				c0.86,1.54,2.02,2.74,3.48,3.58C449.15,587.93,450.79,588.35,452.61,588.35z M462.46,591.24v-7.86l0.35-5.27l-0.5-5.27v-18.5 				h3.53v36.91H462.46z"/> 			<path class="st0" d="M486.48,591.49c-2.22,0-4.16-0.42-5.82-1.24c-1.66-0.83-2.94-2.07-3.86-3.73c-0.91-1.66-1.37-3.73-1.37-6.22 				v-15.17h3.53v14.77c0,2.78,0.69,4.88,2.06,6.29c1.38,1.41,3.31,2.11,5.8,2.11c1.82,0,3.41-0.37,4.75-1.12 				c1.34-0.74,2.37-1.83,3.08-3.26c0.71-1.42,1.07-3.13,1.07-5.12v-13.68h3.53v26.11h-3.38v-7.16l0.55,1.3 				c-0.83,1.92-2.11,3.42-3.85,4.5C490.84,590.95,488.8,591.49,486.48,591.49z"/> 			<path class="st0" d="M516.13,591.49c-2.16,0-4.2-0.31-6.12-0.92c-1.92-0.61-3.43-1.39-4.53-2.31l1.59-2.78 				c1.06,0.8,2.42,1.48,4.08,2.06c1.66,0.58,3.4,0.87,5.22,0.87c2.49,0,4.28-0.39,5.37-1.17c1.09-0.78,1.64-1.82,1.64-3.11 				c0-0.96-0.31-1.72-0.92-2.26c-0.61-0.55-1.42-0.96-2.41-1.24c-1-0.28-2.11-0.52-3.33-0.72c-1.23-0.2-2.45-0.43-3.66-0.7 				c-1.21-0.27-2.31-0.65-3.31-1.17s-1.8-1.22-2.41-2.11c-0.61-0.9-0.92-2.09-0.92-3.58c0-1.42,0.4-2.7,1.19-3.83 				c0.8-1.13,1.96-2.01,3.51-2.66c1.54-0.65,3.42-0.97,5.65-0.97c1.69,0,3.38,0.22,5.07,0.67c1.69,0.45,3.08,1.04,4.18,1.77 				l-1.54,2.83c-1.16-0.8-2.4-1.37-3.73-1.72c-1.33-0.35-2.65-0.52-3.98-0.52c-2.35,0-4.09,0.4-5.2,1.22 				c-1.11,0.81-1.67,1.85-1.67,3.11c0,1,0.31,1.78,0.92,2.34c0.61,0.56,1.42,1,2.44,1.32c1.01,0.31,2.12,0.57,3.33,0.77 				c1.21,0.2,2.42,0.44,3.63,0.72c1.21,0.28,2.32,0.66,3.33,1.15c1.01,0.48,1.82,1.16,2.44,2.04c0.61,0.88,0.92,2.03,0.92,3.46 				c0,1.52-0.42,2.84-1.27,3.95c-0.85,1.11-2.07,1.98-3.68,2.59C520.36,591.18,518.42,591.49,516.13,591.49z"/> 			<path class="st0" d="M529.31,568.06v-2.94h16.17v2.94H529.31z M541.65,591.49c-2.45,0-4.34-0.66-5.67-1.99 				c-1.33-1.33-1.99-3.2-1.99-5.62v-24.52h3.53v24.32c0,1.53,0.39,2.7,1.17,3.53c0.78,0.83,1.9,1.24,3.36,1.24 				c1.56,0,2.85-0.45,3.88-1.34l1.24,2.54c-0.7,0.63-1.53,1.09-2.51,1.39C543.68,591.34,542.67,591.49,541.65,591.49z"/> 			<path class="st0" d="M553.58,591.24v-26.11h3.38v7.11l-0.35-1.24c0.73-1.99,1.96-3.51,3.68-4.55c1.72-1.04,3.86-1.57,6.42-1.57 				v3.43c-0.13,0-0.27-0.01-0.4-0.03c-0.13-0.02-0.27-0.03-0.4-0.03c-2.75,0-4.91,0.84-6.47,2.51c-1.56,1.67-2.34,4.05-2.34,7.14 				v13.33H553.58z"/> 			<path class="st0" d="M574.92,559.35c-0.73,0-1.34-0.25-1.84-0.75c-0.5-0.5-0.75-1.09-0.75-1.79s0.25-1.28,0.75-1.76 				c0.5-0.48,1.11-0.72,1.84-0.72c0.73,0,1.34,0.23,1.84,0.7c0.5,0.46,0.75,1.05,0.75,1.74c0,0.73-0.24,1.34-0.72,1.84 				C576.31,559.1,575.69,559.35,574.92,559.35z M573.13,591.24v-26.11h3.53v26.11H573.13z"/> 			<path class="st0" d="M593.87,591.49c-1.96,0-3.66-0.32-5.1-0.97c-1.44-0.65-2.55-1.54-3.31-2.69c-0.76-1.14-1.14-2.46-1.14-3.96 				c0-1.36,0.32-2.59,0.97-3.71c0.65-1.11,1.71-2.01,3.18-2.69c1.47-0.68,3.46-1.02,5.94-1.02h9v2.64h-8.9 				c-2.52,0-4.27,0.45-5.25,1.34c-0.98,0.9-1.47,2.01-1.47,3.33c0,1.49,0.58,2.69,1.74,3.58c1.16,0.9,2.79,1.34,4.87,1.34 				c1.99,0,3.71-0.46,5.15-1.37c1.44-0.91,2.5-2.23,3.16-3.96l0.8,2.44c-0.66,1.73-1.82,3.1-3.46,4.13 				C598.43,590.97,596.36,591.49,593.87,591.49z M602.88,591.24v-5.77l-0.15-0.95v-9.65c0-2.22-0.62-3.93-1.86-5.12 				c-1.24-1.19-3.09-1.79-5.55-1.79c-1.69,0-3.3,0.28-4.83,0.85c-1.53,0.56-2.82,1.31-3.88,2.24l-1.59-2.63 				c1.33-1.13,2.92-2,4.77-2.61c1.86-0.61,3.81-0.92,5.87-0.92c3.38,0,5.99,0.84,7.83,2.51c1.84,1.67,2.76,4.22,2.76,7.64v16.21 				H602.88z"/> 			<path class="st0" d="M615.86,591.24v-36.91h3.53v36.91H615.86z"/> 		</g> 		<g> 			<path class="st0" d="M0,495.4c0-20.16,13.52-32.58,32.33-32.58c19.3,0,32.82,13.15,32.82,32.7c0,20.9-15.61,31.23-29.87,31.23 				c-7.99,0-14.63-3.2-18.69-9.34v33.68H0V495.4z M48.31,494.79c0-9.71-6.39-16.47-15.86-16.47s-15.86,6.76-15.86,16.47 				c0,9.71,6.39,16.47,15.86,16.47S48.31,504.5,48.31,494.79z"/> 			<path class="st0" d="M72.28,494.79c0-18.44,13.52-31.96,32.7-31.96s32.7,13.52,32.7,31.96c0,18.44-13.52,31.96-32.7,31.96 				S72.28,513.23,72.28,494.79z M120.84,494.79c0-9.71-6.39-16.47-15.86-16.47s-15.86,6.76-15.86,16.47 				c0,9.71,6.39,16.47,15.86,16.47S120.84,504.5,120.84,494.79z"/> 			<path class="st0" d="M144.8,494.79c0-18.44,13.52-31.96,32.7-31.96c16.72,0,28.89,10.2,31.59,24.96h-16.72 				c-2.34-5.78-7.87-9.47-14.88-9.47c-9.47,0-15.86,6.76-15.86,16.47c0,9.71,6.39,16.47,15.86,16.47c7.01,0,12.54-3.69,14.88-9.47 				h16.72c-2.71,14.75-14.88,24.96-31.59,24.96C158.33,526.75,144.8,513.23,144.8,494.79z"/> 			<path class="st0" d="M220.52,437.87h16.6v52.62l21.64-26.06h20.9l-26.55,29.75l27.54,30.98h-21.27l-22.25-26.8v26.8h-16.6V437.87 				z"/> 			<path class="st0" d="M282.23,494.79c0-18.44,13.52-31.96,32.7-31.96s32.33,13.52,32.33,31.96v5.16h-47.7 				c1.72,7.99,7.74,11.93,15.37,11.93c5.9,0,10.2-1.48,12.91-5.16h17.46c-4.3,12.05-15.61,20.04-30.37,20.04 				C295.75,526.75,282.23,513.23,282.23,494.79z M330.05,488.27c-2.21-7.13-7.99-10.57-15.12-10.57c-7.25,0-12.91,3.56-15,10.57 				H330.05z"/> 			<path class="st0" d="M356.85,501.43v-58.52h16.6v21.51h30v15h-30v22c0,7.25,3.57,9.84,8.61,9.84c4.92,0,8.48-2.46,8.48-9.84 				v-1.72h16.6v1.72c0,17.09-10.2,25.33-25.08,25.33C367.05,526.75,356.85,518.51,356.85,501.43z"/> 			<path class="st0" d="M448.91,493.68c0-20.41,12.05-30.86,30-30.86c17.95,0,30,10.33,30,30.86v31.47h-16.6v-31.47 				c0-10.57-5.41-15.37-13.4-15.37c-7.99,0-13.4,4.8-13.4,15.37v31.47h-16.6V493.68z"/> 			<path class="st0" d="M518.49,494.79c0-18.44,13.52-31.96,32.7-31.96s32.7,13.52,32.7,31.96c0,18.44-13.52,31.96-32.7,31.96 				S518.49,513.23,518.49,494.79z M567.05,494.79c0-9.71-6.39-16.47-15.86-16.47s-15.86,6.76-15.86,16.47 				c0,9.71,6.39,16.47,15.86,16.47S567.05,504.5,567.05,494.79z"/> 			<path class="st0" d="M591.01,494.05c0-20.9,15.61-31.22,29.87-31.22c7.99,0,14.63,3.2,18.69,9.34v-34.3h16.6v56.3 				c0,20.16-13.52,32.58-32.33,32.58C604.54,526.75,591.01,513.6,591.01,494.05z M639.57,494.79c0-9.71-6.39-16.47-15.86-16.47 				s-15.86,6.76-15.86,16.47c0,9.71,6.39,16.47,15.86,16.47S639.57,504.5,639.57,494.79z"/> 			<path class="st0" d="M665.75,494.79c0-18.44,13.52-31.96,32.7-31.96c19.18,0,32.33,13.52,32.33,31.96v5.16h-47.7 				c1.72,7.99,7.74,11.93,15.37,11.93c5.9,0,10.2-1.48,12.91-5.16h17.46c-4.3,12.05-15.61,20.04-30.37,20.04 				C679.27,526.75,665.75,513.23,665.75,494.79z M713.57,488.27c-2.21-7.13-7.99-10.57-15.12-10.57c-7.25,0-12.91,3.56-15,10.57 				H713.57z"/> 		</g> 	</g> 	<g> 		<path class="st0" d="M433.14,235.55c2.61,0.32,4.76-1.87,4.84-4.6c0.07-2.72-1.98-4.94-4.66-4.77c-2.69,0.17-4.49,1.62-4.67,4.42 			C428.44,233.68,430.35,235.2,433.14,235.55z"/> 		<path class="st0" d="M151.25,186.49c0,11.49,0.88,22.77,2.57,33.79c15.96,104.25,104.6,184.05,211.58,184.05 			s195.62-79.8,211.58-184.05c1.69-11.01,2.57-22.29,2.57-33.79V0H151.25V186.49z M374.77,394.33c0,0-0.01,0-0.03,0 			c-1.55,0.04-3.11,0.06-4.67,0.06c-11.91,0-23.6-0.98-34.98-2.87c9.6-16.19,22.83-29.68,39.66-41.23v-0.01c0,0,0.01,0,0.01,0.01 			c0-0.01,0.01-0.01,0.01-0.01v0.01c16.28,11.17,29.2,24.17,38.72,39.67C400.95,392.54,388,394.05,374.77,394.33z M483.53,361.58 			c-16.1-10.21-33.32-18.58-51.07-25.51c-6.47-2.52-13.01-4.87-19.61-7.04c-10.49-3.45-21.13-6.47-31.71-9.65c0,0,0,0,0,0 			c-0.92,2.71-1.6,5.58-2.02,8.62c-0.17,1.25-0.38,2.5-0.59,3.73c0,0,0,0,0,0c31.09,9.71,60.27,22.21,85.9,40.61 			c-10.42,5.19-21.31,9.53-32.63,12.94c-13.73-15.71-30.67-28.19-49.66-38.54c-2.65-1.45-4.6-2.96-5.89-4.69 			c-0.56-0.77-1-1.59-1.3-2.46c-0.13-0.04-0.26-0.08-0.38-0.12c-0.03,0.1-0.06,0.21-0.1,0.31c-1.05,2.75-3.38,4.92-7.11,6.96 			c-19.86,10.81-37.47,23.96-51.49,40.69c-11.95-3.14-23.49-7.3-34.51-12.37c26.46-19.88,56.89-33.1,89.42-43.27 			c-2.61-3.95-6.01-7.15-9.53-10.28c-8.22,2.44-16.46,4.85-24.59,7.53c-6.6,2.18-13.14,4.52-19.61,7.04 			c-19.43,7.59-38.23,16.89-55.61,28.47c-8.09-4.83-15.85-10.17-23.2-16c8.22-3.52,16.59-6.7,25.07-9.6 			c31.06-10.59,62.94-17.17,95.67-19.47c-2.88-2.55-5.74-5.16-8.19-8.2c-5.99-7.42-7.78-16.48-9.96-25.53c-0.3,0-0.27,0-0.57-0.01 			c-0.9,3.35-1.79,6.71-2.79,10.45c-9.56-12.79-12-27.22-12.38-42.29c-0.74-0.14-0.6-0.12-1.34-0.26 			c-2.46,5.74-4.92,11.48-7.46,17.41c-4.61-6.01-7.01-12.97-8.11-20.29c-1.08-7.19-1.44-14.49-2.15-22.06 			c-12.13,17.03-15.76,35.5-10.71,56.16c-7.84-5.26-11.69-12.56-14.93-21.31c-2.92,15.43,1.04,28.72,7.35,41.68 			c-0.84-0.38-1.66-0.8-2.46-1.25c-1.1-0.62-2.15-1.31-3.16-2.07c-0.98-0.74-1.92-1.55-2.8-2.41c-0.88-0.86-1.71-1.78-2.48-2.73 			c-0.79-0.98-1.52-2-2.19-3.05c-0.7-1.09-1.35-2.21-1.94-3.36c-0.62-1.2-1.2-2.42-1.73-3.67c-0.14-0.32-0.27-0.64-0.4-0.96 			c-0.03-0.08-0.06-0.24-0.16-0.2c-0.08,0.03-0.11,0.24-0.13,0.31c-0.08,0.37-0.05,0.77-0.06,1.14c-0.01,0.43-0.01,0.87-0.01,1.3 			c0.01,1.74,0.1,3.47,0.27,5.2c0.09,0.86,0.19,1.73,0.32,2.59c0.06,0.43,0.13,0.86,0.21,1.29c0.04,0.21,0.07,0.43,0.11,0.64 			c0.01,0.08,0.06,0.59,0.12,0.61c-0.45-0.2-0.89-0.41-1.32-0.64c-9.52-5.03-13.48-16.33-16.11-26.06 			c-3.18-11.77-4.57-24.03-4.07-36.22c0.17-4.09,0.67-8.26,2.49-11.92c2.37-4.76,6.75-6.97,11.54-8.65 			c7.68-2.69,15.12-5.99,22.68-8.99c-6.93-0.55-12.87-1.01-19.44-1.53c10.05-7.59,22.1-6.63,34-9.31 			c-3.86-1.74-6.85-3.09-10.75-4.85c9.06-1.85,17.15-3.5,25.59-5.23c0.54,21.45,10.67,35.47,33.39,39.58 			c-6.03,3.31-11.46,6.59-14.69,13.04c5.3-1.4,10.21-2.71,15.13-4.01c0.32,0.48,0.31,0.47,0.63,0.96 			c-7.05,9.37-9.88,19.64-7.12,31.59c3.31-6.14,6.64-11.82,12.87-15.63c0.12,1.12,0.28,1.91,0.29,2.7 			c0.25,13.88,7.11,23.67,18.83,30.44c9.69,5.6,20.4,7.44,31.34,8.39c0.58,0.05,1.15,0.12,2.45,0.26c-1.84,0.89-3.02,1.51-4.24,2.05 			c-11.62,5.14-19.57,13.4-23.42,24.37c35.97,1.63,70.93,8.41,104.89,20c6.35,2.18,12.65,4.51,18.89,7.02 			C498.24,351.6,491.04,356.82,483.53,361.58z M468.87,264.28c-0.01,0.68-0.02,1.36-0.03,2.04c-26.67-1-48.38,0.75-76.07,3.65 			C417.56,259.76,442.95,258.11,468.87,264.28z M400.32,232.52c7.11-3.29,14.17-6.7,21.33-9.83c10.49-4.59,21.33,0.28,23.63,10.45 			c2.16,9.46-5.51,17.67-15.19,16.13c-4.74-0.77-9.23-2.69-11.65-6.89c-3.68-6.44-9.53-8.45-16.15-9.49 			c-0.63-0.1-1.24-0.2-1.86-0.31C400.32,232.55,400.22,232.45,400.32,232.52z M467.39,276.59c-18.28,10.25-36.02,21.19-49.06,38.11 			C429.29,294.99,445.92,282.65,467.39,276.59z M406.79,283.69c-0.3,0.11-0.67,0.01-1.66,0.01c18.23-9.99,37.2-13.51,57.05-12.94 			c0.1,0.35,0.2,0.71,0.3,1.06c-1.43,0.52-2.84,1.41-4.3,1.49C440.53,274.23,423.39,277.58,406.79,283.69z M515.11,272.34 			c-2.3,3.81-5.61,7.47-9.33,9.87c-9.41,6.06-20.33,8.12-31.26,8.34c-8.7,0.18-15.42,2.64-20.55,9.76 			c-3.8,5.27-8.04,10.22-12.85,14.88c3.71-5.88,6.76-12.33,11.29-17.49c5.23-5.96,11.69-10.85,17.77-16.05 			c0.93-0.79,2.61-0.7,3.94-1.01c0.09,0.29,0.17,0.58,0.26,0.87c-1.93,1.57-3.85,3.14-5.78,4.71c12.3,0.12,24.24-0.99,35.26-7.48 			c-8.66-6.76-9.08-10.49-2.31-16.77c-8.41-5.12-17.21-9.76-25.18-15.54c-6.01-4.36-11.81-9.53-16.21-15.45 			c-12.06-16.22-25.49-30.79-43.7-40.04c-8.11-4.12-16.77-7.21-25.27-10.53c-1.99-0.78-2.97-1.46-3.3-3.75 			c-2.21-14.93-12.91-25.88-26.98-27.93c-8.52-1.24-17.75,3.56-20.27,10.15c5.41,0.51,11.09,0.41,16.46,1.66 			c12.61,2.94,20.09,12.14,21.34,25.03c0.88,9.14-1.54,17.62-5.32,26.4c-10.81-1.09-18.41-7.15-24.34-16.24 			c-0.62,7.4,3.97,14.33,14.66,21.68c-3.38,0-5.74,0.21-8.05-0.03c-20.19-2.13-35.62-20.59-37.47-41.58 			c-1.04-11.78,1.04-22.7,8.71-32.16c10.96-13.5,29.93-15.79,43.14-4.44c4.74,4.07,8.24,9.64,12.03,14.73 			c1.1,1.49,1.89,2.31,3.8,2.07c14.82-1.88,25.65,5.71,29.95,19.84c1.29,4.23,3.8,6.87,7.63,9.08 			c15.94,9.19,29.09,21.31,37.79,37.81c6.42,12.17,17.2,19.69,28.6,26.49c7.32,4.36,14.78,8.49,22.15,12.76 			C516.11,264.54,517.73,268.01,515.11,272.34z M241.55,101.81c15.76-11.47,33.85-15.17,52.94-13.26 			c8.31,0.83,16.06,0.43,23.98-2.29c9.17-3.14,18.78-4.61,28.44-5.58c1.96-0.2,5.21,0.33,3.94-3.65c-0.97-3.01-2.88-2.73-5.42-1.95 			c-19.73,6-34.17-1.95-45.49-17.66c-8.62-11.97-16.63-24.48-30.28-31.86c29.51-22.88,80.22-5.79,89.98,31.39 			c-18.5-18.92-39.2-29.41-64.86-27.3c8.57,2.66,16.93,5.84,25.22,9.39c15.4,6.6,27.34,16.88,34.6,31.87 			c3.17,6.54,7.18,8.54,14.16,8.47c38.08-0.36,73.26,10.3,104.3,31.93c14.86,10.36,30.39,20.9,40.17,37.41 			c-8.07-6.15-16.01-12.48-24.22-18.42c-41.6-30.11-87.89-43.87-139.23-38.93c-30.57,2.94-60.59,8.53-87.72,24.01 			c-17.6,10.04-30.39,24.21-36.2,39.4c17.95-19.41,38.47-32.9,62.94-40c8.51-2.47,17.16-3.95,25.93-4.85 			c-0.71,2.11-1.51,4.2-2.34,6.26c-1.93,4.8-3.83,9.65-6.26,14.23c-4.16,7.82-9.71,14.82-16.37,20.65 			c-6.75,5.91-14.62,10.56-22.98,13.81c-11.74,4.57-23.86,6.01-36.03,8.87c-12.01,2.82-23.82,7.04-34.12,13.95 			C202.97,153.06,213.06,122.55,241.55,101.81z"/> 	</g> </g> </svg></div>`);
+    gsap.set(lg, {xPercent: -50, yPercent: -50, opacity: 0});
+    const w = ['Escucha.', 'Detecta.', 'Protege.'].map((x, i) => txt(r, x, 660 + i * 300, 860, 'kt sm', i === 2 ? `color:${K.lime}` : ''));
+    tl.fromTo(lg, {opacity: 0, scale: 0.94}, {opacity: 1, scale: 1, duration: 2 * M, ease: 'power2.out'}, 0.3);
+    w.forEach((e, i) => { show(tl, e, 2.4 + i * 0.7); sfx(tl, 'tick', 2.4 + i * 0.7); });
+    tl.set({}, {}, 6);
+  }});
+
+scene({id:'2', label:'Problema', act:1, name:'El problema', bg:K.paper, ink:K.dark, light:true, trans:'fade',
+  cap:'el problema',
+  narr:['La plaga trabaja de noche.', 'El productor la descubre de día.', 'Y cuando el daño se ve, ya es tarde.'],
   build(r, tl, S) {
-    let stalks = '';
-    for (let i = 0; i < 16; i++) { const x = 120 + i * 112; stalks += `<path d="M${x} 1080 L${x} 760 M${x} 860 q-40 -30 -70 -10 M${x} 800 q40 -30 70 -12" stroke="${C.lime}" stroke-width="7" fill="none" stroke-linecap="round"/>`; }
-    const sv = add(r, `<svg class="abs" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080"><circle class="moon" cx="1560" cy="230" r="90" fill="${C.lime}"/><circle cx="1600" cy="205" r="78" fill="${C.blk}"/><g class="st">${stalks}</g></svg>`);
-    const moths = add(r, `<div class="abs" style="left:0;top:0;width:1920px;height:1080px"></div>`);
-    for (let i = 0; i < 9; i++) {
-      const m = add(moths, `<svg class="abs" width="44" height="30" viewBox="0 0 44 30"><path d="M22 15 C6 0 0 12 8 22 C14 28 20 22 22 17 Z M22 15 C38 0 44 12 36 22 C30 28 24 22 22 17 Z" fill="${C.lime}"/></svg>`);
-      const y0 = 260 + (i * 61) % 380;
-      const lp = gsap.fromTo(m, {x: -80, y: y0}, {x: 2000, y: y0 + 260, duration: 6 + (i % 3), ease: 'none', repeat: -1, paused: true});
-      lp.progress(i / 9); S.loops.push(lp);
-      S.loops.push(gsap.to(m, {scaleY: 0.4, duration: 0.09, yoyo: true, repeat: -1, paused: true}));
-    }
-    const w = kw(r, 'DE NOCHE', {size: 230, x: 960, y: 470, acc: {3: C.lime}});
-    const e = echo(r, 'DE NOCHE', {size: 230, x: 960, y: 470, stroke: C.crm});
-    const hr = add(r, `<div class="abs M" style="left:960px;top:640px;font:800 64px 'JetBrains Mono';letter-spacing:.1em">00:00</div>`);
-    gsap.set(hr, {xPercent: -50, opacity: 0});
-    tl.fromTo(qa(sv, '.st path'), {scaleY: 0, transformOrigin: '50% 100%'}, {scaleY: 1, duration: 0.5 * M, ease: 'back.out(1.7)', stagger: 0.04}, 0);
-    tl.fromTo(moths, {opacity: 0}, {opacity: 1, duration: 0.6}, 0.8);
-    inK(tl, w, 1.4); echoIn(tl, e, 1.7);
-    tl.to(hr, {opacity: 1, duration: 0.3}, 2.6);
-    counter(tl, hr, 0, 134, 2.6, 2.4, v => `0${Math.floor(v / 60)}:${String(Math.floor(v % 60)).padStart(2, '0')}`);
+    const a = txt(r, 'La plaga trabaja de noche.', 960, 380, 'kt');
+    const b = txt(r, 'El productor la descubre de día.', 960, 540, 'kt', 'color:#9a9a96');
+    const c = txt(r, 'Cuando el daño se ve, ya es tarde.', 960, 700, 'kt', `color:${K.alarm}`);
+    S.onSentence = k => [a, b, c].forEach((e, j) => gsap[window.__RENDER__ ? 'set' : 'to'](e, {opacity: j === k ? 1 : (j < k ? 0.18 : 0), y: 0, duration: 0.5}));
+    show(tl, a, 0.3); show(tl, b, 2.4); show(tl, c, 4.6);
+    tl.to(a, {opacity: 0.18, duration: 0.5}, 2.4); tl.to(b, {opacity: 0.18, duration: 0.5}, 4.6);
     tl.set({}, {}, 7.5);
   }});
 
-scene({id:'1.2', act:1, name:'Se oye antes de que se vea', bg:'#D1E3B3', ink:'#42271A', light:true, trans:'wipe',
-  cap:'se oye antes de que se vea',
-  narr:['Esperar a ver el daño es llegar tarde.', 'Pero la plaga se oye antes de que se vea.'],
-  build(r, tl) {
-    const a = kw(r, 'SE VE', {size: 200, x: 960, y: 360});
-    const b = kw(r, 'DE DÍA', {size: 200, x: 960, y: 580});
-    const strike = add(r, `<div class="abs" style="left:300px;top:568px;width:1320px;height:26px;background:${C.red};transform-origin:0 50%;transform:scaleX(0)"></div>`);
-    const band = add(r, `<div class="abs" style="left:0;top:360px;width:1920px;height:360px;background:${C.blk};transform:scaleY(0)"></div>`);
-    const o = kw(r, 'SE OYE', {size: 260, x: 960, y: 540, color: C.lime});
-    const eo = echo(r, 'SE OYE', {size: 260, x: 960, y: 540, stroke: '#42271A'}, 1);
-    let bars = '';
-    for (let i = 0; i < 48; i++) bars += `<rect x="${240 + i * 30}" y="0" width="16" height="10" rx="4" fill="${C.lime}"/>`;
-    const wave = add(r, `<svg class="abs" style="left:0;top:820px" width="1920" height="160" viewBox="0 0 1920 160"><g>${bars}</g></svg>`);
-    gsap.set(o.L, {opacity: 0}); gsap.set(wave, {opacity: 0});
-    inK(tl, a, 0); inK(tl, b, 0.4, {silent: true});
-    tl.to(strike, {scaleX: 1, duration: 0.5 * M, ease: 'snap'}, 1.6); sfx(tl, 'thud', 1.7);
-    tl.to([a.el, b.el, strike], {y: '+=60', opacity: 0, duration: 0.35, ease: 'power3.in'}, 2.8);
-    tl.to(band, {scaleY: 1, duration: 0.45 * M, ease: 'expo.out'}, 3.0);
-    inK(tl, o, 3.2); echoIn(tl, eo, 3.5); sfx(tl, 'chime', 3.6);
-    tl.to(wave, {opacity: 1, duration: 0.2}, 3.8);
-    qa(wave, 'rect').forEach((x, i) => tl.to(x, {attr: {height: 30 + ((i * 37) % 110), y: 0}, duration: 0.3, ease: 'back.out(2)'}, 3.8 + i * 0.02));
-    tl.set({}, {}, 6.6);
-  }});
-
-/* Acto 2: el dispositivo. */
-scene({id:'2.1', act:2, name:'Un celular en desuso', bg:'#42271A', ink:C.crm, trans:'whip',
-  cap:'un celular en desuso',
-  narr:['El corazón es un celular en desuso, con la pantalla rota o la batería cansada.',
-    'Todavía trae micrófono, acelerómetro, sensor de luz, GPS y conexión.'],
+/* Acto 2: el nodo. */
+scene({id:'3', label:'El nodo', act:2, name:'El nodo', bg:K.black, ink:K.ink, trans:'fade',
+  cap:'el nodo',
+  narr:['Este es el nodo pocketNode.', 'Un celular reciclado dentro de una caja sellada, con un panel solar de diez vatios y una trampa de feromona.'],
   build(r, tl, S) {
-    const st = S.st = {e: 0, ry: -0.9, rx: 0.15, gx: -1.5, gy: 0.1, sc: 2.4, only: ['phone']};
-    const w = kw(r, 'SEGUNDA VIDA', {size: 120, x: 1280, y: 230, acc: {0: C.lime, 1: C.lime, 2: C.lime, 3: C.lime, 4: C.lime, 5: C.lime}});
-    const tags = ['MICRÓFONO', 'ACELERÓMETRO', 'GIROSCOPIO', 'SENSOR DE LUZ', 'GPS', 'WI-FI Y BLUETOOTH', 'SIM PARA SMS'];
-    const box = add(r, `<div class="abs" style="left:1000px;top:380px;width:780px">${tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>`);
-    const tg = qa(box, '.tag'); gsap.set(tg, {opacity: 0});
-    const rec = add(r, `<div class="abs M" style="left:1000px;top:800px;font:700 22px 'JetBrains Mono';letter-spacing:.14em;color:${C.lime}">ANDROID 5.0 O SUPERIOR | PANTALLA ROTA: NO IMPORTA</div>`);
-    gsap.set(rec, {opacity: 0});
-    tl.fromTo(st, {sc: 0.4}, {sc: 2.4, duration: 0.9 * M, ease: 'back.out(1.4)'}, 0.2);
-    inK(tl, w, 0.6);
-    tl.to(st, {ry: 5.4, duration: 9, ease: 'none'}, 0.2);
-    tg.forEach((t, i) => { tl.fromTo(t, {opacity: 0, y: 20}, {opacity: 1, y: 0, duration: 0.3, ease: 'back.out(1.7)'}, 3.4 + i * 0.35); sfx(tl, 'tick', 3.4 + i * 0.35); });
-    tl.to(rec, {opacity: 1, duration: 0.4}, 6.2);
-    tl.set({}, {}, 9.2);
+    const st = S.st = {e: 0, ry: -0.9, rx: 0.08, cz: 22, cy: 0.4, ly: -0.3, gx: 2.2, ring: 0};
+    const t1 = txt(r, 'pocketNode', 560, 470, 'kt');
+    const t2 = txt(r, 'Un oído que no duerme.', 560, 590, 'ks');
+    tl.to(st, {cz: 15.5, duration: 6 * M, ease: 'power2.out'}, 0);
+    tl.to(st, {ry: 0.7, duration: 11, ease: 'none'}, 0);
+    show(tl, t1, 1.2); show(tl, t2, 4.2);
+    tl.to(st, {ring: 1, duration: 1}, 5.5);
+    tl.set({}, {}, 10.5);
   },
-  frame() { T3.render(this.root, this.st); }});
+  frame(n) { T3.render(this.root, this.st, localT(this, n)); }});
 
-scene({id:'2.2', act:2, name:'El nodo armado', bg:C.blk, ink:C.crm, trans:'cut',
-  cap:'el nodo pocketnode',
-  narr:['Se arma dentro de una caja sellada contra lluvia y polvo, con una membrana que deja pasar el sonido.',
-    'Un panel solar de diez vatios y una batería de respaldo lo mantienen encendido día y noche.',
-    'Se fija a un poste, en la parcela o en el corral.'],
+scene({id:'4', label:'Piezas', act:2, name:'Cada pieza, una tarea', bg:K.black, ink:K.ink, trans:'fade',
+  cap:'cada pieza, una tarea',
+  narr:['Cada pieza tiene una sola tarea.', 'El panel carga, y la batería de respaldo cubre la noche y los días nublados.',
+    'La membrana deja pasar el sonido y detiene el agua y el polvo.', 'Y el celular hace todo el cálculo.'],
   build(r, tl, S) {
-    const st = S.st = {e: 1, ry: -0.5, rx: 0.12, gx: -1.2, gy: -0.75, sc: 0.78, lid: 1};
-    const L = [['panel', 'PANEL SOLAR 10 W'], ['lid', 'TAPA IP65'], ['mem', 'MEMBRANA ACÚSTICA'], ['phone', 'CELULAR EN DESUSO'], ['bank', 'BATERÍA DE RESPALDO'], ['post', 'POSTE Y ABRAZADERAS']];
-    S.labels = L.map(([k, t]) => {
-      const el = add(r, `<div class="abs lab"><i></i><span>${t}</span></div>`);
-      gsap.set(el, {opacity: 0});
-      return {k, el};
+    const st = S.st = {e: 0, ry: 0.35, rx: 0.12, cz: 17, gx: -0.4, ly: -0.5};
+    S.co = callouts(r, [['panel', 'Panel solar', '10 W, monocristalino', 'r'], ['phone', 'Celular en desuso', 'Android 5 o superior', 'r'],
+      ['bank', 'Batería de respaldo', '5.000 a 10.000 mAh', 'l'], ['mem', 'Membrana acústica', 'pasa el sonido, no el agua', 'r'],
+      ['lid', 'Caja IP65', 'sellada contra lluvia y polvo', 'l'], ['trap', 'Trampa de feromona', 'atrae a la plaga al micrófono', 'l']]);
+    tl.to(st, {e: 1, duration: 2.4 * M, ease: 'power3.inOut'}, 0.4);
+    tl.to(st, {ry: -0.25, duration: 16, ease: 'none'}, 0);
+    S.co.forEach((c, i) => { tl.to(c.el, {opacity: 1, duration: 0.5}, 2.6 + i * 0.5); sfx(tl, 'tick', 2.6 + i * 0.5); });
+    tl.to(S.co.map(c => c.el), {opacity: 0, duration: 0.5}, 13.2);
+    tl.to(st, {e: 0, duration: 2 * M, ease: 'power3.inOut'}, 13.4);
+    sfx(tl, 'hit', 15.2, 0.6);
+    tl.set({}, {}, 16);
+  },
+  frame(n) { T3.render(this.root, this.st, localT(this, n)); placeCallouts(this.co); }});
+
+/* Acto 3: cómo escucha. */
+scene({id:'5', label:'Escucha', act:3, name:'¿Cómo escucha?', bg:K.black, ink:K.ink, trans:'fade',
+  cap:'cómo escucha',
+  narr:['¿Cómo escucha?', 'El micrófono graba dieciséis mil muestras por segundo.',
+    'Cada segundo de sonido se convierte en un espectrograma: una imagen de sesenta y cuatro bandas de frecuencia.',
+    'Un modelo abierto de Google, YAMNet, que distingue quinientas veintiuna clases de sonidos, la lee dentro del celular.',
+    'Encima entrenamos nuestras propias clases. Aquí reconoce un perro.'],
+  build(r, tl, S) {
+    add(r, q3('Pregunta 1', '¿Cómo escucha?'));
+    const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
+    const wv = add(r, `<canvas class="abs" width="1600" height="160" style="left:160px;top:340px;width:1600px;height:160px"></canvas>`);
+    const sp = add(r, `<canvas class="abs" width="900" height="320" style="left:160px;top:560px;width:900px;height:320px;border-radius:14px"></canvas>`);
+    S.wv = wv; S.sp = sp; gsap.set([wv, sp], {opacity: 0});
+    const l1 = txt(r, '16.000 muestras por segundo', 1560, 300, 'tagx');
+    const l2 = add(r, `<div class="abs" style="left:160px;top:900px;font:600 24px Urbanist;opacity:0">0,96 s | 64 bandas | 125 a 7.500 Hz</div>`);
+    const cls = [['Perro', 0.91], ['Ganado', 0.04], ['Lluvia', 0.03], ['Voces', 0.02]];
+    const box = add(r, `<div class="abs" style="left:1160px;top:560px;width:600px;display:grid;gap:22px">
+      <div style="font:700 26px Urbanist;letter-spacing:.14em;color:${K.lime}">YAMNET + CLASES POCKETNODE</div>
+      ${cls.map(([n]) => `<div class="row2"><span style="width:170px">${n}</span><div style="flex:1;background:rgba(255,255,255,.1);border-radius:9px"><div class="bar2" style="transform:scaleX(0)"></div></div><span class="v" style="width:90px;text-align:right">0,00</span></div>`).join('')}
+      <div class="est">ilustrativo</div></div>`);
+    gsap.set(box, {opacity: 0});
+    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
+    tl.to(wv, {opacity: 1, duration: 0.6}, 2.2); show(tl, l1, 2.4);
+    tl.to(sp, {opacity: 1, duration: 0.6}, 5.2); tl.to(l2, {opacity: 0.7, duration: 0.6}, 5.6);
+    tl.to(box, {opacity: 1, duration: 0.6}, 10.5);
+    qa(box, '.row2').forEach((row, i) => {
+      const p = {v: 0};
+      tl.to(q(row, '.bar2'), {scaleX: cls[i][1], duration: 1.2, ease: 'power3.out'}, 15 + i * 0.15);
+      tl.to(p, {v: cls[i][1], duration: 1.2, ease: 'power3.out'}, 15 + i * 0.15);
+      bind(q(row, '.v'), () => p.v.toFixed(2).replace('.', ','));
     });
-    const title = kw(r, 'POCKETNODE', {size: 96, x: 1440, y: 140, acc: {6: C.lime, 7: C.lime, 8: C.lime, 9: C.lime}});
-    tl.fromTo(st, {sc: 0.3}, {sc: 0.78, duration: 0.8 * M, ease: 'expo.out'}, 0);
-    inK(tl, title, 0.3);
-    S.labels.forEach((l, i) => { tl.to(l.el, {opacity: 1, duration: 0.3}, 1.0 + i * 0.45); sfx(tl, 'tick', 1.0 + i * 0.45); });
-    tl.to(st, {ry: 0.5, duration: 13, ease: 'none'}, 0);
-    tl.to(st, {e: 0, duration: 3.2 * M, ease: 'power3.inOut'}, 5.2);
-    sfx(tl, 'hit', 8.4, 0.8);
-    tl.to(S.labels.map(l => l.el), {opacity: 0.25, duration: 0.4}, 8.4);
-    tl.set({}, {}, 13.5);
+    tl.to(q(box, '.row2'), {color: K.lime, duration: 0.3}, 16.3); sfx(tl, 'chime', 16.3);
+    tl.set({}, {}, 20);
   },
-  frame() {
-    T3.render(this.root, this.st);
-    this.labels.forEach(l => { const p = T3.at(l.k); l.el.style.left = (p.x + 30) + 'px'; l.el.style.top = (p.y - 18) + 'px'; });
+  frame(n) {
+    const t = localT(this, n);
+    const hn = (i, j) => { const x = Math.sin(i * 127.1 + j * 311.7) * 43758.5453; return x - Math.floor(x); };
+    const bark = tc => { const ph = ((tc % 0.9) + 0.9) % 0.9; return ph < 0.22 ? Math.sin(ph / 0.22 * Math.PI) : 0; };
+    const g = this.wv.getContext('2d');
+    g.clearRect(0, 0, 1600, 160); g.strokeStyle = K.lime; g.lineWidth = 2; g.beginPath();
+    for (let x = 0; x < 1600; x += 2) {
+      const tc = t - (1600 - x) / 600, a = 0.12 + 0.85 * bark(tc);
+      const y = 80 + (hn(Math.floor(tc * 4000), 1) - 0.5) * 140 * a;
+      x ? g.lineTo(x, y) : g.moveTo(x, y);
+    }
+    g.stroke();
+    const s = this.sp.getContext('2d'), cols = 150, cw = 900 / cols, bh = 320 / 64;
+    for (let c = 0; c < cols; c++) {
+      const tc = t - (cols - c) * 0.03, b = bark(tc), ci = Math.floor(tc / 0.03);
+      for (let k = 0; k < 64; k++) {
+        let v = 0.08 + hn(ci, k) * 0.12;
+        if (b > 0) for (let h = 1; h < 6; h++) v += b * Math.exp(-Math.pow(k - 9 * h, 2) / 3) * (1 - h * 0.13);
+        v = Math.min(1, v);
+        const rr = Math.round(lerp(5, 203, v)), gg = Math.round(lerp(12, 219, v)), bb = Math.round(lerp(10, 124, v));
+        s.fillStyle = `rgb(${rr},${gg},${bb})`;
+        s.fillRect(c * cw, 320 - (k + 1) * bh, cw + 0.5, bh + 0.5);
+      }
+    }
   }});
 
-scene({id:'2.3', act:2, name:'Escucha, siente y decide', bg:C.blk, ink:C.crm, trans:'rgb',
-  cap:'escucha, siente y decide',
-  narr:['Al caer la luz, el nodo despierta y escucha.',
-    'El micrófono reconoce el aleteo de la plaga, y el acelerómetro siente si algo roza el poste o abre el portón.',
-    'Todo se decide dentro del celular, sin internet.'],
+scene({id:'6', label:'Polillas', act:3, name:'¿Y las polillas?', bg:K.paper, ink:K.dark, light:true, trans:'fade',
+  cap:'y las polillas',
+  narr:['¿Y las polillas?', 'Una polilla como el gusano cogollero bate las alas entre treinta y cincuenta veces por segundo.',
+    'Ese tono es tan grave que queda por debajo de lo que el modelo escucha, y muchos micrófonos de celular lo atenúan.',
+    'Oírla volar a varios metros no es confiable. Por eso no lo prometemos.'],
+  build(r, tl) {
+    add(r, q3('Pregunta 2', '¿Y las polillas?'));
+    const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
+    const X = f => 220 + f * 1.45;
+    let h = '';
+    for (let k = 1; k <= 17; k++) { const f = 40 * k, hgt = 300 * Math.pow(0.84, k - 1); h += `<rect class="hb" x="${X(f) - 6}" y="${820 - hgt}" width="12" height="${hgt}" rx="4" fill="${k === 1 ? K.brown : K.green}"/>`; }
+    const sv = add(r, `<svg class="abs" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080">
+      <rect class="z1" x="${X(0)}" y="420" width="${X(125) - X(0)}" height="400" fill="${K.alarm}" opacity=".12"/>
+      <line x1="${X(0)}" y1="820" x2="${X(1000)}" y2="820" stroke="#111" stroke-width="3"/>
+      ${[0, 100, 200, 400, 600, 800, 1000].map(f => `<text x="${X(f)}" y="862" font-family="Urbanist" font-size="24" text-anchor="middle" fill="#555">${f}</text>`).join('')}
+      <text x="${X(1000)}" y="900" font-family="Urbanist" font-size="22" text-anchor="end" fill="#555">Hz</text>
+      ${h}</svg>`);
+    const z1 = q(sv, '.z1'), hb = qa(sv, '.hb');
+    gsap.set([z1, ...hb], {opacity: 0});
+    const f0 = txt(r, '30 a 50 Hz', X(40) + 40, 470, 'tagx', `color:${K.brown};transform-origin:0 50%`);
+    const hm = txt(r, 'hasta 17 armónicos', 1150, 560, 'tagx', `color:${K.green}`);
+    const zl = txt(r, 'bajo 125 Hz: el modelo no mira | bajo 100 Hz: el micrófono puede atenuar', 900, 960, 'ks', `font-size:28px;color:${K.alarm};opacity:1`);
+    const no = txt(r, 'Oírla volar a metros', 1260, 220, 'kt sm');
+    const st = add(r, `<div class="abs" style="left:950px;top:214px;width:620px;height:10px;background:${K.alarm};transform-origin:0 50%;transform:scaleX(0)"></div>`);
+    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
+    tl.to(hb[0], {opacity: 1, duration: 0.4}, 2.2); show(tl, f0, 2.4);
+    tl.to(hb.slice(1), {opacity: 1, duration: 0.25, stagger: 0.08}, 3.4); show(tl, hm, 4.2);
+    tl.to(z1, {opacity: 1, duration: 0.6}, 7.4); show(tl, zl, 7.6);
+    tl.to(hb[0], {opacity: 0.25, duration: 0.6}, 8.4);
+    show(tl, no, 12.2); tl.to(st, {scaleX: 1, duration: 0.5 * M, ease: 'snap'}, 13.4); sfx(tl, 'thud', 13.5);
+    tl.set({}, {}, 15.5);
+  }});
+
+scene({id:'7', label:'Trampa', act:3, name:'La trampa', bg:K.black, ink:K.ink, trans:'fade',
+  cap:'la trampa',
+  narr:['La solución es llevar la polilla al micrófono.', 'La feromona de la trampa atrae a los machos de la especie, y entran por el embudo, a pocos centímetros del celular.',
+    'Al amanecer, la cámara fotografía la trampa y cuenta las capturas.', 'Así funcionan ya trampas inteligentes en Kenia, Brasil y Colombia. Aquí, el cerebro es un celular reciclado.'],
   build(r, tl, S) {
-    const st = S.st = {e: 0, ry: 0.3, rx: 0.1, gx: -2.1, gy: -0.55, sc: 0.85};
-    const rings = add(r, `<svg class="abs" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080">
-      <circle class="r1" cx="560" cy="560" r="300" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="2 16" stroke-linecap="round"/>
-      <circle class="r2" cx="560" cy="560" r="360" fill="none" stroke="${C.lime}" stroke-width="5" stroke-dasharray="160 2100"/>
-      <circle class="r3" cx="560" cy="560" r="420" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="1 11" opacity=".5"/></svg>`);
-    S.loops.push(gsap.to(q(rings, '.r1'), {rotation: 360, svgOrigin: '560 560', duration: 30, ease: 'none', repeat: -1, paused: true}));
-    S.loops.push(gsap.to(q(rings, '.r2'), {rotation: -360, svgOrigin: '560 560', duration: 6, ease: 'none', repeat: -1, paused: true}));
-    S.loops.push(gsap.to(q(rings, '.r3'), {rotation: 360, svgOrigin: '560 560', duration: 60, ease: 'none', repeat: -1, paused: true}));
-    const rows = [['SENSOR DE LUZ', 'modo noche'], ['MICRÓFONO', 'aleteo de plagas'], ['ACELERÓMETRO', 'roce y portón'], ['MAGNETÓMETRO', 'nodo movido'], ['BARÓMETRO', 'noche húmeda']];
-    const list = add(r, `<div class="abs" style="left:1080px;top:250px;display:grid;gap:22px">${rows.map(([a, b]) => `<div class="sr"><span class="pill" style="background:${C.lime};color:${C.blk}">${a}</span><span class="M" style="font:700 26px 'JetBrains Mono'">-> ${b}</span></div>`).join('')}</div>`);
-    const it = qa(list, '.sr'); gsap.set(it, {opacity: 0});
-    const edge = kw(r, 'SIN INTERNET', {size: 92, x: 1430, y: 900, acc: {0: C.lime, 1: C.lime, 2: C.lime}});
-    gsap.set(edge.L, {opacity: 0}); gsap.set(rings, {opacity: 0});
-    tl.to(rings, {opacity: 1, duration: 0.5}, 0.4);
-    tl.to(st, {ry: 2.2, duration: 14, ease: 'none'}, 0);
-    it.forEach((x, i) => { tl.fromTo(x, {opacity: 0, x: 60}, {opacity: 1, x: 0, duration: 0.4 * M, ease: 'expo.out'}, 1.6 + i * 1.3); sfx(tl, 'tick', 1.6 + i * 1.3); });
-    inK(tl, edge, 9.4); sfx(tl, 'chime', 9.6);
-    tl.set({}, {}, 12.5);
+    const st = S.st = {e: 0, ry: 0.5, rx: 0.15, cz: 17, ly: 0.4, moths: 0, ring: 0};
+    const t1 = txt(r, 'La solución: una trampa de feromona.', 960, 110, 'kt sm');
+    const n = add(r, `<div class="abs" style="left:1500px;top:640px"><div class="est" style="color:${K.lime}">capturas de esta noche</div><div class="kn">0</div><div class="est">ilustrativo</div></div>`);
+    gsap.set(n, {opacity: 0});
+    const flags = ['Kenia', 'Brasil', 'Colombia'].map((c, i) => txt(r, c, 760 + i * 200, 980, 'tagx'));
+    show(tl, t1, 0.3); hide(tl, t1, 1.3);
+    tl.to(st, {cz: 9.5, cy: -1.1, ly: -1.9, ry: -0.2, duration: 5 * M, ease: 'power2.inOut'}, 1.5);
+    tl.to(st, {moths: 1, duration: 1}, 3.5);
+    tl.to(st, {ring: 1, duration: 1}, 5);
+    tl.to(n, {opacity: 1, duration: 0.5}, 9.5);
+    counter(tl, q(n, '.kn'), 0, 14, 9.5, 3, v => String(Math.round(v)));
+    tl.to(st, {cz: 17, cy: 0, ly: 0.4, ry: 0.6, duration: 4 * M, ease: 'power2.inOut'}, 14);
+    flags.forEach((f, i) => { show(tl, f, 15 + i * 0.4); sfx(tl, 'tick', 15 + i * 0.4); });
+    tl.set({}, {}, 20);
   },
-  frame() { T3.render(this.root, this.st); }});
+  frame(n) { T3.render(this.root, this.st, localT(this, n)); }});
 
-/* Acto 3: la red. */
-scene({id:'3.1', act:3, name:'Una red que se confirma sola', bg:'#D1E3B3', ink:'#074736', light:true, trans:'wipe',
-  cap:'una red que se confirma sola',
-  narr:['Varios nodos cubren la finca y se hablan entre ellos.',
-    'Si dos vecinos oyen la misma plaga, la alerta se confirma: aquí, sesenta y cuatro eventos por hora.',
-    'Si uno no tiene señal, el vecino lleva el aviso hasta la antena.'],
+/* Acto 4: cómo decide. */
+scene({id:'8', label:'Falsas alarmas', act:4, name:'¿Cómo evita falsas alarmas?', bg:K.black, ink:K.ink, trans:'fade',
+  cap:'falsas alarmas',
+  narr:['¿Cómo evita las falsas alarmas?', 'Ningún sonido aislado dispara un aviso: debe repetirse en tres de cinco ventanas.',
+    'Luego se revisa el contexto: la hora, la luz, la humedad y el modo del nodo.',
+    'El acelerómetro confirma si algo tocó el poste, y un nodo vecino puede confirmar lo mismo.',
+    'Y cada respuesta del productor le enseña al nodo qué era real.'],
   build(r, tl) {
-    const N = [[300, 300], [620, 520], [980, 260], [1360, 220], [1250, 600], [860, 820]];
-    const E = [[0, 1], [1, 2], [2, 3], [2, 4], [3, 4], [4, 5], [1, 5]];
-    const ant = [1560, 860];
-    const sv = add(r, `<svg class="abs" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080">
-      ${E.map(([a, b]) => `<line class="ed" x1="${N[a][0]}" y1="${N[a][1]}" x2="${N[b][0]}" y2="${N[b][1]}" stroke="#074736" stroke-width="5" stroke-dasharray="10 12"/>`).join('')}
-      <path class="rel" d="M${N[3][0]} ${N[3][1]} L${N[4][0]} ${N[4][1]} L${ant[0]} ${ant[1]}" fill="none" stroke="#84441A" stroke-width="12" stroke-linecap="round" stroke-dasharray="1200" stroke-dashoffset="1200"/>
-      <path d="M${ant[0] - 40} ${ant[1] + 120} L${ant[0]} ${ant[1]} L${ant[0] + 40} ${ant[1] + 120} Z" fill="none" stroke="#42271A" stroke-width="8" class="an"/>
-      ${N.map(([x, y], i) => `<g class="nd"><circle class="hl" cx="${x}" cy="${y}" r="40" fill="none" stroke="#84441A" stroke-width="6" opacity="0"/><circle class="cr" cx="${x}" cy="${y}" r="34" fill="#074736" stroke="#fff" stroke-width="6"/></g>`).join('')}
-    </svg>`);
-    const nds = qa(sv, '.nd'), eds = qa(sv, '.ed'), hl = qa(sv, '.hl'), cr = qa(sv, '.cr');
-    const ns = add(r, `<div class="abs M" style="left:1440px;top:150px;font:800 26px 'JetBrains Mono';color:#84441A">SIN SEÑAL</div>`);
-    const cnt = add(r, `<div class="abs" style="left:150px;top:840px"><div class="M" style="font:800 120px 'JetBrains Mono'"><span class="n">0</span><span style="font-size:48px"> / HORA</span></div><div class="lbl">ilustrativo</div></div>`);
-    gsap.set([ns, cnt, q(sv, '.an')], {opacity: 0});
-    tl.fromTo(nds, {scale: 0, transformOrigin: '50% 50%'}, {scale: 1, duration: 0.4 * M, ease: 'back.out(1.7)', stagger: 0.15}, 0.2);
-    nds.forEach((_, i) => sfx(tl, 'tick', 0.2 + i * 0.15));
-    tl.fromTo(eds, {opacity: 0}, {opacity: 0.7, duration: 0.4, stagger: 0.12}, 1.2);
-    tl.to(q(sv, '.an'), {opacity: 1, duration: 0.3}, 1.8);
-    tl.to([cr[3], cr[4]], {fill: '#84441A', duration: 0.2}, 4.2);
-    tl.fromTo([hl[3], hl[4]], {attr: {r: 40}, opacity: 1}, {attr: {r: 120}, opacity: 0, duration: 1, repeat: 3, ease: 'power2.out'}, 4.2);
-    tl.to(cnt, {opacity: 1, duration: 0.3}, 4.6);
-    counter(tl, q(cnt, '.n'), 0, 64, 4.6, 2.2, v => String(Math.round(v)));
-    sfx(tl, 'bell3', 7.0);
-    tl.to(ns, {opacity: 1, duration: 0.3}, 9.2);
-    tl.to(q(sv, '.rel'), {strokeDashoffset: 0, duration: 1.4 * M, ease: 'snap'}, 9.6); sfx(tl, 'whoosh', 9.6);
-    tl.set({}, {}, 13);
-  }});
-
-scene({id:'3.2', act:3, name:'Cultivo y ganado', bg:'#84441A', ink:C.crm, trans:'whip',
-  cap:'cultivo y ganado',
-  narr:['En modo cultivo, las voces y los motores se descartan como ruido.',
-    'En modo ganado, esas mismas voces de noche junto al corral son la alarma.'],
-  build(r, tl) {
-    const div = add(r, `<div class="abs" style="left:958px;top:120px;width:4px;height:840px;background:${C.crm};opacity:.5;transform:scaleY(0)"></div>`);
-    const a = kw(r, 'CULTIVO', {size: 120, x: 480, y: 260, color: C.lime});
-    const b = kw(r, 'GANADO', {size: 120, x: 1440, y: 260, color: C.lime});
-    const mk = (x, cls) => add(r, `<div class="abs ${cls}" style="left:${x}px;top:470px;width:620px;text-align:center"><span class="pill ol" style="color:${C.crm};font-size:34px;position:relative">VOCES Y MOTORES<i class="st"></i></span></div>`);
-    const va = mk(170, 'va'), vb = mk(1130, 'vb');
-    const ra = add(r, `<div class="abs M" style="left:480px;top:640px;font:800 40px 'JetBrains Mono';letter-spacing:.08em">= RUIDO</div>`);
-    const rb = add(r, `<div class="abs M" style="left:1440px;top:640px;font:800 40px 'JetBrains Mono';letter-spacing:.08em;color:${C.crm}"><span style="background:${C.red};padding:6px 18px;border-radius:10px">= ALARMA</span></div>`);
-    gsap.set([ra, rb], {xPercent: -50, opacity: 0}); gsap.set([va, vb], {opacity: 0});
-    tl.to(div, {scaleY: 1, duration: 0.5 * M, ease: 'expo.out'}, 0);
-    inK(tl, a, 0.2); inK(tl, b, 0.5, {silent: true});
-    tl.to(va, {opacity: 1, duration: 0.3}, 1.3);
-    tl.to(q(va, '.st'), {scaleX: 1, duration: 0.45 * M, ease: 'snap'}, 2.2); sfx(tl, 'thud', 2.3);
-    tl.to(ra, {opacity: 1, duration: 0.3}, 2.6);
-    tl.to(va, {opacity: 0.45, duration: 0.4}, 3.2);
-    tl.to(vb, {opacity: 1, duration: 0.3}, 4.6);
-    tl.to(rb, {opacity: 1, duration: 0.3}, 5.4); sfx(tl, 'chime', 5.4);
-    tl.fromTo(rb, {scale: 0.6}, {scale: 1, duration: 0.5, ease: 'back.out(2)', immediateRender: false}, 5.4);
-    tl.set({}, {}, 8.5);
-  }});
-
-/* Acto 4: el aviso. */
-scene({id:'4.1', act:4, name:'Un aviso que cualquiera entiende', bg:C.blk, ink:C.crm, trans:'cut',
-  cap:'un aviso que cualquiera entiende',
-  narr:['El aviso sale como SMS desde la propia SIM del nodo, aunque no haya internet.',
-    'Palabras sencillas, letra grande y dos respuestas: ya fui a ver, o no era nada.'],
-  build(r, tl) {
-    const ph = add(r, `<div class="abs" style="left:1200px;top:96px;width:410px;height:800px;border-radius:56px;background:#05100c;border:4px solid ${C.lime};padding:18px;box-sizing:border-box">
-      <div style="height:100%;border-radius:40px;background:#FFFFFF;color:#42271A;display:flex;flex-direction:column;gap:20px;padding:30px 26px;box-sizing:border-box;font-family:'JetBrains Mono',monospace">
-        <div style="font:700 18px 'JetBrains Mono';opacity:.6">SMS | 1:32</div>
-        <div style="background:#D1E3B3;border-radius:22px;padding:22px;font:700 25px/1.45 'JetBrains Mono'"><b style="color:#C0392B">VAYA A VER</b><br><span class="ty"></span></div>
-        <div class="bt" style="margin-top:auto;background:#074736;color:#fff;border-radius:18px;padding:24px;text-align:center;font:800 26px 'JetBrains Mono'">1 YA FUI A VER</div>
-        <div class="bt" style="background:#D1E3B3;color:#074736;border-radius:18px;padding:24px;text-align:center;font:800 26px 'JetBrains Mono'">2 NO ERA NADA</div>
-      </div></div>`);
-    const w = kw(r, 'SMS', {size: 300, x: 560, y: 400, color: C.lime});
-    const s2 = kw(r, 'SIN INTERNET', {size: 92, x: 560, y: 640});
-    const fly = add(r, `<div class="abs" style="left:760px;top:380px;width:60px;height:42px;border:5px solid ${C.lime};border-radius:6px"></div>`);
-    gsap.set(fly, {opacity: 0}); gsap.set(qa(ph, '.bt'), {opacity: 0});
-    tl.fromTo(ph, {x: 520, opacity: 0}, {x: 0, opacity: 1, duration: 0.7 * M, ease: 'expo.out'}, 0.2);
-    inK(tl, w, 0.6);
-    tl.fromTo(fly, {opacity: 1, x: 0, y: 0}, {x: 560, y: -80, opacity: 0, duration: 1 * M, ease: 'power2.in'}, 1.6); sfx(tl, 'whoosh', 1.6);
-    typeIn(tl, q(ph, '.ty'), 'Gusano cogollero en el maíz, lado norte. Desde la 1:20.', 2.4, 2.2);
-    inK(tl, s2, 3.2, {hv: 0.7});
-    tl.to(qa(ph, '.bt'), {opacity: 1, duration: 0.3, stagger: 0.35}, 6.6); sfx(tl, 'tick', 6.6); sfx(tl, 'tick', 6.95);
-    tl.to(q(ph, '.bt'), {scale: 0.94, duration: 0.15, yoyo: true, repeat: 1}, 8.6); sfx(tl, 'chime', 8.7);
-    tl.set({}, {}, 10);
-  }});
-
-/* Acto 5: cierre. */
-scene({id:'5', act:5, name:'Escucha, confirma, avisa, aprende', bg:'#CBDB7C', ink:'#074736', light:true, trans:'wipe',
-  cap:'pocketnode',
-  narr:['Escucha, confirma, avisa y aprende de cada respuesta.',
-    'pocketNode: un celular olvidado que cuida la cosecha y el ganado.'],
-  build(r, tl) {
-    const steps = ['ESCUCHA', 'CONFIRMA', 'AVISA', 'APRENDE'];
-    const xs = [360, 760, 1160, 1560];
-    const sv = add(r, `<svg class="abs" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080">
-      <line class="pl" x1="360" y1="420" x2="1560" y2="420" stroke="#074736" stroke-width="10" stroke-dasharray="1200" stroke-dashoffset="1200"/>
-      ${xs.map(x => `<circle class="nd" cx="${x}" cy="420" r="44" fill="#074736"/>`).join('')}</svg>`);
-    const labs = steps.map((t, i) => { const e = add(r, `<div class="abs M" style="left:${xs[i]}px;top:500px;font:800 34px 'JetBrains Mono';letter-spacing:.08em">${t}</div>`); gsap.set(e, {xPercent: -50, opacity: 0}); return e; });
-    const brand = kw(r, 'POCKETNODE', {size: 200, x: 960, y: 760, acc: {6: '#84441A', 7: '#84441A', 8: '#84441A', 9: '#84441A'}});
-    gsap.set(brand.L, {opacity: 0});
-    tl.to(q(sv, '.pl'), {strokeDashoffset: 0, duration: 2.4 * M, ease: 'none'}, 0.4);
-    qa(sv, '.nd').forEach((c, i) => {
-      const t = 0.4 + i * 0.8 * M;
-      tl.fromTo(c, {scale: 0, svgOrigin: `${xs[i]} 420`}, {scale: 1, svgOrigin: `${xs[i]} 420`, duration: 0.35, ease: 'back.out(1.7)'}, t);
-      tl.to(labs[i], {opacity: 1, duration: 0.2}, t);
-      sfx(tl, 'tick', t);
+    add(r, q3('Pregunta 3', '¿Cómo evita falsas alarmas?'));
+    const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
+    const G4 = [['3/5', 'Persistencia', 'tres de cinco ventanas'], ['', 'Contexto', 'hora, luz, humedad, modo'], ['', 'Movimiento', 'acelerómetro en el poste'], ['2', 'Vecino', 'otro nodo lo confirma']];
+    const xs = [330, 690, 1050, 1410];
+    const gates = G4.map((g, i) => add(r, `<div class="gate" style="left:${xs[i] - 115}px;top:430px"><div class="c">${i + 1}</div><p>${g[1]}</p><small>${g[2]}</small></div>`));
+    gsap.set(gates, {opacity: 0});
+    const line = add(r, `<div class="abs" style="left:330px;top:489px;width:1440px;height:3px;background:rgba(255,255,255,.18);transform-origin:0 50%;transform:scaleX(0)"></div>`);
+    const out = txt(r, 'Aviso', 1760, 490, 'kt sm', `color:${K.lime}`);
+    const dot = add(r, `<div class="abs" style="left:250px;top:478px;width:24px;height:24px;border-radius:50%;background:${K.lime};box-shadow:0 0 24px ${K.lime};opacity:0"></div>`);
+    const fb = txt(r, 'Respuesta 1 o 2 del productor: el nodo aprende', 960, 860, 'ks');
+    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
+    tl.to(line, {scaleX: 1, duration: 1.2 * M, ease: 'power2.out'}, 1.6);
+    gates.forEach((g, i) => { show(tl, g, 2 + i * 0.3); });
+    tl.to(dot, {opacity: 1, duration: 0.2}, 3.6);
+    const T0 = [3.8, 9, 14, 16.5];
+    gates.forEach((g, i) => {
+      tl.to(dot, {left: xs[i] - 12, duration: 1 * M, ease: 'power2.inOut'}, T0[i]);
+      tl.to(q(g, '.c'), {borderColor: K.lime, color: K.lime, duration: 0.3}, T0[i] + 0.9);
+      sfx(tl, 'tick', T0[i] + 0.9);
     });
-    inK(tl, brand, 4.4); sfx(tl, 'bell3', 4.8);
-    tl.set({}, {}, 8);
+    tl.to(dot, {left: 1690, duration: 0.8, ease: 'power2.in'}, 18.4);
+    show(tl, out, 19); sfx(tl, 'chime', 19);
+    show(tl, fb, 20.5);
+    tl.set({}, {}, 24);
+  }});
+
+scene({id:'9', label:'Sin internet', act:4, name:'¿Y sin internet?', bg:K.black, ink:K.ink, trans:'fade',
+  cap:'sin internet',
+  narr:['¿Y sin internet?', 'Todo el cálculo ocurre dentro del celular, con TensorFlow Lite, que todavía funciona en Android cinco.',
+    'El aviso sale como SMS: solo necesita señal celular, no datos móviles.',
+    'Google Play solo permite enviar SMS a la app de mensajes del teléfono. Por eso la app del nodo la instala directamente la cooperativa.'],
+  build(r, tl, S) {
+    const st = S.st = {e: 0, ry: -0.5, rx: 0.1, cz: 9, cy: 0.5, ly: 0.1, gx: -1.6, noTrap: true, ring: 0, screen: 'listen'};
+    add(r, `<div class="kq" style="left:1040px;top:250px">Pregunta 4</div><div class="kt md" style="left:1040px;top:290px">¿Y sin internet?</div>`);
+    const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
+    const rows = [['Modelo en el celular', 'LiteRT, desde Android 5'], ['Aviso por SMS', 'solo señal celular'], ['App del nodo fuera de Play', 'la instala la cooperativa']];
+    const items = rows.map(([a, b], i) => add(r, `<div class="abs" style="left:1040px;top:${470 + i * 130}px"><div style="font:800 42px Urbanist">${a}</div><div style="font:500 28px Urbanist;opacity:.6">${b}</div></div>`));
+    gsap.set(items, {opacity: 0});
+    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
+    tl.to(st, {ry: 0.25, duration: 18, ease: 'none'}, 0);
+    show(tl, items[0], 2.6);
+    show(tl, items[1], 9); tl.set(st, {screen: 'sms'}, 9); tl.to(st, {ring: 1, duration: 0.6}, 9); sfx(tl, 'chime', 9.2);
+    show(tl, items[2], 13.5);
+    tl.set({}, {}, 19);
+  },
+  frame(n) { T3.render(this.root, this.st, localT(this, n)); }});
+
+/* Acto 5: lo que puede y lo que no. */
+scene({id:'10', label:'Energía', act:5, name:'¿Le alcanza la energía?', bg:K.paper, ink:K.dark, light:true, trans:'fade',
+  cap:'energía',
+  narr:['¿Le alcanza la energía?', 'Según nuestra estimación, el nodo consume entre diecinueve y treinta y seis vatios hora al día.',
+    'Con casi seis horas de sol pico, un panel de diez vatios entrega unos treinta y cinco, si se aprovecha el sesenta por ciento.',
+    'En el peor caso queda justo. Por eso escucha por ciclos, lleva batería de respaldo y, si la medición lo pide, sube a quince vatios.'],
+  build(r, tl) {
+    add(r, q3('Pregunta 5', '¿Le alcanza la energía?'));
+    const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
+    const sx = 18;
+    const rows = [['Batería del celular', 11.5, 11.5, '11,5 Wh', '#9a9a96'], ['Consumo por día', 19, 36, '19 a 36 Wh', K.brown], ['Panel de 10 W por día', 35, 35, 'unos 35 Wh', K.green]];
+    const els = rows.map(([n, a, b, l, c], i) => add(r, `<div class="abs" style="left:160px;top:${420 + i * 150}px;width:1600px">
+      <div style="font:700 32px Urbanist;margin-bottom:14px">${n} <span style="font-weight:500;opacity:.55">${l}</span></div>
+      <div style="position:relative;height:44px;background:rgba(0,0,0,.06);border-radius:22px;width:${40 * sx}px">
+        <div class="f" style="position:absolute;left:0;top:0;height:44px;border-radius:22px;background:${c};width:${a * sx}px;transform-origin:0 50%;transform:scaleX(0)"></div>
+        ${b > a ? `<div class="g" style="position:absolute;left:0;top:0;height:44px;border-radius:22px;background:${c};opacity:.3;width:${b * sx}px;transform-origin:0 50%;transform:scaleX(0)"></div>` : ''}
+      </div></div>`));
+    gsap.set(els, {opacity: 0});
+    const calc = txt(r, '10 W x 5,8 h x 0,6 = 34,8 Wh', 1400, 735, 'tagx', `color:${K.green}`);
+    const note = add(r, `<div class="abs est" style="left:160px;top:900px;opacity:0">estimado: consumo del equipo sin medir; sol pico de NASA POWER; 0,6 es una suposición de pérdidas</div>`);
+    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
+    els.forEach((e, i) => {
+      const t = [2.4, 2.4, 9.5][i];
+      show(tl, e, t);
+      tl.to(q(e, '.f'), {scaleX: 1, duration: 1.2, ease: 'power3.out'}, t + 0.3);
+      if (q(e, '.g')) tl.to(q(e, '.g'), {scaleX: 1, duration: 1.4, ease: 'power3.out'}, t + 0.6);
+    });
+    show(tl, calc, 10.5);
+    tl.to(note, {opacity: 0.55, duration: 0.6}, 11);
+    tl.to(q(els[1], '.g'), {opacity: 0.6, duration: 0.3, yoyo: true, repeat: 3}, 17.5); sfx(tl, 'thud', 17.5);
+    tl.set({}, {}, 23);
+  }});
+
+scene({id:'11', label:'Alcance', act:5, name:'¿Qué detecta?', bg:K.black, ink:K.ink, trans:'fade',
+  cap:'qué detecta',
+  narr:['¿Qué detecta?', 'Con alta confianza: perros, ganado extraviado, personas y vehículos, y el conteo de polillas en la trampa.',
+    'A validar en el piloto: aves de día y animales casi silenciosos, como el tacuazín.',
+    'Y fuera de alcance, lo decimos claro: polillas volando a distancia y zompopos.'],
+  build(r, tl) {
+    add(r, q3('Pregunta 6', '¿Qué detecta?'));
+    const qq = qa(r, '.kq, .kt.md'); gsap.set(qq, {opacity: 0});
+    const C3 = [['Alta confianza', K.lime, ['Perros ferales', 'Ganado extraviado', 'Personas y vehículos', 'Polillas contadas en trampa']],
+      ['A validar', K.leaf, ['Palomas y zanates, de día', 'Tacuazín, mapache, zorro, cotusa', 'Broca del café en trampa']],
+      ['Fuera de alcance', '#ff8a7a', ['Polillas volando a distancia', 'Zompopos']]];
+    const cols = C3.map(([h, c, it], i) => add(r, `<div class="col3" style="left:${160 + i * 560}px;color:${c}"><h3>${h}</h3>${it.map(x => `<p style="color:#fff">${x}</p>`).join('')}</div>`));
+    cols.forEach(c => gsap.set(qa(c, 'h3, p'), {opacity: 0}));
+    tl.to(qq, {opacity: 1, duration: 0.6, stagger: 0.15}, 0.2);
+    [2.2, 11, 16.5].forEach((t, i) => { tl.fromTo(qa(cols[i], 'h3, p'), {opacity: 0, y: 20}, {opacity: 1, y: 0, duration: 0.5, stagger: 0.25}, t); sfx(tl, 'tick', t); });
+    tl.set({}, {}, 21);
+  }});
+
+scene({id:'12', label:'Cierre', act:6, name:'Cierre', bg:'#000', ink:K.ink, trans:'fade',
+  cap:'cierre',
+  narr:['pocketNode convierte un celular olvidado en el oído de la parcela.', 'Escucha. Detecta. Protege.'],
+  build(r, tl) {
+    const lg = add(r, `<div class="abs" style="left:960px;top:440px;width:460px"><svg class="logo" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" 	 viewBox="0 0 730.78 601.13" style="enable-background:new 0 0 730.78 601.13;" xml:space="preserve"> <style type="text/css"> 	.st0{fill:#FFFFFF;} </style> <g> 	<g> 		<g> 			<path class="st0" d="M122.04,591.49c-2.16,0-4.2-0.31-6.12-0.92c-1.92-0.61-3.43-1.39-4.53-2.31l1.59-2.78 				c1.06,0.8,2.42,1.48,4.08,2.06c1.66,0.58,3.4,0.87,5.22,0.87c2.49,0,4.28-0.39,5.37-1.17c1.09-0.78,1.64-1.82,1.64-3.11 				c0-0.96-0.31-1.72-0.92-2.26c-0.61-0.55-1.42-0.96-2.41-1.24c-1-0.28-2.11-0.52-3.33-0.72c-1.23-0.2-2.45-0.43-3.66-0.7 				c-1.21-0.27-2.31-0.65-3.31-1.17c-0.99-0.51-1.8-1.22-2.41-2.11c-0.61-0.9-0.92-2.09-0.92-3.58c0-1.42,0.4-2.7,1.19-3.83 				c0.8-1.13,1.96-2.01,3.51-2.66c1.54-0.65,3.42-0.97,5.65-0.97c1.69,0,3.38,0.22,5.07,0.67c1.69,0.45,3.08,1.04,4.18,1.77 				l-1.54,2.83c-1.16-0.8-2.4-1.37-3.73-1.72c-1.33-0.35-2.65-0.52-3.98-0.52c-2.35,0-4.09,0.4-5.2,1.22 				c-1.11,0.81-1.67,1.85-1.67,3.11c0,1,0.31,1.78,0.92,2.34c0.61,0.56,1.42,1,2.44,1.32c1.01,0.31,2.12,0.57,3.33,0.77 				c1.21,0.2,2.42,0.44,3.63,0.72c1.21,0.28,2.32,0.66,3.33,1.15c1.01,0.48,1.82,1.16,2.44,2.04c0.61,0.88,0.92,2.03,0.92,3.46 				c0,1.52-0.42,2.84-1.27,3.95c-0.85,1.11-2.07,1.98-3.68,2.59S124.32,591.49,122.04,591.49z"/> 			<path class="st0" d="M150.39,591.49c-2.72,0-5.11-0.57-7.16-1.72c-2.06-1.14-3.66-2.72-4.82-4.73c-1.16-2.01-1.74-4.3-1.74-6.89 				c0-2.59,0.56-4.87,1.67-6.86c1.11-1.99,2.64-3.56,4.58-4.7c1.94-1.14,4.12-1.72,6.54-1.72c2.45,0,4.63,0.56,6.54,1.67 				c1.91,1.11,3.41,2.67,4.5,4.68c1.09,2.01,1.64,4.32,1.64,6.94c0,0.17-0.01,0.34-0.02,0.52c-0.02,0.18-0.03,0.37-0.03,0.57h-22.73 				v-2.64h20.84l-1.39,1.04c0-1.89-0.41-3.57-1.22-5.05c-0.81-1.48-1.92-2.63-3.31-3.46c-1.39-0.83-3-1.24-4.83-1.24 				c-1.79,0-3.4,0.41-4.82,1.24c-1.43,0.83-2.54,1.99-3.33,3.48c-0.8,1.49-1.19,3.2-1.19,5.12v0.55c0,1.99,0.44,3.74,1.32,5.25 				c0.88,1.51,2.1,2.69,3.68,3.53c1.58,0.85,3.37,1.27,5.4,1.27c1.59,0,3.08-0.28,4.45-0.85c1.38-0.56,2.56-1.42,3.56-2.59 				l1.99,2.29c-1.16,1.39-2.61,2.45-4.35,3.18C154.39,591.12,152.48,591.49,150.39,591.49z"/> 			<path class="st0" d="M180.18,591.49c-2.59,0-4.9-0.57-6.94-1.72c-2.04-1.14-3.64-2.72-4.8-4.73c-1.16-2.01-1.74-4.3-1.74-6.89 				c0-2.62,0.58-4.92,1.74-6.91c1.16-1.99,2.76-3.55,4.8-4.67c2.04-1.13,4.35-1.69,6.94-1.69c2.22,0,4.23,0.43,6.02,1.29 				c1.79,0.86,3.2,2.16,4.23,3.88l-2.64,1.79c-0.9-1.33-2.01-2.3-3.33-2.93c-1.33-0.63-2.77-0.95-4.33-0.95 				c-1.86,0-3.53,0.42-5.02,1.27c-1.49,0.85-2.67,2.03-3.53,3.56c-0.86,1.53-1.29,3.32-1.29,5.37c0,2.06,0.43,3.85,1.29,5.37 				c0.86,1.52,2.04,2.71,3.53,3.56c1.49,0.85,3.17,1.27,5.02,1.27c1.56,0,3-0.31,4.33-0.95c1.33-0.63,2.44-1.59,3.33-2.88l2.64,1.79 				c-1.03,1.69-2.44,2.98-4.23,3.86C184.41,591.05,182.4,591.49,180.18,591.49z"/> 			<path class="st0" d="M193.56,568.06v-2.94h16.17v2.94H193.56z M205.9,591.49c-2.45,0-4.34-0.66-5.67-1.99 				c-1.33-1.33-1.99-3.2-1.99-5.62v-24.52h3.53v24.32c0,1.53,0.39,2.7,1.17,3.53c0.78,0.83,1.9,1.24,3.36,1.24 				c1.56,0,2.85-0.45,3.88-1.34l1.24,2.54c-0.7,0.63-1.53,1.09-2.51,1.39C207.93,591.34,206.93,591.49,205.9,591.49z"/> 			<path class="st0" d="M227.54,591.49c-2.52,0-4.78-0.57-6.79-1.72c-2.01-1.14-3.59-2.72-4.75-4.73c-1.16-2.01-1.74-4.3-1.74-6.89 				c0-2.62,0.58-4.92,1.74-6.91c1.16-1.99,2.74-3.55,4.72-4.67c1.99-1.13,4.26-1.69,6.82-1.69c2.59,0,4.88,0.56,6.89,1.69 				c2.01,1.13,3.58,2.69,4.73,4.67c1.14,1.99,1.72,4.3,1.72,6.91c0,2.59-0.57,4.89-1.72,6.89s-2.73,3.58-4.75,4.73 				C232.38,590.91,230.09,591.49,227.54,591.49z M227.54,588.35c1.89,0,3.56-0.42,5.02-1.27c1.46-0.84,2.61-2.04,3.46-3.58 				c0.85-1.54,1.27-3.32,1.27-5.35c0-2.05-0.42-3.84-1.27-5.37c-0.85-1.52-2-2.71-3.46-3.56c-1.46-0.84-3.12-1.27-4.97-1.27 				c-1.86,0-3.52,0.42-4.97,1.27c-1.46,0.85-2.62,2.03-3.48,3.56c-0.86,1.53-1.29,3.32-1.29,5.37c0,2.02,0.43,3.81,1.29,5.35 				c0.86,1.54,2.02,2.74,3.48,3.58C224.07,587.93,225.71,588.35,227.54,588.35z"/> 			<path class="st0" d="M248.08,591.24v-26.11h3.38v7.11l-0.35-1.24c0.73-1.99,1.96-3.51,3.68-4.55c1.72-1.04,3.86-1.57,6.42-1.57 				v3.43c-0.13,0-0.27-0.01-0.4-0.03c-0.13-0.02-0.27-0.03-0.4-0.03c-2.75,0-4.91,0.84-6.47,2.51c-1.56,1.67-2.34,4.05-2.34,7.14 				v13.33H248.08z"/> 			<path class="st0" d="M288.42,591.49c-1.96,0-3.66-0.32-5.1-0.97c-1.44-0.65-2.55-1.54-3.31-2.69c-0.76-1.14-1.14-2.46-1.14-3.96 				c0-1.36,0.32-2.59,0.97-3.71c0.65-1.11,1.71-2.01,3.18-2.69c1.47-0.68,3.46-1.02,5.94-1.02h9v2.64h-8.9 				c-2.52,0-4.27,0.45-5.25,1.34c-0.98,0.9-1.47,2.01-1.47,3.33c0,1.49,0.58,2.69,1.74,3.58c1.16,0.9,2.79,1.34,4.87,1.34 				c1.99,0,3.71-0.46,5.15-1.37c1.44-0.91,2.5-2.23,3.16-3.96l0.8,2.44c-0.66,1.73-1.82,3.1-3.46,4.13 				C292.97,590.97,290.9,591.49,288.42,591.49z M297.42,591.24v-5.77l-0.15-0.95v-9.65c0-2.22-0.62-3.93-1.86-5.12 				c-1.24-1.19-3.09-1.79-5.55-1.79c-1.69,0-3.3,0.28-4.83,0.85c-1.53,0.56-2.82,1.31-3.88,2.24l-1.59-2.63 				c1.33-1.13,2.92-2,4.77-2.61c1.86-0.61,3.81-0.92,5.87-0.92c3.38,0,5.99,0.84,7.83,2.51s2.76,4.22,2.76,7.64v16.21H297.42z"/> 			<path class="st0" d="M320.9,590.24c-2.49,0-4.72-0.54-6.71-1.62c-1.99-1.08-3.56-2.58-4.7-4.5c-1.14-1.92-1.72-4.13-1.72-6.62 				s0.57-4.68,1.72-6.59c1.14-1.91,2.71-3.39,4.7-4.45c1.99-1.06,4.23-1.59,6.71-1.59c2.32,0,4.41,0.48,6.27,1.44 				c1.86,0.96,3.33,2.39,4.43,4.28c1.09,1.89,1.64,4.2,1.64,6.91c0,2.72-0.55,5.02-1.64,6.91c-1.09,1.89-2.57,3.33-4.43,4.33 				S323.22,590.24,320.9,590.24z M321.55,601.13c-2.39,0-4.68-0.35-6.87-1.04c-2.19-0.7-3.96-1.69-5.32-2.99l1.79-2.69 				c1.23,1.09,2.74,1.97,4.55,2.61c1.81,0.65,3.72,0.97,5.75,0.97c3.31,0,5.75-0.77,7.31-2.31c1.56-1.54,2.34-3.94,2.34-7.19v-6.52 				l0.5-4.48l-0.35-4.48v-7.91h3.38v22.93c0,4.51-1.1,7.82-3.31,9.92C329.11,600.08,325.85,601.13,321.55,601.13z M321.25,587.11 				c1.92,0,3.63-0.4,5.12-1.22c1.49-0.81,2.67-1.94,3.53-3.38c0.86-1.44,1.29-3.11,1.29-5c0-1.89-0.43-3.55-1.29-4.98 				c-0.86-1.42-2.04-2.54-3.53-3.36c-1.49-0.81-3.2-1.22-5.12-1.22c-1.89,0-3.59,0.41-5.1,1.22c-1.51,0.81-2.69,1.93-3.53,3.36 				c-0.85,1.43-1.27,3.09-1.27,4.98c0,1.89,0.42,3.56,1.27,5s2.02,2.57,3.53,3.38C317.66,586.7,319.36,587.11,321.25,587.11z"/> 			<path class="st0" d="M344.48,591.24v-26.11h3.38v7.11l-0.35-1.24c0.73-1.99,1.96-3.51,3.68-4.55c1.72-1.04,3.86-1.57,6.42-1.57 				v3.43c-0.13,0-0.27-0.01-0.4-0.03c-0.13-0.02-0.27-0.03-0.4-0.03c-2.75,0-4.91,0.84-6.47,2.51c-1.56,1.67-2.34,4.05-2.34,7.14 				v13.33H344.48z"/> 			<path class="st0" d="M374.42,591.49c-2.52,0-4.78-0.57-6.79-1.72c-2.01-1.14-3.59-2.72-4.75-4.73c-1.16-2.01-1.74-4.3-1.74-6.89 				c0-2.62,0.58-4.92,1.74-6.91c1.16-1.99,2.74-3.55,4.72-4.67c1.99-1.13,4.26-1.69,6.82-1.69c2.59,0,4.88,0.56,6.89,1.69 				c2.01,1.13,3.58,2.69,4.73,4.67c1.14,1.99,1.72,4.3,1.72,6.91c0,2.59-0.57,4.89-1.72,6.89s-2.73,3.58-4.75,4.73 				C379.26,590.91,376.97,591.49,374.42,591.49z M374.42,588.35c1.89,0,3.56-0.42,5.02-1.27c1.46-0.84,2.61-2.04,3.46-3.58 				c0.85-1.54,1.27-3.32,1.27-5.35c0-2.05-0.42-3.84-1.27-5.37c-0.85-1.52-2-2.71-3.46-3.56c-1.46-0.84-3.12-1.27-4.97-1.27 				c-1.86,0-3.52,0.42-4.97,1.27c-1.46,0.85-2.62,2.03-3.48,3.56c-0.86,1.53-1.29,3.32-1.29,5.37c0,2.02,0.43,3.81,1.29,5.35 				c0.86,1.54,2.02,2.74,3.48,3.58C370.95,587.93,372.59,588.35,374.42,588.35z"/> 			<path class="st0" d="M396.75,559.35c-0.73,0-1.34-0.25-1.84-0.75s-0.75-1.09-0.75-1.79s0.25-1.28,0.75-1.76s1.11-0.72,1.84-0.72 				c0.73,0,1.34,0.23,1.84,0.7c0.5,0.46,0.75,1.05,0.75,1.74c0,0.73-0.24,1.34-0.72,1.84C398.14,559.1,397.51,559.35,396.75,559.35z 				 M394.96,591.24v-26.11h3.53v26.11H394.96z"/> 			<path class="st0" d="M408.34,591.24v-26.11h3.38v7.16l-0.55-1.34c0.83-1.89,2.16-3.37,3.98-4.45c1.82-1.08,4-1.62,6.52-1.62 				c2.12,0,3.99,0.41,5.6,1.22s2.87,2.05,3.78,3.71c0.91,1.66,1.37,3.75,1.37,6.27v15.17h-3.53v-14.82c0-2.75-0.69-4.83-2.06-6.24 				c-1.38-1.41-3.31-2.11-5.79-2.11c-1.86,0-3.47,0.37-4.85,1.12c-1.38,0.75-2.44,1.83-3.18,3.23s-1.12,3.11-1.12,5.1v13.73H408.34z 				"/> 			<path class="st0" d="M452.36,591.49c-2.49,0-4.72-0.56-6.69-1.69c-1.97-1.13-3.52-2.69-4.65-4.7c-1.13-2.01-1.69-4.32-1.69-6.94 				c0-2.65,0.56-4.97,1.69-6.96c1.13-1.99,2.68-3.54,4.65-4.65c1.97-1.11,4.2-1.67,6.69-1.67c2.29,0,4.34,0.51,6.14,1.54 				c1.81,1.03,3.25,2.53,4.33,4.5c1.08,1.97,1.62,4.39,1.62,7.24c0,2.82-0.53,5.22-1.59,7.21c-1.06,1.99-2.5,3.51-4.3,4.55 				C456.75,590.96,454.68,591.49,452.36,591.49z M452.61,588.35c1.86,0,3.52-0.42,5-1.27c1.47-0.84,2.64-2.04,3.48-3.58 				c0.85-1.54,1.27-3.32,1.27-5.35c0-2.05-0.42-3.84-1.27-5.37c-0.85-1.52-2.01-2.71-3.48-3.56c-1.48-0.84-3.14-1.27-5-1.27 				c-1.83,0-3.47,0.42-4.92,1.27c-1.46,0.85-2.62,2.03-3.48,3.56c-0.86,1.53-1.29,3.32-1.29,5.37c0,2.02,0.43,3.81,1.29,5.35 				c0.86,1.54,2.02,2.74,3.48,3.58C449.15,587.93,450.79,588.35,452.61,588.35z M462.46,591.24v-7.86l0.35-5.27l-0.5-5.27v-18.5 				h3.53v36.91H462.46z"/> 			<path class="st0" d="M486.48,591.49c-2.22,0-4.16-0.42-5.82-1.24c-1.66-0.83-2.94-2.07-3.86-3.73c-0.91-1.66-1.37-3.73-1.37-6.22 				v-15.17h3.53v14.77c0,2.78,0.69,4.88,2.06,6.29c1.38,1.41,3.31,2.11,5.8,2.11c1.82,0,3.41-0.37,4.75-1.12 				c1.34-0.74,2.37-1.83,3.08-3.26c0.71-1.42,1.07-3.13,1.07-5.12v-13.68h3.53v26.11h-3.38v-7.16l0.55,1.3 				c-0.83,1.92-2.11,3.42-3.85,4.5C490.84,590.95,488.8,591.49,486.48,591.49z"/> 			<path class="st0" d="M516.13,591.49c-2.16,0-4.2-0.31-6.12-0.92c-1.92-0.61-3.43-1.39-4.53-2.31l1.59-2.78 				c1.06,0.8,2.42,1.48,4.08,2.06c1.66,0.58,3.4,0.87,5.22,0.87c2.49,0,4.28-0.39,5.37-1.17c1.09-0.78,1.64-1.82,1.64-3.11 				c0-0.96-0.31-1.72-0.92-2.26c-0.61-0.55-1.42-0.96-2.41-1.24c-1-0.28-2.11-0.52-3.33-0.72c-1.23-0.2-2.45-0.43-3.66-0.7 				c-1.21-0.27-2.31-0.65-3.31-1.17s-1.8-1.22-2.41-2.11c-0.61-0.9-0.92-2.09-0.92-3.58c0-1.42,0.4-2.7,1.19-3.83 				c0.8-1.13,1.96-2.01,3.51-2.66c1.54-0.65,3.42-0.97,5.65-0.97c1.69,0,3.38,0.22,5.07,0.67c1.69,0.45,3.08,1.04,4.18,1.77 				l-1.54,2.83c-1.16-0.8-2.4-1.37-3.73-1.72c-1.33-0.35-2.65-0.52-3.98-0.52c-2.35,0-4.09,0.4-5.2,1.22 				c-1.11,0.81-1.67,1.85-1.67,3.11c0,1,0.31,1.78,0.92,2.34c0.61,0.56,1.42,1,2.44,1.32c1.01,0.31,2.12,0.57,3.33,0.77 				c1.21,0.2,2.42,0.44,3.63,0.72c1.21,0.28,2.32,0.66,3.33,1.15c1.01,0.48,1.82,1.16,2.44,2.04c0.61,0.88,0.92,2.03,0.92,3.46 				c0,1.52-0.42,2.84-1.27,3.95c-0.85,1.11-2.07,1.98-3.68,2.59C520.36,591.18,518.42,591.49,516.13,591.49z"/> 			<path class="st0" d="M529.31,568.06v-2.94h16.17v2.94H529.31z M541.65,591.49c-2.45,0-4.34-0.66-5.67-1.99 				c-1.33-1.33-1.99-3.2-1.99-5.62v-24.52h3.53v24.32c0,1.53,0.39,2.7,1.17,3.53c0.78,0.83,1.9,1.24,3.36,1.24 				c1.56,0,2.85-0.45,3.88-1.34l1.24,2.54c-0.7,0.63-1.53,1.09-2.51,1.39C543.68,591.34,542.67,591.49,541.65,591.49z"/> 			<path class="st0" d="M553.58,591.24v-26.11h3.38v7.11l-0.35-1.24c0.73-1.99,1.96-3.51,3.68-4.55c1.72-1.04,3.86-1.57,6.42-1.57 				v3.43c-0.13,0-0.27-0.01-0.4-0.03c-0.13-0.02-0.27-0.03-0.4-0.03c-2.75,0-4.91,0.84-6.47,2.51c-1.56,1.67-2.34,4.05-2.34,7.14 				v13.33H553.58z"/> 			<path class="st0" d="M574.92,559.35c-0.73,0-1.34-0.25-1.84-0.75c-0.5-0.5-0.75-1.09-0.75-1.79s0.25-1.28,0.75-1.76 				c0.5-0.48,1.11-0.72,1.84-0.72c0.73,0,1.34,0.23,1.84,0.7c0.5,0.46,0.75,1.05,0.75,1.74c0,0.73-0.24,1.34-0.72,1.84 				C576.31,559.1,575.69,559.35,574.92,559.35z M573.13,591.24v-26.11h3.53v26.11H573.13z"/> 			<path class="st0" d="M593.87,591.49c-1.96,0-3.66-0.32-5.1-0.97c-1.44-0.65-2.55-1.54-3.31-2.69c-0.76-1.14-1.14-2.46-1.14-3.96 				c0-1.36,0.32-2.59,0.97-3.71c0.65-1.11,1.71-2.01,3.18-2.69c1.47-0.68,3.46-1.02,5.94-1.02h9v2.64h-8.9 				c-2.52,0-4.27,0.45-5.25,1.34c-0.98,0.9-1.47,2.01-1.47,3.33c0,1.49,0.58,2.69,1.74,3.58c1.16,0.9,2.79,1.34,4.87,1.34 				c1.99,0,3.71-0.46,5.15-1.37c1.44-0.91,2.5-2.23,3.16-3.96l0.8,2.44c-0.66,1.73-1.82,3.1-3.46,4.13 				C598.43,590.97,596.36,591.49,593.87,591.49z M602.88,591.24v-5.77l-0.15-0.95v-9.65c0-2.22-0.62-3.93-1.86-5.12 				c-1.24-1.19-3.09-1.79-5.55-1.79c-1.69,0-3.3,0.28-4.83,0.85c-1.53,0.56-2.82,1.31-3.88,2.24l-1.59-2.63 				c1.33-1.13,2.92-2,4.77-2.61c1.86-0.61,3.81-0.92,5.87-0.92c3.38,0,5.99,0.84,7.83,2.51c1.84,1.67,2.76,4.22,2.76,7.64v16.21 				H602.88z"/> 			<path class="st0" d="M615.86,591.24v-36.91h3.53v36.91H615.86z"/> 		</g> 		<g> 			<path class="st0" d="M0,495.4c0-20.16,13.52-32.58,32.33-32.58c19.3,0,32.82,13.15,32.82,32.7c0,20.9-15.61,31.23-29.87,31.23 				c-7.99,0-14.63-3.2-18.69-9.34v33.68H0V495.4z M48.31,494.79c0-9.71-6.39-16.47-15.86-16.47s-15.86,6.76-15.86,16.47 				c0,9.71,6.39,16.47,15.86,16.47S48.31,504.5,48.31,494.79z"/> 			<path class="st0" d="M72.28,494.79c0-18.44,13.52-31.96,32.7-31.96s32.7,13.52,32.7,31.96c0,18.44-13.52,31.96-32.7,31.96 				S72.28,513.23,72.28,494.79z M120.84,494.79c0-9.71-6.39-16.47-15.86-16.47s-15.86,6.76-15.86,16.47 				c0,9.71,6.39,16.47,15.86,16.47S120.84,504.5,120.84,494.79z"/> 			<path class="st0" d="M144.8,494.79c0-18.44,13.52-31.96,32.7-31.96c16.72,0,28.89,10.2,31.59,24.96h-16.72 				c-2.34-5.78-7.87-9.47-14.88-9.47c-9.47,0-15.86,6.76-15.86,16.47c0,9.71,6.39,16.47,15.86,16.47c7.01,0,12.54-3.69,14.88-9.47 				h16.72c-2.71,14.75-14.88,24.96-31.59,24.96C158.33,526.75,144.8,513.23,144.8,494.79z"/> 			<path class="st0" d="M220.52,437.87h16.6v52.62l21.64-26.06h20.9l-26.55,29.75l27.54,30.98h-21.27l-22.25-26.8v26.8h-16.6V437.87 				z"/> 			<path class="st0" d="M282.23,494.79c0-18.44,13.52-31.96,32.7-31.96s32.33,13.52,32.33,31.96v5.16h-47.7 				c1.72,7.99,7.74,11.93,15.37,11.93c5.9,0,10.2-1.48,12.91-5.16h17.46c-4.3,12.05-15.61,20.04-30.37,20.04 				C295.75,526.75,282.23,513.23,282.23,494.79z M330.05,488.27c-2.21-7.13-7.99-10.57-15.12-10.57c-7.25,0-12.91,3.56-15,10.57 				H330.05z"/> 			<path class="st0" d="M356.85,501.43v-58.52h16.6v21.51h30v15h-30v22c0,7.25,3.57,9.84,8.61,9.84c4.92,0,8.48-2.46,8.48-9.84 				v-1.72h16.6v1.72c0,17.09-10.2,25.33-25.08,25.33C367.05,526.75,356.85,518.51,356.85,501.43z"/> 			<path class="st0" d="M448.91,493.68c0-20.41,12.05-30.86,30-30.86c17.95,0,30,10.33,30,30.86v31.47h-16.6v-31.47 				c0-10.57-5.41-15.37-13.4-15.37c-7.99,0-13.4,4.8-13.4,15.37v31.47h-16.6V493.68z"/> 			<path class="st0" d="M518.49,494.79c0-18.44,13.52-31.96,32.7-31.96s32.7,13.52,32.7,31.96c0,18.44-13.52,31.96-32.7,31.96 				S518.49,513.23,518.49,494.79z M567.05,494.79c0-9.71-6.39-16.47-15.86-16.47s-15.86,6.76-15.86,16.47 				c0,9.71,6.39,16.47,15.86,16.47S567.05,504.5,567.05,494.79z"/> 			<path class="st0" d="M591.01,494.05c0-20.9,15.61-31.22,29.87-31.22c7.99,0,14.63,3.2,18.69,9.34v-34.3h16.6v56.3 				c0,20.16-13.52,32.58-32.33,32.58C604.54,526.75,591.01,513.6,591.01,494.05z M639.57,494.79c0-9.71-6.39-16.47-15.86-16.47 				s-15.86,6.76-15.86,16.47c0,9.71,6.39,16.47,15.86,16.47S639.57,504.5,639.57,494.79z"/> 			<path class="st0" d="M665.75,494.79c0-18.44,13.52-31.96,32.7-31.96c19.18,0,32.33,13.52,32.33,31.96v5.16h-47.7 				c1.72,7.99,7.74,11.93,15.37,11.93c5.9,0,10.2-1.48,12.91-5.16h17.46c-4.3,12.05-15.61,20.04-30.37,20.04 				C679.27,526.75,665.75,513.23,665.75,494.79z M713.57,488.27c-2.21-7.13-7.99-10.57-15.12-10.57c-7.25,0-12.91,3.56-15,10.57 				H713.57z"/> 		</g> 	</g> 	<g> 		<path class="st0" d="M433.14,235.55c2.61,0.32,4.76-1.87,4.84-4.6c0.07-2.72-1.98-4.94-4.66-4.77c-2.69,0.17-4.49,1.62-4.67,4.42 			C428.44,233.68,430.35,235.2,433.14,235.55z"/> 		<path class="st0" d="M151.25,186.49c0,11.49,0.88,22.77,2.57,33.79c15.96,104.25,104.6,184.05,211.58,184.05 			s195.62-79.8,211.58-184.05c1.69-11.01,2.57-22.29,2.57-33.79V0H151.25V186.49z M374.77,394.33c0,0-0.01,0-0.03,0 			c-1.55,0.04-3.11,0.06-4.67,0.06c-11.91,0-23.6-0.98-34.98-2.87c9.6-16.19,22.83-29.68,39.66-41.23v-0.01c0,0,0.01,0,0.01,0.01 			c0-0.01,0.01-0.01,0.01-0.01v0.01c16.28,11.17,29.2,24.17,38.72,39.67C400.95,392.54,388,394.05,374.77,394.33z M483.53,361.58 			c-16.1-10.21-33.32-18.58-51.07-25.51c-6.47-2.52-13.01-4.87-19.61-7.04c-10.49-3.45-21.13-6.47-31.71-9.65c0,0,0,0,0,0 			c-0.92,2.71-1.6,5.58-2.02,8.62c-0.17,1.25-0.38,2.5-0.59,3.73c0,0,0,0,0,0c31.09,9.71,60.27,22.21,85.9,40.61 			c-10.42,5.19-21.31,9.53-32.63,12.94c-13.73-15.71-30.67-28.19-49.66-38.54c-2.65-1.45-4.6-2.96-5.89-4.69 			c-0.56-0.77-1-1.59-1.3-2.46c-0.13-0.04-0.26-0.08-0.38-0.12c-0.03,0.1-0.06,0.21-0.1,0.31c-1.05,2.75-3.38,4.92-7.11,6.96 			c-19.86,10.81-37.47,23.96-51.49,40.69c-11.95-3.14-23.49-7.3-34.51-12.37c26.46-19.88,56.89-33.1,89.42-43.27 			c-2.61-3.95-6.01-7.15-9.53-10.28c-8.22,2.44-16.46,4.85-24.59,7.53c-6.6,2.18-13.14,4.52-19.61,7.04 			c-19.43,7.59-38.23,16.89-55.61,28.47c-8.09-4.83-15.85-10.17-23.2-16c8.22-3.52,16.59-6.7,25.07-9.6 			c31.06-10.59,62.94-17.17,95.67-19.47c-2.88-2.55-5.74-5.16-8.19-8.2c-5.99-7.42-7.78-16.48-9.96-25.53c-0.3,0-0.27,0-0.57-0.01 			c-0.9,3.35-1.79,6.71-2.79,10.45c-9.56-12.79-12-27.22-12.38-42.29c-0.74-0.14-0.6-0.12-1.34-0.26 			c-2.46,5.74-4.92,11.48-7.46,17.41c-4.61-6.01-7.01-12.97-8.11-20.29c-1.08-7.19-1.44-14.49-2.15-22.06 			c-12.13,17.03-15.76,35.5-10.71,56.16c-7.84-5.26-11.69-12.56-14.93-21.31c-2.92,15.43,1.04,28.72,7.35,41.68 			c-0.84-0.38-1.66-0.8-2.46-1.25c-1.1-0.62-2.15-1.31-3.16-2.07c-0.98-0.74-1.92-1.55-2.8-2.41c-0.88-0.86-1.71-1.78-2.48-2.73 			c-0.79-0.98-1.52-2-2.19-3.05c-0.7-1.09-1.35-2.21-1.94-3.36c-0.62-1.2-1.2-2.42-1.73-3.67c-0.14-0.32-0.27-0.64-0.4-0.96 			c-0.03-0.08-0.06-0.24-0.16-0.2c-0.08,0.03-0.11,0.24-0.13,0.31c-0.08,0.37-0.05,0.77-0.06,1.14c-0.01,0.43-0.01,0.87-0.01,1.3 			c0.01,1.74,0.1,3.47,0.27,5.2c0.09,0.86,0.19,1.73,0.32,2.59c0.06,0.43,0.13,0.86,0.21,1.29c0.04,0.21,0.07,0.43,0.11,0.64 			c0.01,0.08,0.06,0.59,0.12,0.61c-0.45-0.2-0.89-0.41-1.32-0.64c-9.52-5.03-13.48-16.33-16.11-26.06 			c-3.18-11.77-4.57-24.03-4.07-36.22c0.17-4.09,0.67-8.26,2.49-11.92c2.37-4.76,6.75-6.97,11.54-8.65 			c7.68-2.69,15.12-5.99,22.68-8.99c-6.93-0.55-12.87-1.01-19.44-1.53c10.05-7.59,22.1-6.63,34-9.31 			c-3.86-1.74-6.85-3.09-10.75-4.85c9.06-1.85,17.15-3.5,25.59-5.23c0.54,21.45,10.67,35.47,33.39,39.58 			c-6.03,3.31-11.46,6.59-14.69,13.04c5.3-1.4,10.21-2.71,15.13-4.01c0.32,0.48,0.31,0.47,0.63,0.96 			c-7.05,9.37-9.88,19.64-7.12,31.59c3.31-6.14,6.64-11.82,12.87-15.63c0.12,1.12,0.28,1.91,0.29,2.7 			c0.25,13.88,7.11,23.67,18.83,30.44c9.69,5.6,20.4,7.44,31.34,8.39c0.58,0.05,1.15,0.12,2.45,0.26c-1.84,0.89-3.02,1.51-4.24,2.05 			c-11.62,5.14-19.57,13.4-23.42,24.37c35.97,1.63,70.93,8.41,104.89,20c6.35,2.18,12.65,4.51,18.89,7.02 			C498.24,351.6,491.04,356.82,483.53,361.58z M468.87,264.28c-0.01,0.68-0.02,1.36-0.03,2.04c-26.67-1-48.38,0.75-76.07,3.65 			C417.56,259.76,442.95,258.11,468.87,264.28z M400.32,232.52c7.11-3.29,14.17-6.7,21.33-9.83c10.49-4.59,21.33,0.28,23.63,10.45 			c2.16,9.46-5.51,17.67-15.19,16.13c-4.74-0.77-9.23-2.69-11.65-6.89c-3.68-6.44-9.53-8.45-16.15-9.49 			c-0.63-0.1-1.24-0.2-1.86-0.31C400.32,232.55,400.22,232.45,400.32,232.52z M467.39,276.59c-18.28,10.25-36.02,21.19-49.06,38.11 			C429.29,294.99,445.92,282.65,467.39,276.59z M406.79,283.69c-0.3,0.11-0.67,0.01-1.66,0.01c18.23-9.99,37.2-13.51,57.05-12.94 			c0.1,0.35,0.2,0.71,0.3,1.06c-1.43,0.52-2.84,1.41-4.3,1.49C440.53,274.23,423.39,277.58,406.79,283.69z M515.11,272.34 			c-2.3,3.81-5.61,7.47-9.33,9.87c-9.41,6.06-20.33,8.12-31.26,8.34c-8.7,0.18-15.42,2.64-20.55,9.76 			c-3.8,5.27-8.04,10.22-12.85,14.88c3.71-5.88,6.76-12.33,11.29-17.49c5.23-5.96,11.69-10.85,17.77-16.05 			c0.93-0.79,2.61-0.7,3.94-1.01c0.09,0.29,0.17,0.58,0.26,0.87c-1.93,1.57-3.85,3.14-5.78,4.71c12.3,0.12,24.24-0.99,35.26-7.48 			c-8.66-6.76-9.08-10.49-2.31-16.77c-8.41-5.12-17.21-9.76-25.18-15.54c-6.01-4.36-11.81-9.53-16.21-15.45 			c-12.06-16.22-25.49-30.79-43.7-40.04c-8.11-4.12-16.77-7.21-25.27-10.53c-1.99-0.78-2.97-1.46-3.3-3.75 			c-2.21-14.93-12.91-25.88-26.98-27.93c-8.52-1.24-17.75,3.56-20.27,10.15c5.41,0.51,11.09,0.41,16.46,1.66 			c12.61,2.94,20.09,12.14,21.34,25.03c0.88,9.14-1.54,17.62-5.32,26.4c-10.81-1.09-18.41-7.15-24.34-16.24 			c-0.62,7.4,3.97,14.33,14.66,21.68c-3.38,0-5.74,0.21-8.05-0.03c-20.19-2.13-35.62-20.59-37.47-41.58 			c-1.04-11.78,1.04-22.7,8.71-32.16c10.96-13.5,29.93-15.79,43.14-4.44c4.74,4.07,8.24,9.64,12.03,14.73 			c1.1,1.49,1.89,2.31,3.8,2.07c14.82-1.88,25.65,5.71,29.95,19.84c1.29,4.23,3.8,6.87,7.63,9.08 			c15.94,9.19,29.09,21.31,37.79,37.81c6.42,12.17,17.2,19.69,28.6,26.49c7.32,4.36,14.78,8.49,22.15,12.76 			C516.11,264.54,517.73,268.01,515.11,272.34z M241.55,101.81c15.76-11.47,33.85-15.17,52.94-13.26 			c8.31,0.83,16.06,0.43,23.98-2.29c9.17-3.14,18.78-4.61,28.44-5.58c1.96-0.2,5.21,0.33,3.94-3.65c-0.97-3.01-2.88-2.73-5.42-1.95 			c-19.73,6-34.17-1.95-45.49-17.66c-8.62-11.97-16.63-24.48-30.28-31.86c29.51-22.88,80.22-5.79,89.98,31.39 			c-18.5-18.92-39.2-29.41-64.86-27.3c8.57,2.66,16.93,5.84,25.22,9.39c15.4,6.6,27.34,16.88,34.6,31.87 			c3.17,6.54,7.18,8.54,14.16,8.47c38.08-0.36,73.26,10.3,104.3,31.93c14.86,10.36,30.39,20.9,40.17,37.41 			c-8.07-6.15-16.01-12.48-24.22-18.42c-41.6-30.11-87.89-43.87-139.23-38.93c-30.57,2.94-60.59,8.53-87.72,24.01 			c-17.6,10.04-30.39,24.21-36.2,39.4c17.95-19.41,38.47-32.9,62.94-40c8.51-2.47,17.16-3.95,25.93-4.85 			c-0.71,2.11-1.51,4.2-2.34,6.26c-1.93,4.8-3.83,9.65-6.26,14.23c-4.16,7.82-9.71,14.82-16.37,20.65 			c-6.75,5.91-14.62,10.56-22.98,13.81c-11.74,4.57-23.86,6.01-36.03,8.87c-12.01,2.82-23.82,7.04-34.12,13.95 			C202.97,153.06,213.06,122.55,241.55,101.81z"/> 	</g> </g> </svg></div>`);
+    gsap.set(lg, {xPercent: -50, yPercent: -50, opacity: 0});
+    const w = ['Escucha.', 'Detecta.', 'Protege.'].map((x, i) => txt(r, x, 660 + i * 300, 820, 'kt sm', i === 2 ? `color:${K.lime}` : ''));
+    tl.fromTo(lg, {opacity: 0, scale: 0.94}, {opacity: 1, scale: 1, duration: 2 * M, ease: 'power2.out'}, 0.3);
+    w.forEach((e, i) => { show(tl, e, 4.2 + i * 0.7); sfx(tl, 'tick', 4.2 + i * 0.7); });
+    sfx(tl, 'bell3', 6.4);
+    tl.set({}, {}, 9);
   }});
 
 /* Línea de tiempo maestra, HUD, transiciones y controles. */
@@ -800,6 +1021,8 @@ function transition(i, tr, T) {
     master.to('#mbx', {attr: {stdDeviation: '0 0'}, duration: 0.3}, T + 0.2);
     master.set(scenesEl, {filter: 'none'}, T + 0.52);
     master.call(() => A.whoosh(), null, T);
+  } else if (tr === 'fade') {
+    master.fromTo(s.root, {opacity: 0}, {opacity: 1, duration: 0.7, ease: 'power2.out', immediateRender: false}, T + 0.001);
   } else if (tr === 'rgb') {
     master.set(scenesEl, {filter: 'url(#rgb)'}, T);
     master.fromTo('#rgbR', {attr: {dx: -28}}, {attr: {dx: 0}, duration: 0.4, ease: 'power3.out', immediateRender: false}, T);
@@ -820,7 +1043,7 @@ SC.forEach((s, i) => {
   const tl = gsap.timeline();
   s.build(s.root, tl, s);
   const tr = RM || i === 0 ? 'cut' : s.trans;
-  const cover = {cut: 0, rgb: 0, wipe: 0.28, whip: 0.2}[tr];
+  const cover = {cut: 0, rgb: 0, wipe: 0.28, whip: 0.2, fade: 0}[tr];
   s.start = T;
   s.cover = cover;
   let len = Math.ceil((cover + Math.max(tl.duration(), 2, voiceSpan(i)) + B) / B) * B;
@@ -866,7 +1089,7 @@ function endReached() {
 const hud = $('hud'), cap = $('cap'), subs = $('subs'), chap = $('chap');
 SC.forEach((s, i) => {
   const b = document.createElement('button');
-  b.type = 'button'; b.textContent = s.id === '5' ? 'Cierre' : s.id; b.title = s.name;
+  b.type = 'button'; b.textContent = s.label || s.id; b.title = s.name;
   b.addEventListener('click', () => jump(i));
   chap.appendChild(b);
 });

@@ -22,6 +22,8 @@ function transition(i, tr, T) {
     master.to('#mbx', {attr: {stdDeviation: '0 0'}, duration: 0.3}, T + 0.2);
     master.set(scenesEl, {filter: 'none'}, T + 0.52);
     master.call(() => A.whoosh(), null, T);
+  } else if (tr === 'fade') {
+    master.fromTo(s.root, {opacity: 0}, {opacity: 1, duration: 0.7, ease: 'power2.out', immediateRender: false}, T + 0.001);
   } else if (tr === 'rgb') {
     master.set(scenesEl, {filter: 'url(#rgb)'}, T);
     master.fromTo('#rgbR', {attr: {dx: -28}}, {attr: {dx: 0}, duration: 0.4, ease: 'power3.out', immediateRender: false}, T);
@@ -42,7 +44,7 @@ SC.forEach((s, i) => {
   const tl = gsap.timeline();
   s.build(s.root, tl, s);
   const tr = RM || i === 0 ? 'cut' : s.trans;
-  const cover = {cut: 0, rgb: 0, wipe: 0.28, whip: 0.2}[tr];
+  const cover = {cut: 0, rgb: 0, wipe: 0.28, whip: 0.2, fade: 0}[tr];
   s.start = T;
   s.cover = cover;
   let len = Math.ceil((cover + Math.max(tl.duration(), 2, voiceSpan(i)) + B) / B) * B;
@@ -88,7 +90,7 @@ function endReached() {
 const hud = $('hud'), cap = $('cap'), subs = $('subs'), chap = $('chap');
 SC.forEach((s, i) => {
   const b = document.createElement('button');
-  b.type = 'button'; b.textContent = s.id === '5' ? 'Cierre' : s.id; b.title = s.name;
+  b.type = 'button'; b.textContent = s.label || s.id; b.title = s.name;
   b.addEventListener('click', () => jump(i));
   chap.appendChild(b);
 });
