@@ -27,7 +27,7 @@ VOZDIR = D / "voz"
 OUT = D / "pocketnode-explicativo.mp4"
 VOZ_PREFERIDAS = ["es-MX-DaliaNeural", "es-SV-LorenaNeural"]
 PITCH = "+8Hz"  # tono algo más alto: voz más animada (elegida por el equipo, 2026-10-16)
-RATE = "+16%"
+RATE = "+26%"
 FPS = 30
 
 

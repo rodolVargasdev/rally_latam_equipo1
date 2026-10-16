@@ -285,7 +285,7 @@ function narrate(i, from = 0) {
     const finish = () => {
       if (fired || tok !== V.tok) return;
       fired = true; clearTimeout(to); V.speaking = false; A.duck(false);
-      V.idx++; setTimeout(next, 420);
+      V.idx++; setTimeout(next, 250);
     };
     const canSpeak = HAS_TTS && !V.none && V.voice && !A.muted;
     if (canSpeak) {
