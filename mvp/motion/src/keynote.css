@@ -54,3 +54,15 @@
 .soc { box-sizing: border-box; width: 500px; padding: 30px 34px; border-radius: 22px; background: rgba(255,255,255,.06); border: 1.5px solid rgba(203,219,124,.35); display: grid; gap: 10px; }
 .soc b { font: 800 40px 'Urbanist', sans-serif; color: #fff; }
 .soc span { font: 500 26px 'Urbanist', sans-serif; opacity: .7; }
+.pmap { position: relative; margin: 0 22px 14px; height: 120px; border-radius: 18px; background: repeating-linear-gradient(115deg, #cfe3c3 0 14px, #c3dbb5 14px 28px); }
+.pmap .z { position: absolute; left: 50%; top: 46%; width: 86px; height: 86px; margin: -43px 0 0 -43px; border-radius: 50%; background: rgba(192,57,43,.28); border: 3px solid #C0392B; }
+.pmap .n { position: absolute; left: 50%; top: 46%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #074736; border: 2px solid #fff; }
+.pmap span { position: absolute; left: 10px; bottom: 8px; font: 700 18px 'Urbanist', sans-serif; color: #42271A; background: rgba(255,255,255,.85); padding: 2px 8px; border-radius: 8px; }
+.pinfo { margin: 14px 16px 0; font: 600 18px 'Urbanist', sans-serif; color: #5a5a50; text-align: center; }
+.dpan { border-radius: 22px; background: rgba(255,255,255,.05); border: 1.5px solid rgba(255,255,255,.12); padding: 18px 20px; box-sizing: border-box; }
+.dt { font: 700 22px 'Urbanist', sans-serif; letter-spacing: .1em; text-transform: uppercase; color: #CBDB7C; margin-bottom: 10px; }
+.dk { width: 310px; height: 150px; box-sizing: border-box; border-radius: 22px; background: rgba(255,255,255,.05); border: 1.5px solid rgba(255,255,255,.12); padding: 22px 24px; display: grid; align-content: space-between; }
+.dk span { font: 600 22px 'Urbanist', sans-serif; opacity: .65; }
+.dk b { font: 800 50px 'Urbanist', sans-serif; }
+.dbars { display: flex; align-items: flex-end; gap: 22px; height: 140px; }
+.dbars i { display: block; flex: 1; background: #CBDB7C; border-radius: 8px 8px 2px 2px; }

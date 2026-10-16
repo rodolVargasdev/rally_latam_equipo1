@@ -172,12 +172,24 @@ app se diseña para que se entienda sin leer instrucciones.
 
 ## Ejemplo de mensaje
 
+El SMS y el WhatsApp son **solo informativos**: no piden respuesta. Dicen qué se
+detectó, con qué confianza y en qué zona.
+
 ```text
-pocketNode: VAYA A VER
-Ratas en la orilla norte de Los Naranjos (aparato 2).
-Desde las 2:14 de la madrugada. Seguro.
-Responda 1 si ya fue a ver, 2 si no era nada.
+pocketNode | AVISO
+Perros detectados
+Confianza: 87 %
+Zona: corral norte, unos 30 m alrededor del nodo 3
+Hora: 2:14
 ```
+
+- **Confianza** es la probabilidad que da el modelo para ese evento. No es la
+  precisión del sistema: esa solo se conoce midiéndola en el piloto.
+- **Zona** es el nombre que se le dio al nodo al instalarlo, más su radio de
+  escucha aproximado. Si dos nodos oyen lo mismo, el aviso puede nombrar la
+  zona entre ambos.
+- La confirmación (era real o no era nada), que sirve para que el nodo aprenda,
+  se hace en la app, no por mensaje.
 
 ## Paleta
 

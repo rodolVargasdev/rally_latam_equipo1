@@ -30,11 +30,35 @@ La tabla del equipo daba USD 30 a 38. Al revisar sus enlaces:
 Con 6 nodos por hectárea, el equipo por hectárea cuesta entre **USD 216 y 369**,
 más el saldo de SMS.
 
-## Cómo bajar el costo, y qué se pierde
+## Cómo abaratar el nodo, y qué se pierde
 
-- **Sin batería de respaldo** (resta 12 a 25): el nodo queda en 24 a 37 USD, pero
-  según el balance de energía (deteccion-tecnica.md, pregunta 6) el panel queda
-  justo y en días nublados el nodo se apagaría de noche.
-- **Compra por volumen:** los paneles con USB se ofrecen por menos de una libra
-  la unidad en pedidos promocionales de 1.000 piezas, pero esa calidad no está
-  probada para estar a la intemperie todo el año.
+De más a menos ahorro:
+
+| medida | ahorro | consecuencia |
+|---|---|---|
+| **Subsidio por datos** (ver abajo) | depende del acuerdo; ejemplo con 50 %: el productor paga USD 18 a 31 por nodo | hay que firmar un acuerdo y pedir permiso al productor |
+| SIM solo en 1 o 2 nodos por finca | la SIM y el saldo de los demás nodos | los otros nodos dependen del relevo por Wi-Fi o Bluetooth, cuyo alcance a unos 41 m se mide en el piloto |
+| Batería de respaldo solo donde haga falta | USD 12 a 25 por nodo (queda en 24 a 37) | según el balance de energía (deteccion-tecnica.md, pregunta 6), en días nublados el nodo puede apagarse de noche |
+| Compra por volumen a través de cooperativas | sin cifra todavía | hay que cotizar; los paneles más baratos por volumen no tienen calidad probada a la intemperie |
+| Armado en talleres comunitarios | mano de obra | requiere capacitación y una guía de armado |
+
+## Subsidio a cambio de datos del campo
+
+Una entidad que necesita información del campo (por ejemplo una cooperativa,
+una aseguradora agrícola, una agroindustria o una institución pública) paga
+parte del costo de los nodos. A cambio recibe un tablero con:
+
+- eventos por zona y por semana (qué se detectó y dónde, a nivel de zona);
+- especies más frecuentes;
+- estado de la red (nodos activos, batería, señal).
+
+Condiciones que la propuesta exige:
+
+- **Permiso explícito del productor** antes de compartir sus datos.
+- **Datos agregados:** la entidad ve zonas y conteos, no el nombre ni el número
+  de teléfono del productor, ni los audios.
+- Un acuerdo escrito que diga qué datos se comparten, para qué y por cuánto
+  tiempo.
+
+El 50 % del ejemplo es ilustrativo: el porcentaje real depende del acuerdo con
+cada entidad.

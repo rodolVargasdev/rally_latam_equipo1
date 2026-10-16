@@ -80,7 +80,7 @@ Dos simulaciones de una noche, con datos de ejemplo:
 
 ## Explicativo de 1:30
 
-[mvp/motion/pocketnode-motion.html](mvp/motion/pocketnode-motion.html): unos 84 segundos con voz, en diez escenas: el problema, el nodo en 3D, cómo escucha, qué animales detecta y con qué confianza, cómo recibe el aviso el productor (SMS, app y WhatsApp), 6 nodos por hectárea, el precio, los socios clave propuestos y el cierre. Se edita en `mvp/motion/src/` y se ensambla con `python mvp/motion/build.py`; el MP4 se graba con `mvp/motion/render_mp4.py` y se guarda fuera del repositorio. El sustento de cada cifra está en [docs/deteccion-tecnica.md](docs/deteccion-tecnica.md) y [docs/costos.md](docs/costos.md).
+[mvp/motion/pocketnode-motion.html](mvp/motion/pocketnode-motion.html): unos 86 segundos con voz, en once escenas: el problema, el nodo en 3D, cómo escucha, qué animales detecta y con qué confianza, el aviso informativo en SMS, app y WhatsApp (qué, con qué confianza y en qué zona), 6 nodos por hectárea, el precio con el subsidio por datos, el tablero para la entidad aliada, los socios clave propuestos y el cierre. Se edita en `mvp/motion/src/` y se ensambla con `python mvp/motion/build.py`; el MP4 se graba con `mvp/motion/render_mp4.py` y se guarda fuera del repositorio. El sustento de cada cifra está en [docs/deteccion-tecnica.md](docs/deteccion-tecnica.md) y [docs/costos.md](docs/costos.md).
 
 Grabar el video con Docker (vía principal):
 
