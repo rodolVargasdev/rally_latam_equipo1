@@ -133,6 +133,84 @@ const T3 = (() => {
   }
   const ringM = [0, 1, 2].map(() => { const t = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.012, 8, 64), new THREE.MeshBasicMaterial({color: 0xcbdb7c, transparent: true, toneMapped: false})); G.add(t); return t; });
 
+  /* Disuasión (simulación): suelo de noche, animales extruidos desde sus SVG, luz del flash, ondas y polvo. */
+  const DZ = {ready: false};
+  function buildDeter() {
+    if (DZ.ready || typeof THREE.SVGLoader === 'undefined' || typeof ANI === 'undefined') return;
+    DZ.ready = true;
+    const grp = new THREE.Group(); sc.add(grp); DZ.grp = grp;
+    const gc = document.createElement('canvas'); gc.width = gc.height = 512;
+    const gg = gc.getContext('2d'), grd = gg.createRadialGradient(256, 256, 20, 256, 256, 256);
+    grd.addColorStop(0, '#13291b'); grd.addColorStop(0.6, '#0a1810'); grd.addColorStop(1, 'rgba(5,8,7,0)');
+    gg.fillStyle = grd; gg.fillRect(0, 0, 512, 512);
+    for (let i = 0; i < 14000; i++) { const a = Math.random() * 6.283, d = Math.pow(Math.random(), 0.6) * 236; gg.fillStyle = `rgba(${40 + Math.random() * 40},${80 + Math.random() * 50},45,${0.18 + Math.random() * 0.25})`; gg.fillRect(256 + Math.cos(a) * d, 256 + Math.sin(a) * d, 1, 2 + Math.random() * 2); }
+    const gt = new THREE.CanvasTexture(gc); gt.encoding = THREE.sRGBEncoding; gt.anisotropy = 8;
+    const ground = new THREE.Mesh(new THREE.CircleGeometry(26, 64), new THREE.MeshStandardMaterial({map: gt, transparent: true, roughness: 1, metalness: 0, envMapIntensity: 0.25}));
+    ground.rotation.x = -Math.PI / 2; ground.position.y = -5.2; grp.add(ground);
+    DZ.light = new THREE.PointLight(0xfff4dc, 0, 30, 1.6); grp.add(DZ.light);
+    DZ.waves = [0, 1, 2].map(() => { const m = new THREE.Mesh(new THREE.TorusGeometry(1, 0.05, 8, 96), new THREE.MeshBasicMaterial({color: 0xcbdb7c, transparent: true, opacity: 0, toneMapped: false})); m.rotation.x = Math.PI / 2; m.position.y = -5.1; grp.add(m); return m; });
+    const loader = new THREE.SVGLoader();
+    // [svg, lado de inicio, z, a dónde mira el dibujo original (1 derecha, -1 izquierda, 0 frente), ojo en fracción de la caja]
+    const SPEC = [['perro', 1, 3.4, 1, [0.86, 0.12]], ['zorro', -1, 2.6, -1, [0.12, 0.16]], ['tacuazin', 1, -7.5, 1, [0.82, 0.22]], ['mapache', -1, -7, 0, [0.5, 0.28]]];
+    const skin = new THREE.MeshStandardMaterial({color: 0x2a2f2a, roughness: 0.85, metalness: 0, envMapIntensity: 0.05});
+    const eyeM = DZ.eyeM = new THREE.MeshBasicMaterial({color: 0xfff1a8, transparent: true, toneMapped: false});
+    DZ.animals = SPEC.map(([k, side, z, facing, eye], idx) => {
+      const data = loader.parse(ANI[k]);
+      const shapes = [];
+      data.paths.forEach(p => THREE.SVGLoader.createShapes(p).forEach(sh => shapes.push(sh)));
+      const geo = new THREE.ExtrudeGeometry(shapes, {depth: 18, bevelEnabled: true, bevelThickness: 3, bevelSize: 2, bevelSegments: 2, curveSegments: 6});
+      geo.computeBoundingBox();
+      const bb = geo.boundingBox, w = bb.max.x - bb.min.x, h = bb.max.y - bb.min.y;
+      geo.translate(-(bb.min.x + w / 2), -bb.max.y, -9);
+      const mesh = new THREE.Mesh(geo, skin);
+      const sc0 = 2.0 / h;
+      mesh.scale.set(sc0, -sc0, sc0);
+      const holder = new THREE.Group(); holder.add(mesh);
+      const ex = (eye[0] - 0.5) * w * sc0, ey = (1 - eye[1]) * h * sc0;
+      const eyes = (facing === 0 ? [ex - 0.22, ex + 0.22] : [ex]).map(bx => { const e = new THREE.Mesh(new THREE.SphereGeometry(0.075, 12, 8), eyeM); e.position.set(bx, ey, 0.2); e.userData.bx = bx; holder.add(e); return e; });
+      const dust = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(60 * 3), 3)),
+        new THREE.PointsMaterial({color: 0xb8a37a, size: 0.12, transparent: true, opacity: 0, depthWrite: false}));
+      grp.add(holder); grp.add(dust);
+      return {holder, mesh, eyes, dust, side, z, facing, idx, sc0};
+    });
+  }
+  function deter(s, t) {
+    buildDeter();
+    if (!DZ.ready) return;
+    const on = (s.field || 0) > 0.01;
+    DZ.grp.visible = on;
+    if (!on) { key.intensity = 1.1; rim.intensity = 1.6; return; }
+    const pp = P.phone.getWorldPosition(new THREE.Vector3());
+    DZ.light.position.copy(pp).add(new THREE.Vector3(0, 0, 1.2));
+    DZ.light.intensity = 0.6 + (s.flashI || 0) * 16;
+    key.intensity = 1.1 * (1 - 0.75 * s.field); rim.intensity = 1.6 * (1 - 0.4 * s.field);
+    DZ.waves.forEach((m, i) => {
+      const ph = ((t * 0.9) + i / 3) % 1, a = s.waves || 0;
+      m.scale.setScalar(1 + ph * 11); m.material.opacity = (1 - ph) * a * 0.8;
+    });
+    const ap = s.approach || 0, fl = s.flee || 0;
+    DZ.eyeM.opacity = 0.35 + (s.flashI || 0) * 0.65;
+    DZ.animals.forEach(A => {
+      const start = A.side * (12 + A.idx * 0.8), near = A.side * (3.6 + A.idx * 0.7 + (A.idx >= 2 ? 2.2 : 0)), far = A.side * 16;
+      const x = fl > 0 ? lerp(near, far, Math.pow(fl, 1.6)) : lerp(start, near, 1 - Math.pow(1 - ap, 2));
+      const moving = fl > 0 ? A.side : -A.side;
+      const gait = fl > 0 ? 9 : 4.5, hop = Math.abs(Math.sin(t * gait + A.idx)) * (fl > 0 ? 0.35 : 0.08);
+      A.holder.position.set(x, -5.2 + hop, A.z);
+      const mirror = A.facing === 0 ? 1 : (A.facing === moving ? 1 : -1);
+      A.mesh.scale.x = A.sc0 * mirror;
+      A.eyes.forEach(e => { e.position.x = e.userData.bx * mirror; });
+      A.holder.rotation.z = fl > 0 ? -A.side * 0.08 * Math.sin(t * gait) : 0;
+      A.holder.visible = ap > 0.01 && Math.abs(x) < 15.5;
+      const pos = A.dust.geometry.attributes.position;
+      for (let i = 0; i < 60; i++) {
+        const age = ((t * 1.7 + i / 60) % 1);
+        pos.setXYZ(i, x - A.side * (age * 1.6 + 0.2), -5.15 + age * 0.6 * Math.abs(Math.sin(i * 7.3)), A.z + (Math.sin(i * 12.9) * 0.5));
+      }
+      pos.needsUpdate = true;
+      A.dust.material.opacity = fl > 0 && fl < 0.95 ? 0.55 : 0;
+    });
+  }
+
   const all = Object.keys(P);
   const v = new THREE.Vector3();
   function render(root, s, t) {
@@ -173,6 +251,7 @@ const T3 = (() => {
       g.scale.setScalar(1 + p * 4);
       g.material.opacity = (1 - p) * (s.ring || 0) * 0.9;
     });
+    deter(s, t);
     r.render(sc, cam);
   }
   function at(k) { G.updateMatrixWorld(); P[k].getWorldPosition(v); v.project(cam); return {x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * H}; }
@@ -331,10 +410,10 @@ scene({id:'3', label:'El nodo', act:2, name:'El nodo', bg:K.black, ink:K.ink, tr
   narr:['Un celular reciclado, en una caja sellada, con panel solar de diez vatios y batería de respaldo.',
     'Y, de forma experimental, puede ahuyentar a la fauna con destellos del flash y sonidos.'],
   build(r, tl, S) {
-    const st = S.st = {e: 0, ry: 0.35, rx: 0.12, cz: 17, gx: -0.4, ly: 0.4, ring: 0, moths: 0, noTrap: true};
+    const st = S.st = {e: 0, ry: 0.35, rx: 0.12, cz: 17, gx: -0.4, ly: 0.4, ring: 0, moths: 0, noTrap: true, field: 0, approach: 0, flee: 0, flashI: 0, waves: 0};
     S.flash = add(r, `<div class="abs" style="width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;background:radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,250,220,.55) 22%, rgba(255,255,255,0) 62%);opacity:0;pointer-events:none"></div>`);
-    const dis = add(r, `<div class="abs" style="left:1180px;top:430px;width:620px"><div class="tagx" style="position:static;display:inline-block;color:${K.lime}">experimental</div>
-      <div style="font:800 52px/1.1 Urbanist;margin-top:18px">Disuasión</div><div style="font:500 30px/1.35 Urbanist;opacity:.75;margin-top:10px">destellos del flash y sonidos para ahuyentar fauna; su efecto se mide en el piloto</div></div>`);
+    const dis = add(r, `<div class="abs" style="left:1240px;top:110px;width:560px"><div class="tagx" style="position:static;display:inline-block;color:${K.lime}">experimental</div>
+      <div style="font:800 52px/1.1 Urbanist;margin-top:18px">Disuasión</div><div style="font:500 30px/1.35 Urbanist;opacity:.75;margin-top:10px">destellos del flash y sonidos audibles para ahuyentar fauna</div><div class="est" style="margin-top:14px;color:#CBDB7C;opacity:.9">simulación, efecto a medir en el piloto</div></div>`);
     gsap.set(dis, {opacity: 0});
     S.co = callouts(r, [['panel', 'Panel solar', '10 W, salida USB 5 V', 'r'], ['phone', 'Celular en desuso', 'Android 5 o superior', 'r'],
       ['bank', 'Batería de respaldo', '10.000 mAh, pass-through', 'l'], ['lid', 'Caja IP67', 'contra lluvia y polvo', 'l', -170],
@@ -344,11 +423,19 @@ scene({id:'3', label:'El nodo', act:2, name:'El nodo', bg:K.black, ink:K.ink, tr
     S.co.forEach((c, i) => { tl.to(c.el, {opacity: 1, duration: 0.25}, 0.9 + i * 0.25); sfx(tl, 'tick', 0.9 + i * 0.25); });
     tl.to(S.co.map(c => c.el), {opacity: 0, duration: 0.3}, 4.3);
     tl.to(st, {e: 0, duration: 0.8 * M, ease: 'power3.inOut'}, 4.4);
-    tl.to(st, {gx: -2.2, duration: 0.8, ease: 'power2.inOut'}, 4.6);
-    show(tl, dis, 5.0, {d: 0.5});
-    [5.4, 6.1, 6.8].forEach(t => { tl.fromTo(S.flash, {opacity: 0}, {opacity: 1, duration: 0.08, yoyo: true, repeat: 1, immediateRender: false}, t); sfx(tl, 'tick', t); });
-    tl.to(st, {ring: 1, duration: 0.3}, 5.4);
-    tl.set({}, {}, 7.6);
+    tl.set(st, {field: 1}, 4.8);
+    tl.to(st, {cz: 27, cy: 2.4, ly: -2.6, gx: 0, duration: 1.3 * M, ease: 'power2.inOut'}, 4.8);
+    tl.to(st, {approach: 1, duration: 1.8, ease: 'none'}, 5.2);
+    show(tl, dis, 5.6, {d: 0.5});
+    [7.0, 7.45, 7.9].forEach(t => {
+      tl.fromTo(S.flash, {opacity: 0}, {opacity: 1, duration: 0.08, yoyo: true, repeat: 1, immediateRender: false}, t);
+      tl.fromTo(st, {flashI: 0}, {flashI: 1, duration: 0.08, yoyo: true, repeat: 1, immediateRender: false}, t);
+      sfx(tl, 'hit', t, 0.5);
+    });
+    tl.to(st, {ring: 1, waves: 1, duration: 0.3}, 7.0);
+    tl.to(st, {flee: 1, duration: 2.4, ease: 'none'}, 7.3);
+    tl.to(st, {waves: 0, duration: 0.5}, 9.9);
+    tl.set({}, {}, 10.6);
   },
   frame(n) { T3.render(this.root, this.st, localT(this, n)); placeCallouts(this.co); const p = T3.at('phone'); this.flash.style.left = p.x + 'px'; this.flash.style.top = p.y + 'px'; }});
 
