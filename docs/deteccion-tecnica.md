@@ -177,7 +177,7 @@ también se mide en el piloto.
 
 ## Pregunta 9: ¿cuánto cuesta un nodo?
 
-Detalle con fuentes en [costos.md](costos.md): entre **USD 36 y 62 por nodo**.
+Detalle con fuentes en [costos.md](costos.md): entre **USD 36,00 y 61,50 por nodo**, y entre USD 216 y 369 por hectárea con 6 nodos.
 
 ## Lo que pocketNode no hace
 

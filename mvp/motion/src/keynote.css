@@ -68,3 +68,5 @@
 .dbars i { display: block; flex: 1; background: #CBDB7C; border-radius: 8px 8px 2px 2px; }
 .arow .ah { min-height: 42px; }
 .arow .ah .am { margin-left: 22px; font: 600 20px 'Urbanist', sans-serif; letter-spacing: .12em; text-transform: uppercase; padding: 5px 12px; border: 1.5px solid currentColor; border-radius: 999px; opacity: .8; vertical-align: middle; }
+.soc em { font: 600 22px/1.25 'Urbanist', sans-serif; font-style: normal; color: #CBDB7C; }
+.soc { min-height: 230px; align-content: start; }
